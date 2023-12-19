@@ -1,0 +1,49 @@
+{
+    "Title": "Public Sector Standard Conditions Of Contract (PSSCOC)",
+    "Stage of PSSCOC": "Procurement > Post-tender Stage > Public Sector Standard Conditions Of Contract (PSSCOC)",
+    "About": "The PSSCOC was developed to enable a common contract form to be used for all public sector construction projects. Using a standardised conditions of contract will allow users to be more familiar, reduce tendering efforts and promote greater efficiency in contract administration.",
+    "More About": {
+        "Collaborative Contracting": "To encourage greater collaboration and mutual trust between stakeholders in the built environment sector, we have developed a set of collaborative clauses, as an Option Module to the PSSCOC, together with industry associations and government agencies. The collaborative contract provisions are currently being piloted in selected public sector projects.",
+        "Benefits of collaborative contracting": [
+            "Aims to reduce project cost, variations and to completion time",
+            "Encourages teamwork/cooperation among stakeholders",
+            "Early risk identification and joint problem solving",
+            "Stimulates information sharing, communication and innovation",
+            "Avoids disputes and encourages early dispute resolution"
+        ]
+    },
+    "Categories of PSSCOC": [
+        {
+            "Category Name": "PSSCOC for Construction Works",
+            "Category File Names": [
+                "PSSCOC for Construction Works 2020 (8th edition Jul 2020)",
+                "Supplement for PSSCOC for Construction Works 2020 (8th edition Jul 2020)",
+                "List of Amendments for PSSCOC for Construction Works 2020 (8th edition Jul 2020)",
+                "Option Module E (Collaborative Contracting with SIDP^) - Under Pilot",
+                "Option Module E (Collaborative Contracting without SIDP) - Under Pilot",
+                "*Items 1-2 to be used together."
+            ]
+        },
+        {
+            "Category Name": "PSSCOC for Design and Build",
+            "Category File Names": [
+                "PSSCOC for Design & Build 2020 (7th edition Jul 2020)",
+                "Supplement for PSSCOC for Design & Build 2020 (7th edition Jul 2020)",
+                "List of Amendments for PSSCOC for Design & Build 2020 (7th edition Jul 2020)",
+                "Option Module C (Collaborative Contracting with SIDP) - Under Pilot",
+                "Option Module C (Collaborative Contracting without SIDP) - Under Pilot",
+                "*Items 1-2 to be used together."
+            ]
+        },
+        {
+            "Category Name": "Standard Conditions for Nominated Sub-Contract (NSC)",
+            "Category File Names": [
+                "Standard Conditions of Nominated Sub-Contract 2008 (5th edition December 2008)",
+                "Supplement for Nominated Sub-Contract 2008 (5th edition December 2008) (updated w.e.f. 3 July 2017)",
+                "List of Clarifications and Editorial Amendments for Nominated Sub-Contract 2008 (1 Dec 2015)",
+                "List of Amendments for Nominated Sub-Contract 2008 (5th edition December 2008)",
+                "*Items 1-4 to be used together."
+            ]
+        }
+    ]
+}

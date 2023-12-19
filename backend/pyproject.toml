@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["xKhronoz"]
+readme = "README.md"
+packages = [{include = "backend"}]
+
+[tool.poetry.dependencies]
+python = "^3.11,<3.12"
+fastapi = "^0.104.1"
+uvicorn = { extras = ["standard"], version = "^0.23.2" }
+llama-index = "^0.9.4"
+pypdf = "^3.17.0"
+python-dotenv = "^1.0.0"
+llama-cpp-python = "^0.2.18"
+transformers = "^4.35.2"
+# torch = "^2.1.1" # For CPU version both Windows and Linux
+torch = { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-win_amd64.whl"} # For Windows with Cuda 12.1
+# torch = { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-linux_x86_64.whl"} # For Linux with Cuda 12.1
+docx2txt = "^0.8"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
