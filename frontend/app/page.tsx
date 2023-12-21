@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import * as React from 'react'
 import { IconSpinner } from '@/app/components/ui/icons'
+import logo from '../public/smart-retrieval-logo.webp'
 
 export default function Home() {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -17,7 +18,7 @@ export default function Home() {
           <div className="flex flex-col items-center mb-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white p-8 rounded-lg shadow-lg">
             <div className="flex flex-col md:flex-row items-center md:items-start">
               <Image
-                src="/smart-retrieval-logo.webp"
+                src={logo}
                 alt="Smart Retrieval Logo"
                 width={150}
                 height={150}
