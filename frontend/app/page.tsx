@@ -6,12 +6,13 @@ import Link from 'next/link';
 import * as React from 'react'
 import { IconSpinner } from '@/app/components/ui/icons'
 import logo from '../public/smart-retrieval-logo.webp'
+import Main from "@/app/components/ui/main-container";
 
 export default function Home() {
   const [isLoading, setIsLoading] = React.useState(false);
 
   return (
-    <main id='main-container' className="flex min-h-screen flex-col items-center gap-10 background-gradient dark:background-gradient-dark md:pt-10 pt-24 px-10">
+    <Main>
       <Header />
       <div className="rounded-xl shadow-xl p-4 mb-8 z-10 max-w-5xl w-full">
         <div className="max-w-2xl mx-auto p-4 text-center">
@@ -47,6 +48,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </main>
+    </Main>
   );
 }

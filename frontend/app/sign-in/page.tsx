@@ -2,10 +2,11 @@
 
 import { GoogleLoginButton, SGIDLoginButton } from '@/app/components/login-buttons';
 import Header from "@/app/components/header";
+import Main from "@/app/components/ui/main-container";
 
 const SignInPage = () => {
   return (
-    <main id='main-container' className="flex min-h-screen flex-col items-center gap-10 background-gradient dark:background-gradient-dark md:pt-10 pt-24 px-10">
+    <Main>
       <Header />
       <div className="rounded-xl shadow-xl p-4 mb-8 z-10 max-w-5xl w-full">
         <div className="max-w-2xl mx-auto text-center">
@@ -38,7 +39,7 @@ const SignInPage = () => {
           </div>
         </div>
       </div>
-    </main>
+    </Main>
   );
 };
 
