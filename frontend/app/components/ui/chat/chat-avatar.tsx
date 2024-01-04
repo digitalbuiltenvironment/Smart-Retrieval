@@ -11,14 +11,13 @@ export default function ChatAvatar({ role }: { role: string }) {
   }
 
   return (
-    <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border text-white shadow bg-neutral-200">
+    <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border shadow">
       <Image
         className="rounded-md"
-        src="/smart retrieval logo.webp"
+        src="/smart-retrieval-logo.webp"
         alt="System"
-        width={24}
-        height={24}
-        priority
+        width={80}
+        height={80}
       />
     </div>
   );
