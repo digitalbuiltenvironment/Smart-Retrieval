@@ -55,7 +55,7 @@ Add additional notes about how to deploy this on a live system.
 ## ⛏️ Built Using <a name = "built_using"></a>
 
 - [NextJs](https://nextjs.org/) - Frontend Web Framework
-- [Vercel AI](https://vercel.com/ai) - AI SDK for building chat app
+- [Vercel AI](https://vercel.com/ai) - AI SDK library for building AI-powered streaming text and chat UIs.
 - [NodeJs](https://nodejs.org/en/) - Frontend Server Environment
 - [Python](https://python.org/) - Backend Server Environment
 - [FastAPI](https://fastapi.tiangolo.com/) - Backend API Web Framework
