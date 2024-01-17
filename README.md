@@ -16,7 +16,7 @@
 
 ---
 
-<p align="center"> A Large Language Model (LLM) powered chatbot for information retrieval.
+<p align="center"> A Large Language Model (LLM) powered platform for information retrieval.
     <br>
 </p>
 
