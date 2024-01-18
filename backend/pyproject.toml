@@ -15,7 +15,12 @@ pypdf = "^3.17.0"
 python-dotenv = "^1.0.0"
 llama-cpp-python = "^0.2.18"
 transformers = "^4.35.2"
-torch = "^2.1.1" # For CPU version both Windows and Linux
+# For CPU version both Windows and Linux
+torch = [
+    { version = "=2.1.1", source = "pypi", platform = "darwin" },
+    { version = "=2.1.1+cpu", source = "pytorch", platform = "linux" },
+    { version = "=2.1.1+cpu", source = "pytorch", platform = "win32" },
+]
 # torch = { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-win_amd64.whl"} # For Windows with Cuda 12.1
 # torch = { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-linux_x86_64.whl"} # For Linux with Cuda 12.1
 docx2txt = "^0.8"
