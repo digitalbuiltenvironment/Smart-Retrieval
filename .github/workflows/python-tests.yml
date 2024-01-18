@@ -16,11 +16,11 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: ./backend
     steps:
     - uses: actions/checkout@v3
-    - name: Change Directory
-      working-directory: ./backend
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:
