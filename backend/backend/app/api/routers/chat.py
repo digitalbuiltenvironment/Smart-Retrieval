@@ -7,12 +7,23 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
 from fastapi.websockets import WebSocketDisconnect
 from llama_index import VectorStoreIndex
-from llama_index.llms.base import ChatMessage, MessageRole
+from llama_index.llms.base import ChatMessage
+from llama_index.llms.types import MessageRole
 from llama_index.memory import ChatMemoryBuffer
 from llama_index.prompts import PromptTemplate
 from pydantic import BaseModel
 
 chat_router = r = APIRouter()
+
+"""
+This router is for chatbot functionality which consist of chat memory and chat engine.
+The chat memory is used to store the chat history and the chat engine is used to query the chat memory and context.
+Chat engine is a wrapper around the query engine and it is used to query the chat memory and context.
+Chat engine also does the following:
+1. Condense the question based on the chat history
+2. Add context to the question
+3. Answer the question
+"""
 
 
 class _Message(BaseModel):
@@ -24,6 +35,7 @@ class _ChatData(BaseModel):
     messages: List[_Message]
 
 
+# custom prompt template to be used by chat engine
 custom_prompt = PromptTemplate(
     """\
 Given a conversation (between Human and Assistant) and a follow up message from Human, \
