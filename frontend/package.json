@@ -28,7 +28,9 @@
     "remark-code-import": "^1.2.0",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
+    "sharp": "^0.33.2",
     "supports-color": "^8.1.1",
+    "swr": "^2.2.4",
     "tailwind-merge": "^2"
   },
   "devDependencies": {

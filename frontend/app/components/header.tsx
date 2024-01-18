@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useTheme } from "next-themes";
 import { useEffect, useState, useRef } from "react";
 import { useMedia } from 'react-use';
+import useSWR from 'swr'
 import logo from '../../public/smart-retrieval-logo.webp'
 
 interface NavLinkProps {
@@ -21,7 +22,7 @@ interface MobileMenuProps {
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
-  const isLargeScreen = useMedia('(min-width: 1024px)');
+  const isLargeScreen = useMedia('(min-width: 1024px)', false);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -130,9 +131,33 @@ const NavLink: React.FC<NavLinkProps> = ({ href, children, onClick }) => {
 };
 
 export default function Header() {
-  const isLargeScreen = useMedia('(min-width: 1024px)');
+  const isLargeScreen = useMedia('(min-width: 1024px)', false);
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+  // const [apiStatus, setApiStatus] = useState(false);
+  // Use SWR for API status fetching
+  const healthcheck_api = process.env.NEXT_PUBLIC_HEALTHCHECK_API;
+  const { data: apiStatus, error: apiError } = useSWR(healthcheck_api, async (url) => {
+    try {
+      // Fetch the data
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(response.statusText || 'Unknown Error');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error: any) {
+      console.error('Error fetching Backend API Status:', error.message);
+      throw error;
+    }
+  }, {
+    revalidateOnFocus: true, // Revalidate when the window gains focus
+    revalidateIfStale: true, // Revalidate if the data is stale
+    refreshInterval: 60000, // Revalidate every 60 seconds
+  });
+  if (apiError) {
+    console.error('[Header] Error fetching Backend API Status:', apiError.message);
+  }
 
   useEffect(() => {
     setMounted(true);
@@ -224,10 +249,26 @@ export default function Header() {
             </NavLink>
           </div>
           <div className="flex items-center ml-auto">
+            {/* Status Page Button/Indicator */}
+            <span className='flex items-center mr-1'>API:</span>
+            <NavLink href='/status'>
+              <div className="flex items-center mr-2 text-l transition duration-300 ease-in-out transform hover:scale-125">
+                {apiError ? (
+                  <span role="img" aria-label="red circle">
+                    🔴
+                  </span>
+                ) : (
+                  <span role="img" aria-label="green circle">
+                    🟢
+                  </span>
+                )}
+              </div>
+            </NavLink>
+            <span className="lg:text-lg font-nunito">|</span>
             {/* Toggle button with icon based on the theme */}
             <button
               onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-              className="flex items-center text-xl transition duration-300 ease-in-out transform hover:scale-125"
+              className="flex items-center ml-2 text-xl transition duration-300 ease-in-out transform hover:scale-125"
               title={`Toggle between dark & light mode (Current mode: ${theme})`}>
               {theme === 'light' ? (
                 <span role="img" aria-label="sun emoji">
