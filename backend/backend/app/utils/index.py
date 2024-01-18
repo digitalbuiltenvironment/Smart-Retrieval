@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 from llama_index import (
+    PromptHelper,
     ServiceContext,
     SimpleDirectoryReader,
     StorageContext,
@@ -50,14 +51,32 @@ llm = LlamaCPP(
     verbose=True,
 )
 
+# define prompt helper
+# set maximum input size
+max_input_size = 4096
+# set number of output tokens
+num_output = 256
+# set maximum chunk overlap
+max_chunk_overlap = 0.2
+
 embed_model = HuggingFaceEmbedding(
     model_name="sentence-transformers/all-MiniLM-L6-v2",
     pooling="mean",
     device=DEVICE_TYPE,
 )
 
+prompt_helper = PromptHelper(
+    chunk_size_limit=4096,
+    chunk_overlap_ratio=0.2,
+    num_output=256,
+)
+
 service_context = ServiceContext.from_defaults(
-    llm=llm, embed_model=embed_model, chunk_size=1000, chunk_overlap=100
+    llm=llm,
+    embed_model=embed_model,
+    chunk_size=1000,
+    chunk_overlap=100,
+    prompt_helper=prompt_helper,
 )
 
 set_global_service_context(service_context)
@@ -86,17 +105,30 @@ def create_index():
         logger.info(f"Index already exist at {STORAGE_DIR}...")
 
 
-def get_index():
+def load_existing_index():
+    # load the existing index
     logger = logging.getLogger("uvicorn")
+    logger.info(f"Loading index from {STORAGE_DIR}...")
+    storage_context = StorageContext.from_defaults(persist_dir=STORAGE_DIR)
+    index = load_index_from_storage(storage_context, service_context=service_context)
+    logger.info(f"Finished loading index from {STORAGE_DIR}")
+    return index
+
+
+def get_index():
     # check if storage already exists
     if not os.path.exists(STORAGE_DIR):
+        # create the index if it does not exist
         create_index()
+        # load the index from storage
+        index = load_existing_index()
+    # check if storage is empty, 4 files should be present if using simplevectorstore
+    elif os.path.exists(STORAGE_DIR) and len(os.listdir(STORAGE_DIR)) < 4:
+        # create the index if it does not exist
+        create_index()
+        # load the index from storage
+        index = load_existing_index()
     else:
-        # load the existing index
-        logger.info(f"Loading index from {STORAGE_DIR}...")
-        storage_context = StorageContext.from_defaults(persist_dir=STORAGE_DIR)
-        index = load_index_from_storage(
-            storage_context, service_context=service_context
-        )
-        logger.info(f"Finished loading index from {STORAGE_DIR}")
+        # load the index from storage
+        index = load_existing_index()
     return index
