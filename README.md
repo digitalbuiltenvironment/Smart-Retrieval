@@ -8,7 +8,7 @@
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/digitalbuiltenvironment/Smart-Retrieval.svg)](https://github.com/digitalbuiltenvironment/Smart-Retrieval)
+[![GitHub Issues](https://img.shields.io/github/issues/digitalbuiltenvironment/Smart-Retrieval.svg)](https://github.com/digitalbuiltenvironment/Smart-Retrieval/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/digitalbuiltenvironment/Smart-Retrieval.svg)](https://github.com/digitalbuiltenvironment/Smart-Retrieval/pulls)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
@@ -16,7 +16,7 @@
 
 ---
 
-<p align="center"> A Large Language Model (LLM) powered chatbot for information retrieval.
+<p align="center"> A Large Language Model (LLM) powered platform for information retrieval.
     <br>
 </p>
 
@@ -26,14 +26,14 @@
 - [Getting Started](#getting_started)
 - [Deployment](#deployment)
 - [Built Using](#built_using)
-- [TODO](../TODO.md)
 - [Contributing](../CONTRIBUTING.md)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
 
 ## 🧐 About <a name = "about"></a>
 
-Write about 1-2 paragraphs describing the purpose of your project.
+Smart Retrieval is a platform for efficient and streamlined information retrieval, especially in the realm of legal and compliance documents.
+With the power of Open-Source Large Language Models (LLM) and Retrieval Augmented Generation (RAG), it aims to enhance user experiences at JTC by addressing key challenges such as manual search inefficiencies and rigid file naming conventions, revolutionizing the way JTC employees access and comprehend crucial documents
 
 Project files bootstrapped with [`create-llama`](https://github.com/run-llama/LlamaIndexTS/tree/main/packages/create-llama).
 
@@ -54,10 +54,12 @@ Add additional notes about how to deploy this on a live system.
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
-- [MongoDB](https://www.mongodb.com/) - Database
-- [Express](https://expressjs.com/) - Server Framework
-- [VueJs](https://vuejs.org/) - Web Framework
-- [NodeJs](https://nodejs.org/en/) - Server Environment
+- [NextJs](https://nextjs.org/) - Frontend Web Framework
+- [Vercel AI](https://vercel.com/ai) - AI SDK library for building AI-powered streaming text and chat UIs.
+- [NodeJs](https://nodejs.org/en/) - Frontend Server Environment
+- [Python](https://python.org/) - Backend Server Environment
+- [FastAPI](https://fastapi.tiangolo.com/) - Backend API Web Framework
+- [LlamaIndex](https://www.llamaindex.ai/) - Data Framework for LLM
 
 ## ✍️ Authors <a name = "authors"></a>
 
