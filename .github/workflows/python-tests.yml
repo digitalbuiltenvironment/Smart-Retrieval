@@ -16,12 +16,12 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.10
+    - name: Change Directory to Backend Package
+      working-directory: ./backend
+      run: |
+    - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
         python-version: "3.11"
@@ -30,7 +30,7 @@ jobs:
       with:
         # Have poetry create a virtualenv for the project on installation.
         create-virtualenv: false
-    - name: Install test dependencies
+    - name: Install Dependencies
       run: |
         poetry install flake8 pytest
     - name: Lint with flake8
