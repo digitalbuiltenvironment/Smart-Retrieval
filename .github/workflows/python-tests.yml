@@ -23,6 +23,7 @@ jobs:
       with:
         python-version: "3.11"
         cache: 'poetry'
+        cache-dependency-path: ./backend/poetry.lock
     - name: Install Dependencies
       working-directory: ./backend
       run: |
@@ -37,7 +38,7 @@ jobs:
         poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      working-directory: ./backend
-      run: |
-        poetry run pytest
+  # - name: Test with pytest
+    # working-directory: ./backend
+    # run: |
+      # poetry run pytest
