@@ -28,7 +28,7 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel
         python -m pip install poetry
         poetry install
-        poetry install flake8 pytest
+        poetry add flake8 pytest
     - name: Lint with flake8
       working-directory: ./backend
       run: |
