@@ -1,7 +1,6 @@
 "use client";
 
 import useSWR from 'swr';
-import { NextPage } from 'next';
 import { Button } from "@nextui-org/react";
 import { IconSpinner } from '@/app/components/ui/icons';
 import Header from "@/app/components/header";
@@ -10,13 +9,7 @@ import Main from "@/app/components/ui/main-container";
 // Define the API endpoint
 const healthcheck_api = process.env.NEXT_PUBLIC_HEALTHCHECK_API;
 
-const StatusPage: NextPage = () => {
-
-  // Define a function to clear the cache
-  const clearCache = () => mutate(
-    () => true,
-    undefined,
-  )
+const StatusPage = () => {
   // Use SWR hook to fetch data with caching and revalidation
   const { data, error, isValidating, mutate } = useSWR(healthcheck_api, async (url) => {
     try {
@@ -82,29 +75,5 @@ const StatusPage: NextPage = () => {
     </Main>
   );
 };
-
-// StatusPage.getInitialProps = async () => {
-//   try {
-//     // Ensure healthcheck_api is defined before making the fetch request
-//     const healthcheck_api = process.env.NEXT_PUBLIC_HEALTHCHECK_API;
-
-//     if (!healthcheck_api) {
-//       throw new Error('NEXT_PUBLIC_HEALTHCHECK_API is not defined');
-//     }
-
-//     const response = await fetch(healthcheck_api);
-
-//     if (!response.ok) {
-//       throw new Error(response.statusText || 'Unknown Error');
-//     }
-
-//     const data = await response.json();
-//     return { initialStatus: data.status };
-//   } catch (error: any) {
-//     console.error('Error fetching Backend API Status:', error.message);
-//     throw error;
-//   }
-// };
-
 
 export default StatusPage;
