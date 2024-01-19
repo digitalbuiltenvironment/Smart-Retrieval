@@ -25,3 +25,8 @@ async def healthcheck(
 
     results = {"status": "OK"}
     return results
+
+
+# Simple test to check if the healthcheck endpoint is working
+def test_healthcheck():
+    assert healthcheck() == {"status": "OK"}
