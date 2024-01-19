@@ -50,7 +50,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## 🚀 Deployment <a name = "deployment"></a>
 
-Add additional notes about how to deploy this on a live system.
+How to deploy this on a live system.
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
@@ -63,7 +63,7 @@ Add additional notes about how to deploy this on a live system.
 
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@xkhronoz](https://github.com/xkhronoz) - Idea & Initial work
+- [@xkhronoz](https://github.com/xkhronoz) - Initial work
 
 See also the list of [contributors](https://github.com/digitalbuiltenvironment/Smart-Retrieval/contributors) who participated in this project.
 
