@@ -1,6 +1,6 @@
 // SearchSection.tsx
 
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import useSearch from "@/app/components/ui/search/useSearch";
 import SearchResults from "@/app/components/ui/search/search-results";
 import SearchInput from "@/app/components/ui/search/search-input";

@@ -1,4 +1,3 @@
-import React from "react";
 import { SearchResult } from "./search-types";
 import { IconSpinner } from "../icons";
 

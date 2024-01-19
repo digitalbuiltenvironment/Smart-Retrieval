@@ -1,6 +1,6 @@
 // SearchInput.tsx
 
-import React, { ChangeEvent, FormEvent } from "react";
+import { ChangeEvent, FormEvent } from "react";
 import { Button } from "../button";
 import { Input } from "../input";
 import { Search } from "lucide-react";

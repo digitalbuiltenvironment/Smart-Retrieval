@@ -1,6 +1,6 @@
 'use client'
 
-import * as React from 'react'
+import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 
 import { cn } from '@/app/components/ui/lib/utils'
@@ -19,7 +19,7 @@ function GoogleLoginButton({
   className = 'google-login-button flex items-center justify-center bg-white border-white text-black hover:bg-gray-400 hover:border-gray-400',
   ...props
 }: LoginButtonProps) {
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { theme } = useTheme();
 
   return (
@@ -49,7 +49,7 @@ function SGIDLoginButton({
   className = 'sgid-login-button flex items-center justify-center bg-custom-sgid-red border-custom-sgid-red text-white hover:bg-custom-sgid-red-light hover:border-custom-sgid-red-light',
   ...props
 }: LoginButtonProps) {
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <Button
