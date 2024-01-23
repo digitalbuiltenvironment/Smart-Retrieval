@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Home, InfoIcon, MessageCircle, Search, FileQuestion, Menu } from 'lucide-react';
+import { Home, InfoIcon, MessageCircle, Search, FileQuestion, Menu, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useTheme } from "next-themes";
 import { useEffect, useState, useRef } from "react";
@@ -92,7 +92,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
           <NavLink href="/query" onClick={onClose}>
             <div className="flex items-center mb-4">
               <FileQuestion className="mr-2 h-5 w-5" />
-              Query
+              Q&A
             </div>
           </NavLink>
           <NavLink href="/search" onClick={onClose}>
@@ -209,9 +209,14 @@ export default function Header() {
               title="Toggle mobile menu"
               onClick={toggleMobileMenu}
             >
-              <span role="img" aria-label="menu icon">
-                <Menu />
-              </span>
+              {isMobileMenuOpen ? (
+                <span role="img" aria-label="close icon">
+                  <X/>
+                </span>
+              ) : (
+                <span role="img" aria-label="menu icon">
+                  <Menu />
+                </span>)}
             </button>
           </div>
           {/* Mobile menu component */}
@@ -238,7 +243,7 @@ export default function Header() {
             <NavLink href="/query">
               <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
                 <FileQuestion className="mr-1 h-4 w-4" />
-                Query
+                Q&A
               </div>
             </NavLink>
             <NavLink href="/search">

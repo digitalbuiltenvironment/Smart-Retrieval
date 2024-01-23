@@ -64,9 +64,13 @@ async def search(
         data["id"] = id
         data["file_name"] = node_metadata["file_name"]
         data["page_no"] = node_metadata["page_label"]
-        cleaned_text = re.sub("^_+ | _+$", "", node_dict["text"])
+        cleaned_text = re.sub(
+            "^_+ | _+$", "", node_dict["text"]
+        )  # remove leading and trailing underscores
         data["text"] = cleaned_text
-        data["similarity_score"] = node.get_score()
+        data["similarity_score"] = round(
+            node.get_score(), 2
+        )  # round to 2 decimal places
         response.append(data)
         id += 1
 

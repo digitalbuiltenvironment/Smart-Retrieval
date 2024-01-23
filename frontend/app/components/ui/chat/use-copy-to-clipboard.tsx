@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export interface useCopyToClipboardProps {
   timeout?: number;
@@ -20,8 +21,15 @@ export function useCopyToClipboard({
       return;
     }
 
+    const showToastMessage = () => {
+      toast.success("Message copied to clipboard!", {
+        position: "top-center",
+      });
+    };
+
     navigator.clipboard.writeText(value).then(() => {
       setIsCopied(true);
+      showToastMessage();
 
       setTimeout(() => {
         setIsCopied(false);
