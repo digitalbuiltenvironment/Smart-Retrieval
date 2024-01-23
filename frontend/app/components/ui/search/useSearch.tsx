@@ -31,6 +31,12 @@ const useSearch = (): UseSearchResult => {
         // Perform search logic here
         try {
             console.log("Searching for:", query);
+            // check if query is empty
+            if (query === "") {
+                setSearchResults([]);
+                setIsLoading(false);
+                return;
+            }
             const response = await fetch(`${search_api}?query=${query}`);
             const data = await response.json();
             setSearchResults(data);

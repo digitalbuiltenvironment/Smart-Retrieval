@@ -1,4 +1,5 @@
 import logging
+import re
 
 from app.utils.index import get_index
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -21,7 +22,7 @@ async def search(
     request: Request,
     index: VectorStoreIndex = Depends(get_index),
 ):
-    query = request.query_params.get("search")
+    query = request.query_params.get("query")
     logger = logging.getLogger("uvicorn")
     logger.info(f"Search: {query}")
     if query is None:
@@ -35,12 +36,40 @@ async def search(
         index=index,
         similarity_top_k=10,
     )
-    # configure postprocessor
-    node_postprocessors = [SimilarityPostprocessor(similarity_cutoff=0.7)]
+    # similarity postprocessor: filter nodes below 0.45 similarity score
+    node_postprocessor = SimilarityPostprocessor(similarity_cutoff=0.45)
 
     # retrieve results
-    query_results = retriever.retrieve(query, node_postprocessors=node_postprocessors)
+    query_results = retriever.retrieve(query)
 
-    # TODO: get only relevant info from response such as references and not the whole thing without using LLM to formulate response
-    results = query_results.to_dict()
-    return results
+    query_results_scores = [result.get_score() for result in query_results]
+
+    logger.info(f"Search results similarity score: {query_results_scores}")
+
+    # postprocess results
+    filtered_results = node_postprocessor.postprocess_nodes(query_results)
+
+    filtered_results_scores = [result.get_score() for result in filtered_results]
+
+    logger.info(f"Filtered Search results similarity score: {filtered_results_scores}")
+
+    response = []
+    id = 1
+    for node in filtered_results:
+        node_dict = node.to_dict()["node"]
+        logger.debug(f"Node dict: {node_dict}")
+        node_metadata = node_dict["metadata"]
+        logger.debug(f"Node metadata: {node_metadata}")
+        data = {}
+        data["id"] = id
+        data["file_name"] = node_metadata["file_name"]
+        data["page_no"] = node_metadata["page_label"]
+        cleaned_text = re.sub("^_+ | _+$", "", node_dict["text"])
+        data["text"] = cleaned_text
+        data["similarity_score"] = node.get_score()
+        response.append(data)
+        id += 1
+
+    # TODO: do a reranking of the results and return them?
+    # TODO: do a highlighting of the results in the relevant documents and return them?
+    return response
