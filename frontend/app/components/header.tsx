@@ -257,7 +257,7 @@ export default function Header() {
             {/* Status Page Button/Indicator */}
             <span className='flex items-center mr-1'>API:</span>
             <NavLink href='/status'>
-              <div className="flex items-center mr-2 text-l transition duration-300 ease-in-out transform hover:scale-125">
+              <div className="flex items-center mr-2 text-xl transition duration-300 ease-in-out transform hover:scale-125">
                 {apiError ? (
                   <span role="img" aria-label="red circle">
                     🔴

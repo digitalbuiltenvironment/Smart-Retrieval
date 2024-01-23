@@ -3,8 +3,6 @@
 import useSWR from 'swr';
 import { Button } from "@nextui-org/react";
 import { IconSpinner } from '@/app/components/ui/icons';
-import Header from "@/app/components/header";
-import Main from "@/app/components/ui/main-container";
 
 // Define the API endpoint
 const healthcheck_api = process.env.NEXT_PUBLIC_HEALTHCHECK_API;
@@ -46,33 +44,30 @@ const StatusPage = () => {
   };
 
   return (
-    <Main>
-      <Header />
-      <div className="rounded-xl shadow-xl p-4 mb-8 max-w-5xl w-full">
-        <div className="max-w-2xl space-y-2 p-4">
-          <h1 className="text-xl font-bold">Backend API Status</h1>
-          <p>
-            <span className="font-bold">Status: </span>
-            <span>{isValidating ? (
-              <IconSpinner className="inline ml-2 animate-spin" />
-            ) : apiStatus}</span>
-          </p>
-          <p><span className="font-bold">Response Data: </span>{isValidating ? (
+    <div className="rounded-xl shadow-xl p-4 mb-8 max-w-5xl w-full bg-white dark:bg-zinc-700/30">
+      <div className="max-w-2xl space-y-2 p-4">
+        <h1 className="text-xl font-bold">Backend API Status</h1>
+        <p>
+          <span className="font-bold">Status: </span>
+          <span>{isValidating ? (
             <IconSpinner className="inline ml-2 animate-spin" />
-          ) : apiResponse}</p>
-          <Button
-            onClick={checkApiStatus}
-            disabled={isValidating}  // Disable the button when isValidating is true
-            className="flex text-center items-center text-l disabled:bg-orange-400 bg-blue-500 text-white px-6 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105"
-          >
-            {isValidating ? (
-              <IconSpinner className="mr-2 animate-spin" />
-            ) : null}
-            Refresh Status
-          </Button>
-        </div>
+          ) : apiStatus}</span>
+        </p>
+        <p><span className="font-bold">Response Data: </span>{isValidating ? (
+          <IconSpinner className="inline ml-2 animate-spin" />
+        ) : apiResponse}</p>
+        <Button
+          onClick={checkApiStatus}
+          disabled={isValidating}  // Disable the button when isValidating is true
+          className="flex text-center items-center text-l disabled:bg-orange-400 bg-blue-500 text-white px-6 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105"
+        >
+          {isValidating ? (
+            <IconSpinner className="mr-2 animate-spin" />
+          ) : null}
+          Refresh Status
+        </Button>
       </div>
-    </Main>
+    </div>
   );
 };
 
