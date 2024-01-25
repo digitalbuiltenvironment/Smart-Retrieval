@@ -18,6 +18,6 @@ jobs:
           token: ${{ secrets.PAT }}
           owner: JTC-Smart-Retrieval
           repo: Smart-Retrieval-Deployment
-          base: master
-          head: master
+          base: main
+          head: main
           auto_approve: true
