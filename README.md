@@ -1,3 +1,14 @@
+---
+title: Smart Retrieval API
+emoji: 📝
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+python_version: 3.11.4
+app_port: 8000
+pinned: false
+---
+
 <p align="center">
   <a href="" rel="noopener">
  <img width=200px height=200px src="smart retrieval.webp" alt="Project logo"></a>
