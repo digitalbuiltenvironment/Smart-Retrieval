@@ -7,26 +7,15 @@ on:
   #  - cron: '*/30 * * * *' # every 30 minutes
   workflow_dispatch: # on button click
 
-env:
-  REQUEST_BODY: |
-    branch: 'main',
-    headers: {
-      'X-GitHub-Api-Version': '2022-11-28'
-    }
-
 jobs:
   sync-deployment-fork:
     runs-on: ubuntu-latest
     steps:
-      - uses: octokit/request-action@v2.1.9
-        id: sync_deployment_fork
-        with:
-          route: POST /repos/{owner}/{repo}/merge-upstream
-          body: ${{ toJSON(env.REQUEST_BODY) }}
-          owner: JTC-Smart-Retrieval
-          repo: Smart-Retrieval-Deployment
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Sync fork with upstream
+        run: |
+          gh api -X POST /repos/JTC-Smart-Retrieval/Smart-Retrieval-Deployment/merge-upstream -f branch='main'
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-      - run: "echo Sync Fork Success!: '${{ steps.sync_deployment_fork.outputs.data }}'"
-      - run: "echo Sync Fork Failed. Request failed with status '${{ steps.sync_deployment_fork.outputs.status }}'"
-        if: ${{ failure() }}
+          GH_TOKEN: ${{ secrets.PAT }}
