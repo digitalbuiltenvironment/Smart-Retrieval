@@ -17,6 +17,9 @@ ENV HOME=/home/user \
 # Set the working directory to /app
 WORKDIR $HOME/app
 
+# Update pip and wheel
+RUN pip install --upgrade pip setuptools wheel
+
 # Install poetry
 RUN pip install poetry
 
