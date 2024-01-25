@@ -1,11 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ["llamaindex"],
-  },
-  env: {
-    CHAT_API: "http://localhost:8000/api/chat",
-  },
+  // experimental: {
+  //   serverComponentsExternalPackages: ["llamaindex"],
+  // },
   compiler: {
     // Enables the styled-components SWC transform
     styledComponents: true

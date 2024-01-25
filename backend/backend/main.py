@@ -2,6 +2,9 @@ import logging
 import os
 
 from app.api.routers.chat import chat_router
+from app.api.routers.healthcheck import healthcheck_router
+from app.api.routers.query import query_router
+from app.api.routers.search import search_router
 from app.utils.index import create_index
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -26,6 +29,9 @@ if environment == "dev":
     )
 
 app.include_router(chat_router, prefix="/api/chat")
+app.include_router(query_router, prefix="/api/query")
+app.include_router(search_router, prefix="/api/search")
+app.include_router(healthcheck_router, prefix="/api/healthcheck")
 
-# try create the index first
+# try to create the index first on startup
 create_index()

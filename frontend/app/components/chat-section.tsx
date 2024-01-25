@@ -12,7 +12,7 @@ export default function ChatSection() {
     handleInputChange,
     reload,
     stop,
-  } = useChat({ api: process.env.CHAT_API });
+  } = useChat({ api: process.env.NEXT_PUBLIC_CHAT_API });
 
   return (
     <div className="space-y-4 max-w-5xl w-full">
