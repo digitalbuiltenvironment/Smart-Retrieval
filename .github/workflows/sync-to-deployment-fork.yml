@@ -1,0 +1,21 @@
+name: Sync to Deployment Fork
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync-deployment-fork:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: octokit/request-action@v2.1.9
+        id: sync_deployment_fork
+        with:
+          route: POST /repos/{owner}/{repo}/merge-upstream
+          owner: JTC-Smart-Retrieval
+          repo: Smart-Retrieval-Deployment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: "echo Sync Fork Success!: '${{ steps.sync_deployment_fork.outputs.data }}'"
+      - run: "echo Sync Fork Failed. Request failed with status '${{ steps.sync_deployment_fork.outputs.status }}'"
+        if: ${{ failure() }}
