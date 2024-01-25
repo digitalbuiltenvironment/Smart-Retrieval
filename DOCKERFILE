@@ -1,3 +1,4 @@
+# Use the official Python slim image
 FROM python:3.11.4-slim-bullseye
 
 # Set up a new user named "user" with user ID 1000
@@ -9,7 +10,7 @@ USER user
 ENV HOME=/home/user \
 	PATH=/home/user/.local/bin:$PATH
 
-WORKDIR $HOME/backend
+WORKDIR $HOME/app
 
 # Install poetry
 RUN pip install poetry
@@ -19,13 +20,13 @@ ENV POETRY_NO_INTERACTION=1 \
     POETRY_VIRTUALENVS_CREATE=1 \
     POETRY_CACHE_DIR=/tmp/poetry_cache
 
-COPY --chown=user ./backend/pyproject.toml ./backend/poetry.lock $HOME/backend/
-COPY --chown=user ./backend /backend
+COPY --chown=user ./backend/pyproject.toml ./backend/poetry.lock $HOME/app/
+COPY --chown=user ./backend $HOME/app
 
 RUN poetry install --without dev && \
     rm -rf /tmp/poetry_cache
 
-COPY --chown=user ./backend $HOME/backend
+COPY --chown=user ./backend $HOME/app
 
 # Change to the package directory
 WORKDIR $HOME/backend/backend
