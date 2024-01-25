@@ -1,5 +1,6 @@
 name: (main) push to external deploy repo
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -8,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: push to external deploy repository
         uses: peaceiris/actions-gh-pages@v3
         with:
