@@ -29,6 +29,9 @@ torch = [
 # ]
 docx2txt = "^0.8"
 
+# Dev Dependencies here
+[tool.poetry.group.dev.dependencies]
+
 
 [build-system]
 requires = ["poetry-core"]
