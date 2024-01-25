@@ -14,7 +14,9 @@ jobs:
       - uses: octokit/request-action@v2.1.9
         id: sync_deployment_fork
         with:
-          route: POST /repos/JTC-Smart-Retrieval/Smart-Retrieval-Deployment/merge-upstream
+          route: POST /repos/{owner}/{repo}/merge-upstream
+          owner: JTC-Smart-Retrieval
+          repo: Smart-Retrieval-Deployment
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
       - run: "echo Sync Fork Success!: '${{ steps.sync_deployment_fork.outputs.data }}'"
