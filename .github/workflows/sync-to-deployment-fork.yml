@@ -3,17 +3,21 @@ on:
   push:
     branches:
       - main
+  # schedule:
+  #  - cron: '*/30 * * * *' # every 30 minutes
+  workflow_dispatch: # on button click
 
 jobs:
-  sync-deployment-fork:
+  sync:
+
     runs-on: ubuntu-latest
+
     steps:
-      - uses: octokit/request-action@v2.1.9
-        id: sync_deployment_fork
+      - uses: tgymnich/fork-sync@v1.9.0
         with:
-          route: POST /repos/JTC-Smart-Retrieval/Smart-Retrieval-Deployment/merge-upstream
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: "echo Sync Fork Success!: '${{ steps.sync_deployment_fork.outputs.data }}'"
-      - run: "echo Sync Fork Failed. Request failed with status '${{ steps.sync_deployment_fork.outputs.status }}'"
-        if: ${{ failure() }}
+          token: ${{ secrets.PAT }}
+          owner: JTC-Smart-Retrieval
+          repo: Smart-Retrieval-Deployment
+          base: master
+          head: master
+          auto_approve: true
