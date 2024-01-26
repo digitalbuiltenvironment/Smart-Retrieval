@@ -15,21 +15,24 @@ pypdf = "^3.17.0"
 python-dotenv = "^1.0.0"
 llama-cpp-python = "^0.2.18"
 transformers = "^4.35.2"
-# For CPU version: Windows and Linux and MacOS (arm64)
-torch = [
-    { url = "https://download.pytorch.org/whl/cpu/torch-2.1.1%2Bcpu-cp311-cp311-win_amd64.whl", markers = "sys_platform == 'win32'" },
-    { url = "https://download.pytorch.org/whl/cpu/torch-2.1.1%2Bcpu-cp311-cp311-linux_x86_64.whl", markers = "sys_platform == 'linux'" },
-]
-## For GPU version: Windows and Linux and MacOS (arm64)
-# torch = [
-#     { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-win_amd64.whl", markers = "sys_platform == 'win32'" },
-#     { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-linux_x86_64.whl", markers = "sys_platform == 'linux'" },
-# ]
 docx2txt = "^0.8"
 
 # Dev Dependencies here
 [tool.poetry.group.dev.dependencies]
 
+# For CPU torch version: Windows and Linux
+[tool.poetry.group.torch-cpu.dependencies]
+torch = [
+    { url = "https://download.pytorch.org/whl/cpu/torch-2.1.1%2Bcpu-cp311-cp311-win_amd64.whl", markers = "sys_platform == 'win32'" },
+    { url = "https://download.pytorch.org/whl/cpu/torch-2.1.1%2Bcpu-cp311-cp311-linux_x86_64.whl", markers = "sys_platform == 'linux'" },
+]
+
+## For Cuda torch version: Windows and Linux
+[tool.poetry.group.torch-cuda.dependencies]
+torch = [
+    { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-win_amd64.whl", markers = "sys_platform == 'win32'" },
+    { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-linux_x86_64.whl", markers = "sys_platform == 'linux'" },
+]
 
 [build-system]
 requires = ["poetry-core"]

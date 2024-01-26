@@ -5,34 +5,56 @@ The backend is built using Python & [FastAPI](https://fastapi.tiangolo.com/) boo
 ## Requirements
 
 1. Python >= 3.11
-2. Poetry (To manage dependencies)
+2. Miniconda (To manage Python versions)
+   - [Windows](https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe)
+   - [Linux](https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh)
+   - [MacOS](https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.pkg)
+   - ```conda create -n SmartRetrieval python=3.11```
+3. Pipx (To manage Python packages)
+   - ```pip install pipx``` (If you already have pipx installed, you can skip this step)
+4. Cuda > 12.1 (if you have a Nvidia GPU)
+    - [Windows](https://developer.nvidia.com/cuda-downloads)
+    - [Linux](https://developer.nvidia.com/cuda-downloads)
+    - [MacOS](https://developer.nvidia.com/cuda-downloads)
+5. Poetry (To manage dependencies)
    - ```pipx install poetry```
 
 ## Getting Started
 
-First, setup the `pyproject.toml` file to install the correct version of PyTorch (CPU or GPU):
+First, ensure if you want to use the cuda version of pytorch, you have the correct version `cuda > 12.1` of cuda installed. You can check this by running `nvcc --version or nvidia-smi` in your terminal. If you do not have cuda installed, you can install it from [here](https://developer.nvidia.com/cuda-downloads).
 
-Comment/Uncomment the following block depending on your system. Use CPU only if you do not have a supported Cuda Device.
+Ensure you have followed the steps in the requirements section above.
+
+Then activate the conda environment:
 
 ```bash
-# For CPU version: Windows and Linux and MacOS (arm64)
-torch = [
-    { url = "https://download.pytorch.org/whl/cpu/torch-2.1.1%2Bcpu-cp311-cp311-win_amd64.whl", markers = "sys_platform == 'win32'" },
-    { url = "https://download.pytorch.org/whl/cpu/torch-2.1.1%2Bcpu-cp311-cp311-linux_x86_64.whl", markers = "sys_platform == 'linux'" },
-    { url = "https://download.pytorch.org/whl/cpu/torch-2.1.1-cp311-none-macosx_11_0_arm64.whl", markers = "sys_platform == 'darwin'" },
-]
-## For GPU version: Windows and Linux and MacOS (arm64)
-# torch = [
-#     { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-win_amd64.whl", markers = "sys_platform == 'win32'" },
-#     { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-linux_x86_64.whl", markers = "sys_platform == 'linux'" },
-#     { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1-cp311-none-macosx_11_0_arm64.whl", markers = "sys_platform == 'darwin'" },
-# ]
+conda activate SmartRetrieval
 ```
 
 Second, setup the environment:
 
 ```bash
-poetry install
+# Only run one of the following commands:
+-----------------------------------------------
+# Install dependencies and torch (cpu version)
+# Windows: Set env for llama-cpp-python with openblas support on cpu
+$env:CMAKE_ARGS = "-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS"
+# Linux: Set env for llama-cpp-python with openblas support on cpu
+CMAKE_ARGS="-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS"
+# Then:
+poetry install --without torch-cuda
+-----------------------------------------------
+# Install dependencies and torch (cuda version)
+# Windows: Set env for llama-cpp-python with cuda support on gpu
+$env:CMAKE_ARGS = "-DLLAMA_CUBLAS=on"
+# Linux: Set env for llama-cpp-python with cuda support on gpu
+CMAKE_ARGS="-DLLAMA_CUBLAS=on"
+# Then:
+poetry install --without torch-cpu
+```
+
+```bash
+# Enter poetry shell
 poetry shell
 ```
 

@@ -32,7 +32,9 @@ const useSearch = (): UseSearchResult => {
                 setIsLoading(false);
                 return;
             }
-            const response = await fetch(`${search_api}?query=${query}`);
+            const response = await fetch(`${search_api}?query=${query}`, {
+                signal: AbortSignal.timeout(10000), // Abort the request if it takes longer than 10 seconds
+                });
             const data = await response.json();
             setSearchResults(data);
         } catch (error) {
