@@ -23,9 +23,6 @@ pinned: false
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/digitalbuiltenvironment/Smart-Retrieval.svg)](https://github.com/digitalbuiltenvironment/Smart-Retrieval/pulls)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
----
-<h4>Pipeline Status:</h4>
-
 [![Test Build and Deploy](https://github.com/digitalbuiltenvironment/Smart-Retrieval/actions/workflows/pipeline.yml/badge.svg)](https://github.com/digitalbuiltenvironment/Smart-Retrieval/actions/workflows/pipeline.yml)
 
 </div>
