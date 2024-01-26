@@ -9,6 +9,7 @@ from app.utils.index import create_index
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from torch.cuda import is_available as is_cuda_available
 
 load_dotenv()
 
@@ -16,6 +17,7 @@ app = FastAPI()
 
 environment = os.getenv("ENVIRONMENT", "dev")  # Default to 'development' if not set
 
+# TODO: Add reading allowed origins from environment variables
 
 if environment == "dev":
     logger = logging.getLogger("uvicorn")
@@ -28,10 +30,30 @@ if environment == "dev":
         allow_headers=["*"],
     )
 
+if environment == "prod":
+    # In production, specify the allowed origins
+    allowed_origins = [
+        "https://your-production-domain.com",
+        "https://another-production-domain.com",
+        # Add more allowed origins as needed
+    ]
+
+    logger = logging.getLogger("uvicorn")
+    logger.info(f"Running in production mode - allowing CORS for {allowed_origins}")
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=allowed_origins,
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "DELETE"],
+        allow_headers=["*"],
+    )
+
+logger.info(f"CUDA available: {is_cuda_available()}")
+
 app.include_router(chat_router, prefix="/api/chat")
 app.include_router(query_router, prefix="/api/query")
 app.include_router(search_router, prefix="/api/search")
 app.include_router(healthcheck_router, prefix="/api/healthcheck")
 
-# try to create the index first on startup
+# Try to create the index first on startup
 create_index()

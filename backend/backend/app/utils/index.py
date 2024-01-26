@@ -34,6 +34,10 @@ DATA_DIR = str(
     current_directory / "data"
 )  # directory containing the documents to index
 
+
+# set to at least 1 to use GPU, adjust according to your GPU memory, but must be able to fit the model
+model_kwargs = {"n_gpu_layers": 100} if DEVICE_TYPE == "cuda" else {}
+
 llm = LlamaCPP(
     model_url="https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q4_K_M.gguf",
     temperature=0.1,
@@ -43,8 +47,7 @@ llm = LlamaCPP(
     # kwargs to pass to __call__()
     # generate_kwargs={},
     # kwargs to pass to __init__()
-    # set to at least 1 to use GPU, adjust according to your GPU memory, but must be able to fit the model
-    model_kwargs={"n_gpu_layers": 100},
+    model_kwargs=model_kwargs,
     # transform inputs into Llama2 format
     messages_to_prompt=messages_to_prompt,
     completion_to_prompt=completion_to_prompt,
