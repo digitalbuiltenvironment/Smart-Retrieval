@@ -12,7 +12,9 @@ const StatusPage = () => {
   const { data, error, isValidating, mutate } = useSWR(healthcheck_api, async (url) => {
     try {
       // Fetch the data
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(5000), // Abort the request if it takes longer than 5 seconds
+        });
       if (!response.ok) {
         throw new Error(response.statusText || 'Unknown Error');
       }
