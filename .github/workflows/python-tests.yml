@@ -4,8 +4,8 @@
 name: Python Tests
 
 on:
-  push:
-    branches: [ "main" ]
+  # push:
+  #   branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -17,7 +17,7 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install poetry
       run: pipx install poetry
     - name: Set up Python 3.11
@@ -31,8 +31,7 @@ jobs:
       run: |
         # python -m pip install --upgrade pip setuptools wheel
         # python -m pip install poetry
-        poetry install --without dev,torch-cuda
-        poetry add flake8 pytest
+        poetry install --without torch-cuda
     - name: Lint with flake8
       working-directory: ./backend
       run: |

@@ -19,6 +19,8 @@ docx2txt = "^0.8"
 
 # Dev Dependencies here
 [tool.poetry.group.dev.dependencies]
+flake8 = "^7.0.0"
+pytest = "^7.4.4"
 
 # For CPU torch version: Windows and Linux
 [tool.poetry.group.torch-cpu.dependencies]

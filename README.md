@@ -23,12 +23,19 @@ pinned: false
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/digitalbuiltenvironment/Smart-Retrieval.svg)](https://github.com/digitalbuiltenvironment/Smart-Retrieval/pulls)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
+---
+<h4>Pipeline Status:</h4>
+
+[![Test Build and Deploy](https://github.com/digitalbuiltenvironment/Smart-Retrieval/actions/workflows/pipeline.yml/badge.svg)](https://github.com/digitalbuiltenvironment/Smart-Retrieval/actions/workflows/pipeline.yml)
+
 </div>
 
 ---
 
-<p align="center"> A Large Language Model (LLM) powered platform for information retrieval.
-    <br>
+<p align="center">
+  <br>
+  A Large Language Model (LLM) powered platform for information retrieval.
+  <br>
 </p>
 
 ## 📝 Table of Contents
@@ -52,12 +59,11 @@ Project files bootstrapped with [`create-llama`](https://github.com/run-llama/Ll
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
 
-1) First, startup the backend as described in the [backend README](./backend/README.md).
+1. First, startup the backend as described in the [backend README](./backend/README.md).
 
-2) Second, run the development server of the frontend as described in the [frontend README](./frontend/README.md).
+2. Second, run the development server of the frontend as described in the [frontend README](./frontend/README.md).
 
-3) Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
+3. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## 🚀 Deployment <a name = "deployment"></a>
 

@@ -1,0 +1,20 @@
+name: Test Build and Deploy
+
+on:
+  push:
+    branches: [main]
+  # to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Node.js app
+        uses: ./.github/workflows/node-js-tests.yml
+      - name: Build Python package
+        uses: ./.github/workflows/python-tests.yml
+      - name: Sync to Deployment Fork
+        uses: ./.github/workflows/sync-to-deployment-fork.yml
+      - name: Sync to Hugging Face Hub Spaces
+        uses: ./.github/workflows/sync-to-hugging-face-hub.yml
