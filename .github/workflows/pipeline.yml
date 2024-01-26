@@ -7,18 +7,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Check file size
-        uses: ./.github/workflows/check-file-size.yml
-      - name: Build Node.js app
-        uses: ./.github/workflows/node-js-tests.yml
-      - name: Build Python package
-        uses: ./.github/workflows/python-tests.yml
-      - name: Sync to Deployment Fork
-        uses: ./.github/workflows/sync-to-deployment-fork.yml
-      - name: Sync to Hugging Face Hub Spaces
-        uses: ./.github/workflows/sync-to-hugging-face-hub.yml
+  check-file-size:
+    uses: ./.github/workflows/check-file-size.yml
+  test-build-node-js-app:
+    uses: ./.github/workflows/node-js-tests.yml
+  test-build-python-package:
+    uses: ./.github/workflows/python-tests.yml
+  sync-to-deployment-fork:
+    uses: ./.github/workflows/sync-to-deployment-fork.yml
+  sync-to-hugging-face-hub-spaces:
+    uses: ./.github/workflows/sync-to-hugging-face-hub.yml
