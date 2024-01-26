@@ -8,10 +8,9 @@ on:
   workflow_dispatch:
   # to run this workflow from another workflow
   workflow_call:
-    inputs:
-      secrets:
-        PAT:
-          required: true
+    secrets:
+      PAT:
+        required: true
 
 jobs:
   sync-deployment-fork:
