@@ -28,8 +28,8 @@ class _ChatData(BaseModel):
     messages: List[_Message]
 
 
-@r.get("")
-async def search(
+@r.post("")
+async def query(
     request: Request,
     # Note: To support clients sending a JSON object using content-type "text/plain",
     # we need to use Depends(json_to_model(_ChatData)) here
@@ -42,18 +42,18 @@ async def search(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No query provided",
         )
-    query = data.messages.pop()
-    if query.role != MessageRole.USER:
+    lastMessage = data.messages.pop()
+    if lastMessage.role != MessageRole.USER:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Last message must be from user",
         )
     logger = logging.getLogger("uvicorn")
-    logger.info(f"Query: {query}")
+    logger.info(f"Query: {lastMessage}")
 
     # Query index
-    query_engine = index.as_query_engine(streaming=True, similarity_top_k=1)
-    response = query_engine.query(query)
+    query_engine = index.as_query_engine(streaming=True, similarity_top_k=5)
+    response = query_engine.query(lastMessage.content)
 
     # stream response
     async def event_generator():
