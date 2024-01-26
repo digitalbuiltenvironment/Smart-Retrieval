@@ -10,6 +10,8 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Build Node.js app
         uses: ./.github/workflows/node-js-tests.yml
       - name: Build Python package

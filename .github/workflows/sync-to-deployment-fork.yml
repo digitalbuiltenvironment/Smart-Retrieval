@@ -13,7 +13,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Sync fork with upstream
         run: |
           gh api -X POST /repos/JTC-Smart-Retrieval/Smart-Retrieval-Deployment/merge-upstream -f branch='main'
