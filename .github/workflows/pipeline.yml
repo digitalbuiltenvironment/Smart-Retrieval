@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Check file size
+        uses: ./.github/workflows/check-file-size.yml
       - name: Build Node.js app
         uses: ./.github/workflows/node-js-tests.yml
       - name: Build Python package
