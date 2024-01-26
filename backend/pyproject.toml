@@ -19,13 +19,11 @@ transformers = "^4.35.2"
 torch = [
     { url = "https://download.pytorch.org/whl/cpu/torch-2.1.1%2Bcpu-cp311-cp311-win_amd64.whl", markers = "sys_platform == 'win32'" },
     { url = "https://download.pytorch.org/whl/cpu/torch-2.1.1%2Bcpu-cp311-cp311-linux_x86_64.whl", markers = "sys_platform == 'linux'" },
-    { url = "https://download.pytorch.org/whl/cpu/torch-2.1.1-cp311-none-macosx_11_0_arm64.whl", markers = "sys_platform == 'darwin'" },
 ]
 ## For GPU version: Windows and Linux and MacOS (arm64)
 # torch = [
 #     { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-win_amd64.whl", markers = "sys_platform == 'win32'" },
 #     { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-linux_x86_64.whl", markers = "sys_platform == 'linux'" },
-#     { url = "https://download.pytorch.org/whl/cu121/torch-2.1.1-cp311-none-macosx_11_0_arm64.whl", markers = "sys_platform == 'darwin'" },
 # ]
 docx2txt = "^0.8"
 
