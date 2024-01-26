@@ -6,6 +6,10 @@ on:
   workflow_dispatch:
   # to run this workflow from another workflow
   workflow_call:
+    inputs:
+      secrets:
+        HF_TOKEN:
+          required: true
 
 jobs:
   sync-to-hub:

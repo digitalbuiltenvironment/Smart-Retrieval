@@ -14,6 +14,12 @@ jobs:
   test-build-python-package:
     uses: ./.github/workflows/python-tests.yml
   sync-to-deployment-fork:
+    needs: [test-build-node-js-app, test-build-python-package]
     uses: ./.github/workflows/sync-to-deployment-fork.yml
+    secrets:
+      PAT: ${{ secrets.PAT }}
   sync-to-hugging-face-hub-spaces:
+    needs: [test-build-node-js-app, test-build-python-package]
     uses: ./.github/workflows/sync-to-hugging-face-hub.yml
+    secrets:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
