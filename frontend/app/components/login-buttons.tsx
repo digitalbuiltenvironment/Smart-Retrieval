@@ -1,12 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { signIn } from 'next-auth/react'
 
 import { cn } from '@/app/components/ui/lib/utils'
 import { Button, type ButtonProps } from '@/app/components/ui/button'
 import { IconGoogle, IconSGid, IconSpinner } from '@/app/components/ui/icons'
-import { useTheme } from 'next-themes';
 
 interface LoginButtonProps extends ButtonProps {
   showIcon?: boolean;
@@ -20,7 +19,10 @@ function GoogleLoginButton({
   ...props
 }: LoginButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { theme } = useTheme();
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
 
   return (
     <Button
