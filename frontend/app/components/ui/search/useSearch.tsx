@@ -33,12 +33,16 @@ const useSearch = (): UseSearchResult => {
                 return;
             }
             const response = await fetch(`${search_api}?query=${query}`, {
-                signal: AbortSignal.timeout(60000), // Abort the request if it takes longer than 60 seconds
+                signal: AbortSignal.timeout(120000), // Abort the request if it takes longer than 120 seconds
                 });
             const data = await response.json();
             setSearchResults(data);
-        } catch (error) {
-            console.error("Error during search:", error);
+        } catch (error: any) {
+            if (error.name === "AbortError") {
+                console.error("Error fetching search results: Request timed out");
+            } else {
+                console.error("Error fetching search results:", error.message);
+            }
             setSearchResults([]);
         }
 
