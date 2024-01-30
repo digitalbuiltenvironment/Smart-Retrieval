@@ -4,7 +4,7 @@ import { GoogleLoginButton, SGIDLoginButton } from '@/app/components/login-butto
 
 const SignInPage = () => {
   return (
-    <div className="rounded-xl shadow-xl p-4 mb-8 max-w-5xl w-full">
+    <div className="rounded-xl shadow-xl p-4 max-w-5xl w-full">
       <div className="max-w-2xl mx-auto text-center">
         <div className="flex flex-col items-center justify-center py-10 space-y-4">
           <div className="bg-blue-500 text-white px-8 py-6 rounded-lg shadow-lg">

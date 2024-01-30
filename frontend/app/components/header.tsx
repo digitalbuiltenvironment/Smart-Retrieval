@@ -1,140 +1,47 @@
 "use client";
 
-import Link from 'next/link';
 import Image from 'next/image';
 import { Home, InfoIcon, MessageCircle, Search, FileQuestion, Menu, X } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import { useTheme } from "next-themes";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useMedia } from 'react-use';
-import useSWR from 'swr'
-import logo from '../../public/smart-retrieval-logo.webp'
+import useSWR from 'swr';
+import logo from '../../public/smart-retrieval-logo.webp';
+import { HeaderNavLink } from './ui/navlink';
+import { MobileMenu } from './ui/mobilemenu';
 
-interface NavLinkProps {
-  href: string;
-  children: React.ReactNode;
-  onClick?: () => void; // Include onClick as an optional prop
-}
-
-interface MobileMenuProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
-  const isLargeScreen = useMedia('(min-width: 1024px)', false);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
-      if (
-        !isLargeScreen &&
-        isOpen &&
-        !menuRef.current?.contains(event.target as Node) &&
-        !((event.target as HTMLElement).closest('.toggle-button')) // Exclude the toggle button
-      ) {
-        onClose(); // Close the menu
-      }
-    };
-
-    if (!isLargeScreen && isOpen) {
-      // Add event listeners for both mouse and touch events
-      document.addEventListener('mousedown', handleOutsideClick);
-    }
-
-    return () => {
-      // Remove the event listener when the component unmounts
-      document.removeEventListener('mousedown', handleOutsideClick);
-    };
-  }, [isLargeScreen, isOpen, onClose]);
-
-  useEffect(() => {
-    if (isLargeScreen && isOpen) {
-      onClose();
-    }
-  }, [isLargeScreen, isOpen, onClose]);
-  return (
-    <div ref={menuRef} className={`w-full h-full p-2 bg-opacity-80 ${isOpen ? 'flex' : 'hidden'}`}>
-      <div className="flex items-center justify-center mt-2" style={{ width: '9%', height: '9%' }}>
-        <Image
-          className='rounded-full max-w-full'
-          src={logo}
-          alt="Logo"
-          style={{
-            width: 'auto',
-            height: 'auto',
-          }}
-          priority
-          sizes="100vw, 50vw, 33vw"
-        />
-      </div>
-      <div className="flex items-center justify-center h-full">
-        {/* Mobile menu content */}
-        <div className="w-64 p-4 rounded-r-md">
-          <NavLink href="/" onClick={onClose}>
-            <div className="flex items-center mb-4">
-              <Home className="mr-2 h-5 w-5" />
-              Home
-            </div>
-          </NavLink>
-          <NavLink href="/about" onClick={onClose}>
-            <div className="flex items-center mb-4">
-              <InfoIcon className="mr-2 h-5 w-5" />
-              About
-            </div>
-          </NavLink>
-          <NavLink href="/chat" onClick={onClose}>
-            <div className="flex items-center mb-4">
-              <MessageCircle className="mr-2 h-5 w-5" />
-              Chat
-            </div>
-          </NavLink>
-          <NavLink href="/query" onClick={onClose}>
-            <div className="flex items-center mb-4">
-              <FileQuestion className="mr-2 h-5 w-5" />
-              Q&A
-            </div>
-          </NavLink>
-          <NavLink href="/search" onClick={onClose}>
-            <div className="flex items-center">
-              <Search className="mr-2 h-5 w-5" />
-              Search
-            </div>
-          </NavLink>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const NavLink: React.FC<NavLinkProps> = ({ href, children, onClick }) => {
-  // Use the useRouter hook to get information about the current route
-  const pathname = usePathname();
-
-  // Determine if the current tab is active
-  const isActive = pathname === href;
-
-  const handleClick = () => {
-    if (onClick) {
-      onClick(); // Call the onClick handler if provided
-    }
-  };
-
-  return (
-    <Link href={href} passHref>
-      {/* Add a class to highlight the active tab */}
-      <div className={`flex items-center font-bold ${isActive ? 'text-blue-500' : ''}`} onClick={handleClick}>
-        {children}
-      </div>
-    </Link>
-  );
-};
+const MobileMenuItems = [
+  {
+    href: '/',
+    icon: <Home className="mr-2 h-5 w-5" />,
+    label: 'Home',
+  },
+  {
+    href: '/about',
+    icon: <InfoIcon className="mr-2 h-5 w-5" />,
+    label: 'About',
+  },
+  {
+    href: '/chat',
+    icon: <MessageCircle className="mr-2 h-5 w-5" />,
+    label: 'Chat',
+  },
+  {
+    href: '/query',
+    icon: <FileQuestion className="mr-2 h-5 w-5" />,
+    label: 'Q&A',
+  },
+  {
+    href: '/search',
+    icon: <Search className="mr-2 h-5 w-5" />,
+    label: 'Search',
+  },
+];
 
 export default function Header() {
   const isLargeScreen = useMedia('(min-width: 1024px)', false);
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
-  // const [apiStatus, setApiStatus] = useState(false);
   // Use SWR for API status fetching
   const healthcheck_api = process.env.NEXT_PUBLIC_HEALTHCHECK_API;
   const { data: apiStatus, error: apiError } = useSWR(healthcheck_api, async (url) => {
@@ -149,7 +56,7 @@ export default function Header() {
       const data = await response.json();
       return data;
     } catch (error: any) {
-      console.error('Error fetching Backend API Status:', error.message);
+      console.error('Error fetching Backend API Status');
       throw error;
     }
   }, {
@@ -158,7 +65,14 @@ export default function Header() {
     refreshInterval: 60000, // Revalidate every 60 seconds
   });
   if (apiError) {
-    console.error('[Header] Error fetching Backend API Status:', apiError.message);
+    if (apiError.name === 'AbortError') {
+      console.error('[Header] Error fetching Backend API Status: Request timed out');
+    }
+    else {
+      console.error('[Header] Error fetching Backend API Status:', apiError.message);
+    }
+  } else {
+    console.log('[Header] API Status:', apiStatus);
   }
 
   useEffect(() => {
@@ -222,43 +136,43 @@ export default function Header() {
             </button>
           </div>
           {/* Mobile menu component */}
-          <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+          <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setMobileMenuOpen(false)} logoSrc={logo} items={MobileMenuItems} />
           <div className={`hidden items-center gap-4 lg:flex`}>
-            <NavLink href="/">
+            <HeaderNavLink href="/">
               <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
                 <Home className="mr-1 h-4 w-4" />
                 Home
               </div>
-            </NavLink>
-            <NavLink href="/about">
+            </HeaderNavLink>
+            <HeaderNavLink href="/about">
               <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
                 <InfoIcon className="mr-1 h-4 w-4" />
                 About
               </div>
-            </NavLink>
-            <NavLink href="/chat">
+            </HeaderNavLink>
+            <HeaderNavLink href="/chat">
               <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
                 <MessageCircle className="mr-1 h-4 w-4" />
                 Chat
               </div>
-            </NavLink>
-            <NavLink href="/query">
+            </HeaderNavLink>
+            <HeaderNavLink href="/query">
               <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
                 <FileQuestion className="mr-1 h-4 w-4" />
                 Q&A
               </div>
-            </NavLink>
-            <NavLink href="/search">
+            </HeaderNavLink>
+            <HeaderNavLink href="/search">
               <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
                 <Search className="mr-1 h-4 w-4" />
                 Search
               </div>
-            </NavLink>
+            </HeaderNavLink>
           </div>
           <div className="flex items-center ml-auto">
             {/* Status Page Button/Indicator */}
             <span className='flex items-center mr-1'>API:</span>
-            <NavLink href='/status'>
+            <HeaderNavLink href='/status'>
               <div className="flex items-center mr-2 text-xl transition duration-300 ease-in-out transform hover:scale-125">
                 {apiError ? (
                   <span role="img" aria-label="red circle">
@@ -270,7 +184,7 @@ export default function Header() {
                   </span>
                 )}
               </div>
-            </NavLink>
+            </HeaderNavLink>
             <span className="lg:text-lg font-nunito">|</span>
             {/* Toggle button with icon based on the theme */}
             <button

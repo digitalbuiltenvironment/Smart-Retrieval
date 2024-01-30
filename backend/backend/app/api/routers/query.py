@@ -1,14 +1,15 @@
 import logging
 from typing import List
 
-from app.utils.index import get_index
-from app.utils.json import json_to_model
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
 from fastapi.websockets import WebSocketDisconnect
 from llama_index import VectorStoreIndex
 from llama_index.llms.types import MessageRole
 from pydantic import BaseModel
+
+from backend.app.utils.index import get_index
+from backend.app.utils.json import json_to_model
 
 query_router = r = APIRouter()
 

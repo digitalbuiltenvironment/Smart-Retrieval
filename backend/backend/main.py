@@ -1,15 +1,16 @@
 import logging
 import os
 
-from app.api.routers.chat import chat_router
-from app.api.routers.healthcheck import healthcheck_router
-from app.api.routers.query import query_router
-from app.api.routers.search import search_router
-from app.utils.index import create_index
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from torch.cuda import is_available as is_cuda_available
+
+from backend.app.api.routers.chat import chat_router
+from backend.app.api.routers.healthcheck import healthcheck_router
+from backend.app.api.routers.query import query_router
+from backend.app.api.routers.search import search_router
+from backend.app.utils.index import create_index
 
 load_dotenv()
 
@@ -17,13 +18,14 @@ app = FastAPI()
 
 environment = os.getenv("ENVIRONMENT", "dev")  # Default to 'development' if not set
 
-# TODO: Add reading allowed origins from environment variables
+# Add allowed origins from environment variables
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "*")
 
 if environment == "dev":
     logger = logging.getLogger("uvicorn")
     logger.warning("Running in development mode - allowing CORS for all origins")
     app.add_middleware(
-        CORSMiddleware,
+        middleware_class=CORSMiddleware,
         allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["*"],
@@ -32,19 +34,15 @@ if environment == "dev":
 
 if environment == "prod":
     # In production, specify the allowed origins
-    allowed_origins = [
-        "https://your-production-domain.com",
-        "https://another-production-domain.com",
-        # Add more allowed origins as needed
-    ]
+    allowed_origins = allowed_origins.split(",") if allowed_origins != "*" else ["*"]
 
     logger = logging.getLogger("uvicorn")
     logger.info(f"Running in production mode - allowing CORS for {allowed_origins}")
     app.add_middleware(
-        CORSMiddleware,
+        middleware_class=CORSMiddleware,
         allow_origins=allowed_origins,
         allow_credentials=True,
-        allow_methods=["GET", "POST", "PUT", "DELETE"],
+        allow_methods=["GET", "POST"],
         allow_headers=["*"],
     )
 
