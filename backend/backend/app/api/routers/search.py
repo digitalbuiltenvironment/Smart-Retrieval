@@ -36,17 +36,22 @@ async def search(
         index=index,
         similarity_top_k=10,
     )
-    # similarity postprocessor: filter nodes below 0.45 similarity score
-    node_postprocessor = SimilarityPostprocessor(similarity_cutoff=0.45)
 
     # retrieve results
     query_results = retriever.retrieve(query)
 
     query_results_scores = [result.get_score() for result in query_results]
 
-    logger.info(f"Search results similarity score: {query_results_scores}")
+    # get average score
+    average_score = sum(query_results_scores) / len(query_results_scores)
 
-    # postprocess results
+    logger.info(f"Search results similarity score: {query_results_scores}")
+    logger.info(f"Average similarity score: {average_score}")
+
+    # similarity postprocessor: filter nodes below 0.45 similarity score
+    node_postprocessor = SimilarityPostprocessor(similarity_cutoff=average_score)
+
+    # postprocess results based on average score
     filtered_results = node_postprocessor.postprocess_nodes(query_results)
 
     filtered_results_scores = [result.get_score() for result in filtered_results]
@@ -68,9 +73,7 @@ async def search(
             "^_+ | _+$", "", node_dict["text"]
         )  # remove leading and trailing underscores
         data["text"] = cleaned_text
-        data["similarity_score"] = round(
-            node.get_score(), 2
-        )  # round to 2 decimal places
+        data["similarity_score"] = node.get_score()
         response.append(data)
         id += 1
 
