@@ -10,7 +10,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <div className="rounded-xl shadow-xl p-4 mb-8 max-w-5xl w-full">
+    <div className="rounded-xl shadow-xl p-4 max-w-5xl w-full">
       <div className="max-w-2xl mx-auto p-4 text-center">
         <div className="flex flex-col items-center mb-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white p-8 rounded-lg shadow-lg">
           <div className="flex flex-col md:flex-row items-center md:items-start">

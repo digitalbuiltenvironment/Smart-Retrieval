@@ -51,7 +51,7 @@ const StatusPage = () => {
   };
 
   return (
-    <div className="rounded-xl shadow-xl p-4 mb-8 max-w-5xl w-full bg-white dark:bg-zinc-700/30">
+    <div className="rounded-xl shadow-xl p-4 max-w-5xl w-full bg-white dark:bg-zinc-700/30">
       <div className="max-w-2xl space-y-2 p-4">
         <h1 className="text-xl font-bold">Backend API Status</h1>
         <p>
