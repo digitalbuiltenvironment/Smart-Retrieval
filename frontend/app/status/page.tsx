@@ -21,7 +21,7 @@ const StatusPage = () => {
       const data = await response.json();
       return data;
     } catch (error: any) {
-      console.error('Error fetching Backend API Status:', error.message);
+      console.error('Error fetching Backend API Status');
       throw error;
     }
   }, {
@@ -30,7 +30,12 @@ const StatusPage = () => {
     refreshInterval: 60000, // Revalidate every 60 seconds
   });
   if (error) {
-    console.error('[status] Error fetching Backend API Status:', error.message);
+    if (error.name === 'AbortError') {
+      console.error('[status] Error fetching Backend API Status: Request timed out');
+    }
+    else {
+      console.error('[status] Error fetching Backend API Status:', error.message);
+    }
   }
 
   const apiStatus = error ? '❌' : '✅';

@@ -149,7 +149,7 @@ export default function Header() {
       const data = await response.json();
       return data;
     } catch (error: any) {
-      console.error('Error fetching Backend API Status:', error.message);
+      console.error('Error fetching Backend API Status');
       throw error;
     }
   }, {
@@ -158,7 +158,12 @@ export default function Header() {
     refreshInterval: 60000, // Revalidate every 60 seconds
   });
   if (apiError) {
-    console.error('[Header] Error fetching Backend API Status:', apiError.message);
+    if (apiError.name === 'AbortError') {
+      console.error('[Header] Error fetching Backend API Status: Request timed out');
+    }
+    else {
+      console.error('[Header] Error fetching Backend API Status:', apiError.message);
+    }
   }
 
   useEffect(() => {
