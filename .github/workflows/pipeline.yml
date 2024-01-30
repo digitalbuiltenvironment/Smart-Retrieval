@@ -1,4 +1,4 @@
-name: Pipeline [Test, Build, Deploy]
+name: Pipeline
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
   # to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+# Test, Build and Deploy the app
 jobs:
   check-file-size:
     uses: ./.github/workflows/check-file-size.yml
