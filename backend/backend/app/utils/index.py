@@ -1,6 +1,5 @@
 import logging
 import os
-from pathlib import Path
 
 from llama_index import (
     PromptHelper,
@@ -17,29 +16,26 @@ from llama_index.llms.llama_utils import (
     completion_to_prompt,
     messages_to_prompt,
 )
-from torch.cuda import is_available as is_cuda_available
 
-MAX_NEW_TOKENS = 4096
-CONTEXT_SIZE = MAX_NEW_TOKENS
-MODEL_ID = "TheBloke/Llama-2-7B-Chat-GGUF"
-DEVICE_TYPE = "cuda" if is_cuda_available() else "cpu"
-
-# Get the current directory
-current_directory = Path.cwd()
-
-STORAGE_DIR = str(
-    current_directory / "storage"
-)  # directory to cache the generated index
-DATA_DIR = str(
-    current_directory / "data"
-)  # directory containing the documents to index
-
-
-# set to at least 1 to use GPU, adjust according to your GPU memory, but must be able to fit the model
-model_kwargs = {"n_gpu_layers": 100} if DEVICE_TYPE == "cuda" else {}
+from backend.app.utils.contants import (
+    CHUNK_OVERLAP,
+    CHUNK_OVERLAP_RATIO,
+    CHUNK_SIZE,
+    CHUNK_SIZE_LIMIT,
+    CONTEXT_SIZE,
+    DATA_DIR,
+    DEVICE_TYPE,
+    EMBED_MODEL_NAME,
+    EMBED_POOLING,
+    LLM_MODEL_URL,
+    MAX_NEW_TOKENS,
+    MODEL_KWARGS,
+    NUM_OUTPUT,
+    STORAGE_DIR,
+)
 
 llm = LlamaCPP(
-    model_url="https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q4_K_M.gguf",
+    model_url=LLM_MODEL_URL,
     temperature=0.1,
     max_new_tokens=MAX_NEW_TOKENS,
     # llama2 has a context window of 4096 tokens, but we set it lower to allow for some wiggle room
@@ -47,7 +43,7 @@ llm = LlamaCPP(
     # kwargs to pass to __call__()
     # generate_kwargs={},
     # kwargs to pass to __init__()
-    model_kwargs=model_kwargs,
+    model_kwargs=MODEL_KWARGS,
     # transform inputs into Llama2 format
     messages_to_prompt=messages_to_prompt,
     completion_to_prompt=completion_to_prompt,
@@ -63,22 +59,22 @@ num_output = 256
 max_chunk_overlap = 0.2
 
 embed_model = HuggingFaceEmbedding(
-    model_name="sentence-transformers/all-MiniLM-L6-v2",
-    pooling="mean",
+    model_name=EMBED_MODEL_NAME,
+    pooling=EMBED_POOLING,
     device=DEVICE_TYPE,
 )
 
 prompt_helper = PromptHelper(
-    chunk_size_limit=4096,
-    chunk_overlap_ratio=0.2,
-    num_output=256,
+    chunk_size_limit=CHUNK_SIZE_LIMIT,
+    chunk_overlap_ratio=CHUNK_OVERLAP_RATIO,
+    num_output=NUM_OUTPUT,
 )
 
 service_context = ServiceContext.from_defaults(
     llm=llm,
     embed_model=embed_model,
-    chunk_size=1000,
-    chunk_overlap=100,
+    chunk_size=CHUNK_SIZE,
+    chunk_overlap=CHUNK_OVERLAP,
     prompt_helper=prompt_helper,
 )
 

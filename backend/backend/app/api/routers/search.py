@@ -1,11 +1,12 @@
 import logging
 import re
 
-from app.utils.index import get_index
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from llama_index import VectorStoreIndex
 from llama_index.postprocessor import SimilarityPostprocessor
 from llama_index.retrievers import VectorIndexRetriever
+
+from backend.app.utils.index import get_index
 
 search_router = r = APIRouter()
 
