@@ -41,7 +41,7 @@ pinned: false
 - [Getting Started](#getting_started)
 - [Deployment](#deployment)
 - [Built Using](#built_using)
-- [Contributing](../CONTRIBUTING.md)
+- [Contributing](#contributing)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
 
@@ -64,7 +64,9 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## 🚀 Deployment <a name = "deployment"></a>
 
-How to deploy this on a live system.
+Deploy this on a live system.
+
+For more information, see the [DEPLOYMENT.md](./DEPLOYMENT.md).
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
@@ -75,9 +77,15 @@ How to deploy this on a live system.
 - [FastAPI](https://fastapi.tiangolo.com/) - Backend API Web Framework
 - [LlamaIndex](https://www.llamaindex.ai/) - Data Framework for LLM
 
+## 📑 Contributing <a name = "contributing"></a>
+
+Contributions, issues and feature requests are welcome!
+
+Read the [CONTRIBUTING.md](./CONTRIBUTING.md) for details and the process for submitting pull requests.
+
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@xkhronoz](https://github.com/xkhronoz) - Initial work
+- [@xkhronoz](https://github.com/xkhronoz)
 
 See also the list of [contributors](https://github.com/digitalbuiltenvironment/Smart-Retrieval/contributors) who participated in this project.
 
