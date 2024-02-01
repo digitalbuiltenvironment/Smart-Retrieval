@@ -1,5 +1,5 @@
-import { SearchResult } from "./search-types";
-import { IconSpinner } from "../icons";
+import { SearchResult } from "@/app/components/ui/search/search-types"
+import { IconSpinner } from "@/app/components/ui/icons";
 import { Fragment, useState } from "react";
 import { ArrowDownFromLine, ArrowUpFromLine, Copy } from "lucide-react";
 import { ToastContainer, toast } from 'react-toastify';

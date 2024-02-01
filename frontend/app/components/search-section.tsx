@@ -1,7 +1,6 @@
 // SearchSection.tsx
 "use client";
 
-import { SearchResult } from "@/app/components/ui/search/search-types";
 import { useState, ChangeEvent, FormEvent } from "react";
 import useSearch from "@/app/components/ui/search/useSearch";
 import SearchResults from "@/app/components/ui/search/search-results";

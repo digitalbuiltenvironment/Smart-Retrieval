@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { SearchResult } from "./search-types";
+import { SearchResult } from "@/app/components/ui/search/search-types";
 
 interface UseSearchResult {
     searchResults: SearchResult[];

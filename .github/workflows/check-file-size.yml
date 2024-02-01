@@ -4,9 +4,9 @@ on:
   # On pull requests to the main branch
   pull_request:
     branches: [main]
-  # On pushes to the main branch
-  push:
-    branches: [main]
+  # # Or directly On pushes to the main branch
+  # push:
+  #   branches: [main]
   # to run this workflow manually from the Actions tab
   workflow_dispatch:
   # to run this workflow from another workflow

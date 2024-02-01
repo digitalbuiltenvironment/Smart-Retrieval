@@ -8,8 +8,6 @@ on:
 
 # Test, Build and Deploy the app
 jobs:
-  check-file-size:
-    uses: ./.github/workflows/check-file-size.yml
   test-build-node-js-app:
     uses: ./.github/workflows/node-js-tests.yml
   test-build-python-package:
