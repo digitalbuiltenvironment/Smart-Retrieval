@@ -1,5 +1,5 @@
 import Home from '@/app/components/ui/home/client-component';
-import { Metadata } from 'next';
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
     // Google Search Console HTML Tag Verification

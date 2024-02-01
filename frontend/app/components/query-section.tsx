@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from "ai/react";
-import { ChatInput, ChatMessages } from "./ui/chat";
+import { ChatInput, ChatMessages } from "@/app/components/ui/chat";
 
 export default function QuerySection() {
     const {
