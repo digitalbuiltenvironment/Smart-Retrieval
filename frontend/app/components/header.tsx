@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useMedia } from 'react-use';
 import useSWR from 'swr';
-import logo from '../../public/smart-retrieval-logo.webp';
+import logo from '@/public/smart-retrieval-logo.webp';
 import { HeaderNavLink } from './ui/navlink';
 import { MobileMenu } from './ui/mobilemenu';
 
@@ -44,7 +44,7 @@ export default function Header() {
   const { theme, setTheme } = useTheme();
   // Use SWR for API status fetching
   const healthcheck_api = process.env.NEXT_PUBLIC_HEALTHCHECK_API;
-  const { data: apiStatus, error: apiError } = useSWR(healthcheck_api, async (url) => {
+  const { data, error: apiError } = useSWR(healthcheck_api, async (url) => {
     try {
       // Fetch the data
       const response = await fetch(url, {
@@ -71,8 +71,6 @@ export default function Header() {
     else {
       console.error('[Header] Error fetching Backend API Status:', apiError.message);
     }
-  } else {
-    console.log('[Header] API Status:', apiStatus);
   }
 
   useEffect(() => {
