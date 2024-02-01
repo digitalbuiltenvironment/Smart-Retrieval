@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import { Providers } from './providers'
+import "@/app/globals.css";
+import { Providers } from "@/app/providers";
 import Header from "@/app/components/header";
 import Footer from "@/app/components/footer";
 import Main from "@/app/components/ui/main-container";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+})
 
 export const metadata: Metadata = {
   title: "Smart Retrieval",
@@ -28,8 +32,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className={inter.variable}>
+      <body>
         <Providers>
           <Main>
             <Header />

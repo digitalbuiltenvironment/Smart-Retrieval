@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import { useMedia } from 'react-use';
 import useSWR from 'swr';
 import logo from '@/public/smart-retrieval-logo.webp';
-import { HeaderNavLink } from './ui/navlink';
-import { MobileMenu } from './ui/mobilemenu';
+import { HeaderNavLink } from '@/app/components/ui/navlink';
+import { MobileMenu } from '@/app/components/ui/mobilemenu';
 
 const MobileMenuItems = [
   {
@@ -125,7 +125,7 @@ export default function Header() {
             >
               {isMobileMenuOpen ? (
                 <span role="img" aria-label="close icon">
-                  <X/>
+                  <X />
                 </span>
               ) : (
                 <span role="img" aria-label="menu icon">
@@ -133,8 +133,6 @@ export default function Header() {
                 </span>)}
             </button>
           </div>
-          {/* Mobile menu component */}
-          <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setMobileMenuOpen(false)} logoSrc={logo} items={MobileMenuItems} />
           <div className={`hidden items-center gap-4 lg:flex`}>
             <HeaderNavLink href="/">
               <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
@@ -201,6 +199,8 @@ export default function Header() {
             </button>
           </div>
         </div>
+        {/* Mobile menu component */}
+        <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setMobileMenuOpen(false)} logoSrc={logo} items={MobileMenuItems} />
       </nav>
     </div>
   );

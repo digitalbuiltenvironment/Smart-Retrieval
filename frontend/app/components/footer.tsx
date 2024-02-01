@@ -1,7 +1,7 @@
 "use client";
 
-import { FooterNavLink } from "./ui/navlink";
-import { IconGitHub } from "./ui/icons";
+import { FooterNavLink } from "@/app/components/ui/navlink";
+import { IconGitHub } from "@/app/components/ui/icons";
 import { Text, Cookie } from "lucide-react";
 
 export default function Footer() {
