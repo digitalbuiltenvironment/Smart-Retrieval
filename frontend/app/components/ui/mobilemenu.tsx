@@ -52,7 +52,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, logoSrc, items
     }, [isLargeScreen, isOpen, onClose]);
 
     return (
-        <div ref={menuRef} className={`w-full h-full p-2 bg-opacity-80 ${isOpen ? 'flex' : 'hidden'}`}>
+        <div ref={menuRef} className={`w-full h-full p-2 bg-opacity-80 transition-transform duration-300 ${isOpen ? 'flex' : 'hidden'}`}>
             <div className="flex items-center justify-center mt-2" style={{ width: '9%', height: '9%' }}>
                 <Image
                     className='rounded-full max-w-full'

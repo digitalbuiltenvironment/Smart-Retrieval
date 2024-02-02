@@ -14,7 +14,8 @@ const PrivacyPolicyPage: React.FC = () => {
                             This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
                         </p>
                         <p className="mb-2">
-                            Smart-Retrieval currently does not collect & store any personal data. However, we may collect your data to provide and improve the Service in the future.
+                            Smart-Retrieval currently collects certain personal data for authentication & authorization purposes only, it does not in anyway store any personal data on any servers or external services,
+                            however we may collect them to improve the service for purposes as stated in this privacy policy.
                         </p>
                         <p>
                             By using the Service, you agree to the collection and use of information in accordance with this policy. Unless otherwise defined in this Privacy Policy, terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, accessible from Smart-Retrieval.
@@ -22,24 +23,62 @@ const PrivacyPolicyPage: React.FC = () => {
                     </span>
                     <h2 className="text-xl md:text-2xl font-bold mb-4 mt-4">Information Collection And Use</h2>
                     <span>
-                        <p className="mb-4">
-                            We collect several different types of information for various purposes to provide and improve our Service to you.
+                        <p className="mb-2">
+                            We collect several different types of information for various purposes to provide and/or improve our Service to you.
                         </p>
+                        <p className="mb-2">
+                                We will use your data to provide you with the services you requested, such as email notification and newsletter, etc.
+                            </p>
+                            <p className="mb-2">
+                                We will not sell your data to third parties, but we may share it with our partners who help us provide our services.
+                            </p>
+                            <p className="mb-2">
+                                The data we collected about you is what you have provided to us, including your name, cell phone number, address, etc
+                            </p>
+                            <p className="mb-4">
+                                We may collect, or process on behalf of our customers, the following categories of personal data when you use or interact with our products and services.
+                            </p>
                     </span>
-                    <h2 className="text-lg md:text-xl font-bold mb-4">Types of Data Collected</h2>
+                    <h2 className="text-lg md:text-2xl font-bold mb-4">Types of Data Collected</h2>
                     <span>
-                        <h2 className="text-l md:text-xl font-bold mb-4">Personal Data</h2>
+                        <h2 className="text-l md:text-xl font-bold mb-4">Google User Data</h2>
                         <span>
                             <p className="mb-2">
-                                While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you ("Personal Data").
+                                While using our Service and signing in through Google, certain personally identifiable information will be shared with us from Google.
                             </p>
+                            <p className="mb-2">
+                                Scopes Requested from Google include:
+                            </p>
+                            <ul className="list-disc list-inside mt-2 ml-4 mb-4">
+                                <li>openid - Associate you with your Personal Info on Google</li>
+                                <li>User Info/Profile - Any Personal Info made publicly available by you on Google</li>
+                            </ul>
                             <p className="mb-2">
                                 Personally identifiable information may include, but is not limited to:
                             </p>
-                            <ul className="list-disc list-inside mt-2 ml-4">
+                            <ul className="list-disc list-inside mt-2 ml-4 mb-4">
                                 <li>Email Address</li>
+                                <li>Profile Image URL</li>
+                                <li>First name and last name and Full Name</li>
+                                <li>Google ID</li>
+                            </ul>
+                        </span>
+                        <h2 className="text-l md:text-xl font-bold mb-4">sgID User Data</h2>
+                        <span>
+                            <p className="mb-2">
+                                While using our Service and signing in through sgID, certain personally identifiable information will be shared with us from sgID.
+                            </p>
+                            <p className="mb-2">
+                                Scopes Requested from sgID include:
+                            </p>
+                            <ul className="list-disc list-inside mt-2 ml-4">
+                                <li>openid - Associate you with your Personal Info</li>
+                            </ul>
+                            <p className="mb-2">
+                                Personally identifiable information from sgID include:
+                            </p>
+                            <ul className="list-disc list-inside mt-2 ml-4">
                                 <li>First name and last name</li>
-                                <li>Cookies and Usage Data</li>
                             </ul>
                         </span>
                         <h2 className="text-l md:text-xl font-bold mb-4 mt-4">Usage Data</h2>
