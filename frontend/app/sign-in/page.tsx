@@ -1,8 +1,10 @@
 "use client";
 
 import { GoogleLoginButton, SGIDLoginButton } from '@/app/components/login-buttons';
+import { useRouter } from 'next/navigation';
 
 const SignInPage = () => {
+  const router = useRouter();
   return (
     <div className="rounded-xl shadow-xl p-4 max-w-5xl w-full">
       <div className="max-w-2xl mx-auto text-center">
@@ -16,7 +18,7 @@ const SignInPage = () => {
               <GoogleLoginButton />
               <SGIDLoginButton />
               <p className="text-gray-200 text-sm">
-                Note: SGID login is only available via SingPass.
+                Note: SGID login is only available via SingPass QR Code.
               </p>
               <div className="flex items-center justify-center gap-4">
                 <div className="w-full h-px bg-gray-300"></div>
@@ -24,8 +26,8 @@ const SignInPage = () => {
               <button
                 className="text-white font-bold hover:underline mt-4 rounded-md shadow-lg py-2 bg-gray-500 hover:bg-gray-300"
                 onClick={() => {
-                  // Redirect back to the home page
-                  window.location.href = '/';
+                  // Redirect back to the last page
+                  router.back();
                 }}
               >
                 Cancel

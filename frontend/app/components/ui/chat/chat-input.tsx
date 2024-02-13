@@ -1,6 +1,6 @@
-import { Button } from "../button";
-import { Input } from "../input";
-import { ChatHandler } from "./chat.interface";
+import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
+import { ChatHandler } from "@/app/components/ui/chat/chat.interface";
 import { Send } from "lucide-react";
 
 export default function ChatInput(
@@ -9,6 +9,7 @@ export default function ChatInput(
     "isLoading" | "handleSubmit" | "handleInputChange" | "input"
   >,
 ) {
+
   return (
     <form
       onSubmit={props.handleSubmit}
@@ -18,7 +19,7 @@ export default function ChatInput(
         autoFocus
         name="message"
         placeholder="Type a Message"
-        className="flex-1 bg-white dark:bg-zinc-500/30"
+        className="flex-1 bg-white dark:bg-zinc-500/30 z-10"
         value={props.input}
         onChange={props.handleInputChange}
       />
@@ -27,7 +28,7 @@ export default function ChatInput(
         <Send className="h-5 w-5" />
       </Button>
       <Button type="submit" disabled={props.isLoading} className="md:hidden"> {/* Hide on larger screens */}
-        <Send className="h-5 w-5"/>
+        <Send className="h-5 w-5" />
       </Button>
     </form>
   );

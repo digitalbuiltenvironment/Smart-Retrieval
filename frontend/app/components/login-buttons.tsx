@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { signIn } from 'next-auth/react'
-
 import { cn } from '@/app/components/ui/lib/utils'
 import { Button, type ButtonProps } from '@/app/components/ui/button'
 import { IconGoogle, IconSGid, IconSpinner } from '@/app/components/ui/icons'
@@ -20,20 +19,16 @@ function GoogleLoginButton({
 }: LoginButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
-
   return (
     <Button
       variant="outline"
       onClick={() => {
         setIsLoading(true);
-        signIn('google', { callbackUrl: `/chat` });
+        signIn('google');
       }}
-      disabled={isLoading}
       className={cn(className)}
       {...props}
+      disabled={isLoading}
     >
       {isLoading ? (
         <IconSpinner className="mr-2 animate-spin" />
@@ -58,11 +53,11 @@ function SGIDLoginButton({
       variant="outline"
       onClick={() => {
         setIsLoading(true);
-        signIn('sgid', { callbackUrl: `/chat` });
+        signIn('sgid');
       }}
-      disabled={isLoading}
       className={cn(className)}
       {...props}
+      disabled={isLoading}
     >
       {isLoading ? (
         <IconSpinner className="mr-2 animate-spin" />
