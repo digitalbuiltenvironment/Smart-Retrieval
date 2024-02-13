@@ -50,8 +50,6 @@ pinned: false
 Smart Retrieval is a platform for efficient and streamlined information retrieval, especially in the realm of legal and compliance documents.
 With the power of Open-Source Large Language Models (LLM) and Retrieval Augmented Generation (RAG), it aims to enhance user experiences at JTC by addressing key challenges such as manual search inefficiencies and rigid file naming conventions, revolutionizing the way JTC employees access and comprehend crucial documents
 
-Project files bootstrapped with [`create-llama`](https://github.com/run-llama/LlamaIndexTS/tree/main/packages/create-llama).
-
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
@@ -76,6 +74,7 @@ For more information, see the [DEPLOYMENT.md](./DEPLOYMENT.md).
 - [Python](https://python.org/) - Backend Server Environment
 - [FastAPI](https://fastapi.tiangolo.com/) - Backend API Web Framework
 - [LlamaIndex](https://www.llamaindex.ai/) - Data Framework for LLM
+- [`create-llama`](https://github.com/run-llama/LlamaIndexTS/tree/main/packages/create-llama) - LlamaIndex Application Bootstrap Tool
 
 ## 📑 Contributing <a name = "contributing"></a>
 

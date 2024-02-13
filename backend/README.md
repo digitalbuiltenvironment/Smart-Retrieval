@@ -34,7 +34,7 @@ conda activate SmartRetrieval
 Second, setup the environment:
 
 ```bash
-# Only run one of the following commands:
+# Only choose one of the options below depending on if you have CUDA enabled GPU or not:
 -----------------------------------------------
 # Install dependencies and torch (cpu version)
 # Windows: Set env for llama-cpp-python with openblas support on cpu
@@ -42,7 +42,7 @@ $env:CMAKE_ARGS = "-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS"
 # Linux: Set env for llama-cpp-python with openblas support on cpu
 CMAKE_ARGS="-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS"
 # Then:
-poetry install --without torch-cuda
+poetry install
 -----------------------------------------------
 # Install dependencies and torch (cuda version)
 # Windows: Set env for llama-cpp-python with cuda support on gpu
@@ -50,7 +50,7 @@ $env:CMAKE_ARGS = "-DLLAMA_CUBLAS=on"
 # Linux: Set env for llama-cpp-python with cuda support on gpu
 CMAKE_ARGS="-DLLAMA_CUBLAS=on"
 # Then:
-poetry install --without torch-cpu
+poetry install --without torch-cpu --with torch-cuda
 ```
 
 ```bash
