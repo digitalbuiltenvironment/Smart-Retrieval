@@ -40,8 +40,9 @@ ENV CUDA_DOCKER_ARCH=all \
     # Set the uvicorn env
     ENVIRONMENT=prod \
     ##########################################################
-    # Build llama-cpp-python with cuda support
+    # # Build llama-cpp-python with cuda support
     # CMAKE_ARGS="-DLLAMA_CUBLAS=on"
+    ##########################################################
     # Build llama-cpp-python with openblas support on CPU
     CMAKE_ARGS="-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS"
     ##########################################################
@@ -62,7 +63,7 @@ COPY --chown=user ./backend/pyproject.toml ./backend/poetry.lock $HOME/app/
 COPY --chown=user ./backend $HOME/app
 
 # Install the dependencies
-RUN poetry install --without dev,torch-cpu && \
+RUN poetry install --without torch-cpu --with torch-cuda && \
     rm -rf /tmp/poetry_cache
 
 # Change to the package directory
