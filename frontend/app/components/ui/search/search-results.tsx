@@ -37,6 +37,10 @@ const SearchResults: React.FC<SearchResultsProps> = ({ query, results, isLoading
         setExpandedResult((prevId) => (prevId === resultId ? null : resultId));
     };
 
+    // TODO: Add a collapse all/ expand all button
+
+    // TODO: Add a button to clear search results & not on query change to empty string
+
     // Handle Reseting the expanded result when the search button is pressed
     useEffect(() => {
         if (searchButtonPressed) {
