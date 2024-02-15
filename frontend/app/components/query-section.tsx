@@ -2,6 +2,7 @@
 
 import { useChat } from "ai/react";
 import { ChatInput, ChatMessages } from "@/app/components/ui/chat";
+import AutofillQuestion from "@/app/components/ui/autofill-prompt/autofill-prompt-dialog";
 
 export default function QuerySection() {
     const {
@@ -21,6 +22,13 @@ export default function QuerySection() {
                 isLoading={isLoading}
                 reload={reload}
                 stop={stop}
+            />
+            <AutofillQuestion
+                messages={messages}
+                isLoading={isLoading}
+                handleSubmit={handleSubmit}
+                handleInputChange={handleInputChange}
+                input={input}
             />
             <ChatInput
                 input={input}
