@@ -9,13 +9,17 @@ import SearchInput from "@/app/components/ui/search/search-input";
 const SearchSection: React.FC = () => {
   const [query, setQuery] = useState("");
   const { searchResults, isLoading, handleSearch } = useSearch();
+  const [searchButtonPressed, setSearchButtonPressed] = useState(false);
+
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
+    setSearchButtonPressed(false);
   };
 
   const handleSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
+    setSearchButtonPressed(true);
     handleSearch(query);
   };
 
@@ -27,7 +31,7 @@ const SearchSection: React.FC = () => {
         onInputChange={handleInputChange}
         onSearchSubmit={handleSearchSubmit}
       />
-      <SearchResults results={searchResults} isLoading={isLoading} />
+      <SearchResults query={query} results={searchResults} isLoading={isLoading} searchButtonPressed={searchButtonPressed} />
     </div>
   );
 };
