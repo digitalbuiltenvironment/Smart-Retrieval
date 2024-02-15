@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { questionsBank } from "@/app/components/ui/autofill-prompt/autofill-prompt.interface";
+import { QuestionsBankProp, questionsBank } from "@/app/components/ui/autofill-prompt/autofill-prompt.interface";
 import { ChatHandler } from "@/app/components/ui/chat/chat.interface";
 
 export default function AutofillQuestion(
@@ -8,10 +8,12 @@ export default function AutofillQuestion(
     "messages" | "isLoading" | "handleSubmit" | "handleInputChange" | "input"
   >,
 ) {
+  // Keep track of whether to show the overlay
   const [showOverlay, setShowOverlay] = useState(true);
-
   // Randomly select a subset of questions
-  const [randomQuestions, setRandomQuestions] = useState(questionsBank.questionsBank);
+  const [randomQuestions, setRandomQuestions] = useState<QuestionsBankProp[]>([]);
+  // Keep track of the current question index
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   // Shuffle the array using Fisher-Yates algorithm
   function shuffleArray(array: any[]) {
@@ -22,14 +24,19 @@ export default function AutofillQuestion(
     return array;
   }
 
+  // TODO: To load the questionsbank from a database in the future
+
   // Randomly select a subset of 3-4 questions
   useEffect(() => {
     // Shuffle the questionsBank array
-    const shuffledQuestions = shuffleArray(questionsBank.questionsBank);
+    const shuffledQuestions = shuffleArray(questionsBank);
     // Get a random subset of 3-4 questions
     const subsetSize = Math.floor(Math.random() * 2) + 3; // Randomly choose between 3 and 4
     const selectedQuestions = shuffledQuestions.slice(0, subsetSize);
-    setRandomQuestions(selectedQuestions);
+    // Do a short delay before setting the state to show the animation
+    setTimeout(() => {
+      setRandomQuestions(selectedQuestions);
+    }, 300);
   }, []);
 
 
@@ -43,6 +50,20 @@ export default function AutofillQuestion(
     }
   }, [props.messages, props.input]);
 
+  // Automatically advance to the next question after a delay
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (currentQuestionIndex < randomQuestions.length - 1) {
+        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+      }
+      else {
+        clearInterval(timer); // Stop the timer when all questions have been displayed
+      }
+    }, 100); // Adjust the delay time as needed (e.g., 5000 milliseconds = 5 seconds)
+
+    return () => clearInterval(timer); // Cleanup the timer on component unmount
+  }, [currentQuestionIndex, randomQuestions]);
+
   // Handle autofill questions click
   const handleAutofillQuestionClick = (questionInput: string) => {
     props.handleInputChange({ target: { name: "message", value: questionInput } } as React.ChangeEvent<HTMLInputElement>);
@@ -54,9 +75,9 @@ export default function AutofillQuestion(
         <div className="fixed inset-0 flex items-center justify-center">
           <div className="rounded-lg pt-5 pr-10 pl-10 flex h-[50vh] flex-col divide-y overflow-y-auto pb-4">
             <h2 className="text-lg text-center font-semibold mb-4">How can I help you today?</h2>
-            <ul>
-              {randomQuestions.map((question, index) => (
-                <li key={index} className="p-2 mb-2 border border-zinc-500/30 dark:border-white rounded-lg hover:bg-zinc-500/30 transition duration-300 ease-in-out transform cursor-pointer">
+            {randomQuestions.map((question, index) => (
+              <ul>
+                <li key={index} className={`p-2 mb-2 border border-zinc-500/30 dark:border-white rounded-lg hover:bg-zinc-500/30 transition duration-300 ease-in-out transform cursor-pointer ${index <= currentQuestionIndex ? 'opacity-100 duration-500' : 'opacity-0'}`}>
                   <button
                     className="text-blue-500 w-full text-left"
                     onClick={() => handleAutofillQuestionClick(question.title)}
@@ -64,8 +85,8 @@ export default function AutofillQuestion(
                     {question.title}
                   </button>
                 </li>
-              ))}
-            </ul>
+              </ul>
+            ))}
           </div>
         </div>
       )}
