@@ -1,6 +1,6 @@
 "use client";
 
-import { GoogleLoginButton, SGIDLoginButton } from '@/app/components/login-buttons';
+import { GoogleLoginButton, SGIDLoginButton } from '@/app/components/ui/login-buttons';
 import { useRouter } from 'next/navigation';
 
 const SignInPage = () => {
