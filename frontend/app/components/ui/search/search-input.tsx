@@ -1,18 +1,11 @@
 // SearchInput.tsx
 
-import { ChangeEvent, FormEvent } from "react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Search } from "lucide-react";
+import { SearchHandler } from "@/app/components/ui/search/search.interface";
 
-interface SearchInputProps {
-    query: string;
-    isLoading: boolean;
-    onInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
-    onSearchSubmit: (e: FormEvent) => void;
-}
-
-const SearchInput: React.FC<SearchInputProps> = ({
+const SearchInput: React.FC<SearchHandler> = ({
     query,
     isLoading,
     onInputChange,

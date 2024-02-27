@@ -28,6 +28,7 @@ from backend.app.utils.contants import (
     EMBED_MODEL_NAME,
     EMBED_POOLING,
     LLM_MODEL_URL,
+    LLM_TEMPERATURE,
     MAX_NEW_TOKENS,
     MODEL_KWARGS,
     NUM_OUTPUT,
@@ -36,12 +37,11 @@ from backend.app.utils.contants import (
 
 llm = LlamaCPP(
     model_url=LLM_MODEL_URL,
-    temperature=0.1,
+    temperature=LLM_TEMPERATURE,
     max_new_tokens=MAX_NEW_TOKENS,
-    # llama2 has a context window of 4096 tokens, but we set it lower to allow for some wiggle room
     context_window=CONTEXT_SIZE,
     # kwargs to pass to __call__()
-    # generate_kwargs={},
+    generate_kwargs={},
     # kwargs to pass to __init__()
     model_kwargs=MODEL_KWARGS,
     # transform inputs into Llama2 format
@@ -49,14 +49,6 @@ llm = LlamaCPP(
     completion_to_prompt=completion_to_prompt,
     verbose=True,
 )
-
-# define prompt helper
-# set maximum input size
-max_input_size = 4096
-# set number of output tokens
-num_output = 256
-# set maximum chunk overlap
-max_chunk_overlap = 0.2
 
 embed_model = HuggingFaceEmbedding(
     model_name=EMBED_MODEL_NAME,

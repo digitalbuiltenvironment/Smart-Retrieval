@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from torch.cuda import is_available as is_cuda_available
 
 from backend.app.api.routers.chat import chat_router
@@ -55,3 +56,9 @@ app.include_router(healthcheck_router, prefix="/api/healthcheck")
 
 # Try to create the index first on startup
 create_index()
+
+
+# Redirect to the /docs endpoint
+@app.get("/")
+async def docs_redirect():
+    return RedirectResponse(url="/docs")

@@ -5,17 +5,22 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import useSearch from "@/app/components/ui/search/useSearch";
 import SearchResults from "@/app/components/ui/search/search-results";
 import SearchInput from "@/app/components/ui/search/search-input";
+import AutofillSearchQuery from "@/app/components/ui/autofill-prompt/autofill-search-prompt-dialog";
 
 const SearchSection: React.FC = () => {
   const [query, setQuery] = useState("");
   const { searchResults, isLoading, handleSearch } = useSearch();
+  const [searchButtonPressed, setSearchButtonPressed] = useState(false);
+
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
+    setSearchButtonPressed(false);
   };
 
   const handleSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
+    setSearchButtonPressed(true);
     handleSearch(query);
   };
 
@@ -24,10 +29,18 @@ const SearchSection: React.FC = () => {
       <SearchInput
         query={query}
         isLoading={isLoading}
+        results={searchResults}
         onInputChange={handleInputChange}
         onSearchSubmit={handleSearchSubmit}
       />
-      <SearchResults results={searchResults} isLoading={isLoading} />
+      <AutofillSearchQuery
+        query={query}
+        isLoading={isLoading}
+        results={searchResults}
+        onInputChange={handleInputChange}
+        onSearchSubmit={handleSearchSubmit}
+      />
+      <SearchResults query={query} results={searchResults} isLoading={isLoading} searchButtonPressed={searchButtonPressed} />
     </div>
   );
 };
