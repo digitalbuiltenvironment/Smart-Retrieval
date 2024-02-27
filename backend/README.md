@@ -29,6 +29,9 @@ First, ensure if you want to use the cuda version of pytorch, you have the corre
 
 Ensure you have followed the steps in the `requirements` section above.
 
+- If on windows, make sure you are running the commands in powershell.
+- Add conda to your path, which can be found [here](https://stackoverflow.com/questions/64149680/how-can-i-activate-a-conda-environment-from-powershell)
+
 Then activate the conda environment:
 
 ```bash
@@ -37,10 +40,13 @@ conda activate SmartRetrieval
 
 Second, setup the environment:
 
-```bash
+```powershell
 # Only choose one of the options below depending on if you have CUDA enabled GPU or not:
+# If running on windows, make sure you are running the commands in powershell.
 -----------------------------------------------
 # Install dependencies and torch (cpu version)
+# Go to the backend directory and edit the pyproject.toml file to uncomment the `torch-cpu` poetry section
+-----------------------------------------------
 # Windows: Set env for llama-cpp-python with openblas support on cpu
 $env:CMAKE_ARGS = "-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS"
 # Linux: Set env for llama-cpp-python with openblas support on cpu
@@ -49,6 +55,8 @@ CMAKE_ARGS="-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS"
 poetry install --with torch-cpu
 -----------------------------------------------
 # Install dependencies and torch (cuda version)
+# Installing torch with cuda support on a system without cuda support is also possible.
+-----------------------------------------------
 # Windows: Set env for llama-cpp-python with cuda support on gpu
 $env:CMAKE_ARGS = "-DLLAMA_CUBLAS=on"
 # Linux: Set env for llama-cpp-python with cuda support on gpu
