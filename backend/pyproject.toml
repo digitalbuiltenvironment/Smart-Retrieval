@@ -26,7 +26,7 @@ flake8 = "^7.0.0"
 pytest = "^8.0.2"
 
 # For CPU torch version: Windows and Linux
-# NOTE: To comment out the group below if you plan to add new dependencies via running poetry add or running poetry lock/poetry lock --no-update
+# NOTE: To uncomment out the following lines, should you need to use the CPU version of torch
 # [tool.poetry.group.torch-cpu]
 # optional = true
 # [tool.poetry.group.torch-cpu.dependencies]
