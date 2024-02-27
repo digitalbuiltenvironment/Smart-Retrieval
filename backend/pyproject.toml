@@ -17,8 +17,6 @@ llama-cpp-python = "^0.2.18"
 transformers = "^4.35.2"
 docx2txt = "^0.8"
 doc2docx = "^0.2.4"
-accelerate = "^0.26.1"
-setuptools = "^69.0.3"
 
 [tool.poetry.group.dev]
 optional = true
@@ -37,6 +35,7 @@ torch = [
 ]
 
 # For Cuda torch version: Windows and Linux
+# To comment out the torch-cuda group if you plan to add new dependencies
 [tool.poetry.group.torch-cuda]
 optional = true
 [tool.poetry.group.torch-cuda.dependencies]

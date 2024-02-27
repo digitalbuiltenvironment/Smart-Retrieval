@@ -63,7 +63,7 @@ COPY --chown=user ./backend/pyproject.toml ./backend/poetry.lock $HOME/app/
 COPY --chown=user ./backend $HOME/app
 
 # Install the dependencies
-RUN poetry install --without torch-cpu --with torch-cuda && \
+RUN poetry install --with torch-cuda && \
     rm -rf /tmp/poetry_cache
 
 # Change to the package directory

@@ -2,6 +2,8 @@
 
 The backend is built using Python & [FastAPI](https://fastapi.tiangolo.com/) bootstrapped with [`create-llama`](https://github.com/run-llama/LlamaIndexTS/tree/main/packages/create-llama).
 
+To get started, you must first install the required dependencies in `Requirements` section below, then follow the `Getting Started` section.
+
 ## Requirements
 
 1. Python >= 3.11
@@ -21,9 +23,11 @@ The backend is built using Python & [FastAPI](https://fastapi.tiangolo.com/) boo
 
 ## Getting Started
 
-First, ensure if you want to use the cuda version of pytorch, you have the correct version `cuda > 12.1` of cuda installed. You can check this by running `nvcc --version or nvidia-smi` in your terminal. If you do not have cuda installed, you can install it from [here](https://developer.nvidia.com/cuda-downloads).
+First, ensure if you want to use the cuda version of pytorch, you have the correct version `cuda > 12.1` of cuda installed. You can check this by running `nvcc --version or nvidia-smi` in your terminal, nvcc --version should correctly chow whether you have installed cuda properly or not. If you do not have cuda installed, you can install it from [here](https://developer.nvidia.com/cuda-downloads).
 
-Ensure you have followed the steps in the requirements section above.
+- You may need to add cuda to your path, which can be found online.
+
+Ensure you have followed the steps in the `requirements` section above.
 
 Then activate the conda environment:
 
@@ -42,7 +46,7 @@ $env:CMAKE_ARGS = "-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS"
 # Linux: Set env for llama-cpp-python with openblas support on cpu
 CMAKE_ARGS="-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS"
 # Then:
-poetry install
+poetry install --with torch-cpu
 -----------------------------------------------
 # Install dependencies and torch (cuda version)
 # Windows: Set env for llama-cpp-python with cuda support on gpu
@@ -50,7 +54,7 @@ $env:CMAKE_ARGS = "-DLLAMA_CUBLAS=on"
 # Linux: Set env for llama-cpp-python with cuda support on gpu
 CMAKE_ARGS="-DLLAMA_CUBLAS=on"
 # Then:
-poetry install --without torch-cpu --with torch-cuda
+poetry install --with torch-cuda
 ```
 
 ```bash
