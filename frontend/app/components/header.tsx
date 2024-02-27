@@ -9,6 +9,7 @@ import useSWR from 'swr';
 import logo from '@/public/smart-retrieval-logo.webp';
 import { HeaderNavLink } from '@/app/components/ui/navlink';
 import { MobileMenu } from '@/app/components/ui/mobilemenu';
+import { IconSpinner } from '@/app/components/ui/icons'
 
 const MobileMenuItems = [
   {
@@ -44,7 +45,7 @@ export default function Header() {
   const { theme, setTheme } = useTheme();
   // Use SWR for API status fetching
   const healthcheck_api = process.env.NEXT_PUBLIC_HEALTHCHECK_API;
-  const { data, error: apiError } = useSWR(healthcheck_api, async (url) => {
+  const { data, error: apiError, isLoading } = useSWR(healthcheck_api, async (url) => {
     try {
       // Fetch the data
       const response = await fetch(url, {
@@ -170,15 +171,18 @@ export default function Header() {
             <span className='flex items-center mr-1'>API:</span>
             <HeaderNavLink href='/status'>
               <div className="flex items-center mr-2 text-xl transition duration-300 ease-in-out transform hover:scale-125">
-                {apiError ? (
-                  <span role="img" aria-label="red circle">
-                    🔴
-                  </span>
-                ) : (
-                  <span role="img" aria-label="green circle">
-                    🟢
-                  </span>
-                )}
+                {isLoading ? (
+                  <IconSpinner className="mr-2 animate-spin" />
+                ) :
+                  apiError ? (
+                    <span role="img" aria-label="red circle">
+                      🔴
+                    </span>
+                  ) : (
+                    <span role="img" aria-label="green circle">
+                      🟢
+                    </span>
+                  )}
               </div>
             </HeaderNavLink>
             <span className="lg:text-lg font-nunito">|</span>
@@ -198,10 +202,11 @@ export default function Header() {
               )}
             </button>
           </div>
-        </div>
+        </div >
         {/* Mobile menu component */}
-        <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setMobileMenuOpen(false)} logoSrc={logo} items={MobileMenuItems} />
-      </nav>
-    </div>
+        < MobileMenu isOpen={isMobileMenuOpen} onClose={() => setMobileMenuOpen(false)
+        } logoSrc={logo} items={MobileMenuItems} />
+      </nav >
+    </div >
   );
 }

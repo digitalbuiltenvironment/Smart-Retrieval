@@ -18,7 +18,7 @@ const SignInPage = () => {
               <GoogleLoginButton />
               <SGIDLoginButton />
               <p className="text-gray-200 text-sm">
-                Note: SGID login is only available via SingPass QR Code.
+                Note: SGID login is only available via SingPass App.
               </p>
               <div className="flex items-center justify-center gap-4">
                 <div className="w-full h-px bg-gray-300"></div>
