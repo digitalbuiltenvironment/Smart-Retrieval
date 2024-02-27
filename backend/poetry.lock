@@ -2457,12 +2457,12 @@ testing = ["black (==22.3)", "datasets", "numpy", "pytest", "requests"]
 
 [[package]]
 name = "torch"
-version = "2.1.1+cpu"
+version = "2.1.1+cu121"
 description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "torch-2.1.1+cpu-cp311-cp311-linux_x86_64.whl", hash = "sha256:d83b13cb17544f9851cc31fed197865eae0c0f5d32df9d8d6d8535df7d2e5109"},
+    {file = "torch-2.1.1+cu121-cp311-cp311-linux_x86_64.whl", hash = "sha256:83bfe1134dfa8ab86553c15da5dffa190a86d822afafe8ea6de1169c10d971aa"},
 ]
 
 [package.dependencies]
@@ -2471,6 +2471,7 @@ fsspec = "*"
 jinja2 = "*"
 networkx = "*"
 sympy = "*"
+triton = "2.1.0"
 typing-extensions = "*"
 
 [package.extras]
@@ -2479,16 +2480,16 @@ opt-einsum = ["opt-einsum (>=3.3)"]
 
 [package.source]
 type = "url"
-url = "https://download.pytorch.org/whl/cpu/torch-2.1.1%2Bcpu-cp311-cp311-linux_x86_64.whl"
+url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-linux_x86_64.whl"
 
 [[package]]
 name = "torch"
-version = "2.1.1+cpu"
+version = "2.1.1+cu121"
 description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "torch-2.1.1+cpu-cp311-cp311-win_amd64.whl", hash = "sha256:23be0cb945970443c97d4f9ea61ed03b27f924d835de689dd4134f30966c13f7"},
+    {file = "torch-2.1.1+cu121-cp311-cp311-win_amd64.whl", hash = "sha256:cbc1b55879aca47584172a885c35677073110311cdbba3589e80938b15bbc8ad"},
 ]
 
 [package.dependencies]
@@ -2516,7 +2517,7 @@ opt-einsum = ["opt-einsum (>=3.3)"]
 
 [package.source]
 type = "url"
-url = "https://download.pytorch.org/whl/cpu/torch-2.1.1%2Bcpu-cp311-cp311-win_amd64.whl"
+url = "https://download.pytorch.org/whl/cu121/torch-2.1.1%2Bcu121-cp311-cp311-win_amd64.whl"
 
 [[package]]
 name = "tqdm"
@@ -3107,4 +3108,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11,<3.12"
-content-hash = "90128fdc181c40e3f8470279e5ce366da29bc3434530710cb1a5a566b0a4ea09"
+content-hash = "8f5faa76a4729efe1e76ed3724e43ba837ef11e5e63bd0078a97eadf097b057e"
