@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { QuestionsBankProp, questionsBank } from "@/app/components/ui/autofill-prompt/autofill-prompt.interface";
-import { ChatHandler } from "@/app/components/ui/chat/chat.interface";
+import { SearchHandler } from "@/app/components/ui/search/search.interface";
 
-export default function AutofillQuestion(
+export default function AutofillSearchQuery(
   props: Pick<
-    ChatHandler,
-    "messages" | "isLoading" | "handleSubmit" | "handleInputChange" | "input"
+    SearchHandler,
+    "query" | "isLoading" | "onSearchSubmit" | "onInputChange" | "results" | "searchButtonPressed"
   >,
 ) {
   // Keep track of whether to show the overlay
@@ -40,15 +40,15 @@ export default function AutofillQuestion(
   }, []);
 
 
-  // Hide overlay when there are messages
+  // Hide overlay when there are query
   useEffect(() => {
-    if (props.messages.length > 0) {
+    if (props.query.length > 0) {
       setShowOverlay(false);
     }
     else {
       setShowOverlay(true);
     }
-  }, [props.messages, props.input]);
+  }, [props.results, props.query]);
 
   // Automatically advance to the next question after a delay
   useEffect(() => {
@@ -66,14 +66,16 @@ export default function AutofillQuestion(
 
   // Handle autofill questions click
   const handleAutofillQuestionClick = (questionInput: string) => {
-    props.handleInputChange({ target: { name: "message", value: questionInput } } as React.ChangeEvent<HTMLInputElement>);
+    if (props.onInputChange) {
+      props.onInputChange({ target: { name: "message", value: questionInput } } as React.ChangeEvent<HTMLInputElement>);
+    }
   };
 
   return (
     <>
       {showOverlay && (
-        <div className="fixed inset-0 flex items-center justify-center">
-          <div className="rounded-lg pt-5 pr-10 pl-10 flex h-[50vh] flex-col divide-y overflow-y-auto pb-4">
+        <div className="relative mx-auto">
+          <div className="rounded-lg pt-5 pr-10 pl-10 flex flex-col divide-y overflow-y-auto pb-4 bg-white dark:bg-zinc-700/30 shadow-xl">
             <h2 className="text-lg text-center font-semibold mb-4">How can I help you today?</h2>
             {randomQuestions.map((question, index) => (
               <ul>

@@ -5,6 +5,7 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import useSearch from "@/app/components/ui/search/useSearch";
 import SearchResults from "@/app/components/ui/search/search-results";
 import SearchInput from "@/app/components/ui/search/search-input";
+import AutofillSearchQuery from "@/app/components/ui/autofill-prompt/autofill-search-prompt-dialog";
 
 const SearchSection: React.FC = () => {
   const [query, setQuery] = useState("");
@@ -26,6 +27,13 @@ const SearchSection: React.FC = () => {
   return (
     <div className="space-y-4 max-w-5xl w-full">
       <SearchInput
+        query={query}
+        isLoading={isLoading}
+        results={searchResults}
+        onInputChange={handleInputChange}
+        onSearchSubmit={handleSearchSubmit}
+      />
+      <AutofillSearchQuery
         query={query}
         isLoading={isLoading}
         results={searchResults}
