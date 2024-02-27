@@ -1,18 +1,11 @@
-import { SearchResult } from "@/app/components/ui/search/search-types"
 import { IconSpinner } from "@/app/components/ui/icons";
 import { Fragment, useEffect, useState } from "react";
 import { ArrowDownFromLine, ArrowUpFromLine, Copy } from "lucide-react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { SearchHandler, SearchResult } from "@/app/components/ui/search/search.interface";
 
-interface SearchResultsProps {
-    query: string;
-    results: SearchResult[];
-    isLoading: boolean;
-    searchButtonPressed: boolean;
-}
-
-const SearchResults: React.FC<SearchResultsProps> = ({ query, results, isLoading, searchButtonPressed }) => {
+const SearchResults: React.FC<SearchHandler> = ({ query, results, isLoading, searchButtonPressed }) => {
     const [sortedResults, setSortedResults] = useState<SearchResult[]>([]);
     const [expandedResult, setExpandedResult] = useState<number | null>(null);
 

@@ -28,6 +28,7 @@ const SearchSection: React.FC = () => {
       <SearchInput
         query={query}
         isLoading={isLoading}
+        results={searchResults}
         onInputChange={handleInputChange}
         onSearchSubmit={handleSearchSubmit}
       />
