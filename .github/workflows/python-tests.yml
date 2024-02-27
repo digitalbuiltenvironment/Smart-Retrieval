@@ -33,7 +33,7 @@ jobs:
       run: |
         # python -m pip install --upgrade pip setuptools wheel
         # python -m pip install poetry
-        poetry install --with dev,torch-cpu
+        poetry install --with dev
     - name: Lint with flake8
       working-directory: ./backend
       run: |
