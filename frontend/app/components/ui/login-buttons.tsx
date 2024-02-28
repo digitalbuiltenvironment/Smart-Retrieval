@@ -5,6 +5,7 @@ import { signIn } from 'next-auth/react'
 import { cn } from '@/app/components/ui/lib/utils'
 import { Button, type ButtonProps } from '@/app/components/ui/button'
 import { IconGoogle, IconSGid, IconSpinner } from '@/app/components/ui/icons'
+import { useSearchParams } from 'next/navigation'
 
 interface LoginButtonProps extends ButtonProps {
   showIcon?: boolean;
@@ -18,13 +19,14 @@ function GoogleLoginButton({
   ...props
 }: LoginButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
-
+  const searchParams = useSearchParams()
+  const callbackURL = searchParams.get("callbackUrl"); // Get the 'callbackURL' query parameter
   return (
     <Button
       variant="outline"
       onClick={() => {
         setIsLoading(true);
-        signIn('google');
+        signIn('google', {redirect: true, callbackUrl: callbackURL as string});
       }}
       className={cn(className)}
       {...props}
@@ -47,13 +49,14 @@ function SGIDLoginButton({
   ...props
 }: LoginButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
-
+  const searchParams = useSearchParams()
+  const callbackURL = searchParams.get("callbackUrl"); // Get the 'callbackURL' query parameter
   return (
     <Button
       variant="outline"
       onClick={() => {
         setIsLoading(true);
-        signIn('sgid');
+        signIn('sgid', {redirect: true, callbackUrl: callbackURL as string});
       }}
       className={cn(className)}
       {...props}
