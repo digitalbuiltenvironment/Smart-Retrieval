@@ -22,8 +22,9 @@ Instead it returns the relevant information from the index.
 async def search(
     request: Request,
     index: VectorStoreIndex = Depends(get_index),
+    query: str = None,
 ):
-    query = request.query_params.get("query")
+    # query = request.query_params.get("query")
     logger = logging.getLogger("uvicorn")
     logger.info(f"Search: {query}")
     if query is None:

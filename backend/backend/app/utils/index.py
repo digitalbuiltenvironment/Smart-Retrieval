@@ -1,9 +1,11 @@
 import logging
 import os
 
+from dotenv import load_dotenv
 from llama_index import (
     PromptHelper,
     ServiceContext,
+    # Document,
     SimpleDirectoryReader,
     StorageContext,
     VectorStoreIndex,
@@ -11,7 +13,8 @@ from llama_index import (
     set_global_service_context,
 )
 from llama_index.embeddings import HuggingFaceEmbedding
-from llama_index.llms import LlamaCPP
+from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.llms import LlamaCPP, OpenAI
 from llama_index.llms.llama_utils import (
     completion_to_prompt,
     messages_to_prompt,
@@ -35,42 +38,75 @@ from backend.app.utils.contants import (
     STORAGE_DIR,
 )
 
-llm = LlamaCPP(
-    model_url=LLM_MODEL_URL,
-    temperature=LLM_TEMPERATURE,
-    max_new_tokens=MAX_NEW_TOKENS,
-    context_window=CONTEXT_SIZE,
-    # kwargs to pass to __call__()
-    generate_kwargs={},
-    # kwargs to pass to __init__()
-    model_kwargs=MODEL_KWARGS,
-    # transform inputs into Llama2 format
-    messages_to_prompt=messages_to_prompt,
-    completion_to_prompt=completion_to_prompt,
-    verbose=True,
-)
+# from llama_index.vector_stores.supabase import SupabaseVectorStore
+# import textwrap
 
-embed_model = HuggingFaceEmbedding(
-    model_name=EMBED_MODEL_NAME,
-    pooling=EMBED_POOLING,
-    device=DEVICE_TYPE,
-)
+load_dotenv()
+logger = logging.getLogger("uvicorn")
 
-prompt_helper = PromptHelper(
-    chunk_size_limit=CHUNK_SIZE_LIMIT,
-    chunk_overlap_ratio=CHUNK_OVERLAP_RATIO,
-    num_output=NUM_OUTPUT,
-)
+# use local LLM if USE_LOCAL_LLM is set to True, else use openai's API
+if os.environ.get("USE_LOCAL_LLM").lower() == "true":
+    logger.info("Using local LLM...")
+    llm = LlamaCPP(
+        model_url=LLM_MODEL_URL,
+        temperature=LLM_TEMPERATURE,
+        max_new_tokens=MAX_NEW_TOKENS,
+        context_window=CONTEXT_SIZE,
+        # kwargs to pass to __call__()
+        generate_kwargs={},
+        # kwargs to pass to __init__()
+        model_kwargs=MODEL_KWARGS,
+        # transform inputs into Llama2 format
+        messages_to_prompt=messages_to_prompt,
+        completion_to_prompt=completion_to_prompt,
+        verbose=True,
+    )
+    embed_model = HuggingFaceEmbedding(
+        model_name=EMBED_MODEL_NAME,
+        pooling=EMBED_POOLING,
+        device=DEVICE_TYPE,
+    )
 
-service_context = ServiceContext.from_defaults(
-    llm=llm,
-    embed_model=embed_model,
-    chunk_size=CHUNK_SIZE,
-    chunk_overlap=CHUNK_OVERLAP,
-    prompt_helper=prompt_helper,
-)
+    prompt_helper = PromptHelper(
+        chunk_size_limit=CHUNK_SIZE_LIMIT,
+        chunk_overlap_ratio=CHUNK_OVERLAP_RATIO,
+        num_output=NUM_OUTPUT,
+    )
 
-set_global_service_context(service_context)
+    service_context = ServiceContext.from_defaults(
+        llm=llm,
+        embed_model=embed_model,
+        chunk_size=CHUNK_SIZE,
+        chunk_overlap=CHUNK_OVERLAP,
+        prompt_helper=prompt_helper,
+    )
+
+    set_global_service_context(service_context)
+else:
+    logger.info("Using OpenAI's API...")
+    llm = OpenAI(
+        model="gpt-3.5-turbo",
+        temperature=0.2,
+        api_key=os.environ.get("OPENAI_API_KEY"),
+    )
+    # By default, LlamaIndex uses text-embedding-ada-002 from OpenAI
+    embed_model = OpenAIEmbedding(embed_batch_size=42)
+
+    prompt_helper = PromptHelper(
+        chunk_size_limit=CHUNK_SIZE_LIMIT,
+        chunk_overlap_ratio=CHUNK_OVERLAP_RATIO,
+        num_output=NUM_OUTPUT,
+    )
+
+    service_context = ServiceContext.from_defaults(
+        llm=llm,
+        embed_model=embed_model,
+        chunk_size=CHUNK_SIZE,
+        chunk_overlap=CHUNK_OVERLAP,
+        prompt_helper=prompt_helper,
+    )
+
+    set_global_service_context(service_context)
 
 
 def create_index():

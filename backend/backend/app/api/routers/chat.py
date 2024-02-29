@@ -114,11 +114,12 @@ async def chat(
         chat_mode="condense_plus_context",
         memory=memory,
         context_prompt=(
-            "You are a chatbot, able to have normal interactions, as well as talk"
-            " about information from documents regarding Public Sector Standard Conditions Of Contract (PSSCOC)."
+            "You are a helpful chatbot, able to have normal interactions, as well as talk"
+            " about information from documents regarding Public Sector Standard Conditions Of Contract (PSSCOC) and iCoreSpec Engineering Specification Documents."
             "Here are the relevant documents for the context:\n"
             "{context_str}"
-            "\nInstruction: Based on the above documents, provide a detailed answer for the user question below. If you cannot answer the question, inform the user that you do not know."
+            "\nInstruction: Based on the above documents, provide a detailed answer for the user question below."
+            " If you cannot answer the question or are unsure of how to answer, inform the user that you do not know."
         ),
     )
     response = chat_engine.stream_chat(
