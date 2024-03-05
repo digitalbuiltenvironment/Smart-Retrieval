@@ -1,10 +1,10 @@
 import { Check, Copy } from "lucide-react";
 
-import { Button } from "../button";
-import ChatAvatar from "./chat-avatar";
-import { Message } from "./chat.interface";
-import Markdown from "./markdown";
-import { useCopyToClipboard } from "./use-copy-to-clipboard";
+import { Button } from "@/app/components/ui/button";
+import ChatAvatar from "@/app/components/ui/chat/chat-avatar";
+import { Message } from "@/app/components/ui/chat/chat.interface";
+import Markdown from "@/app/components/ui/chat/markdown";
+import { useCopyToClipboard } from "@/app/components/ui/chat/use-copy-to-clipboard";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
