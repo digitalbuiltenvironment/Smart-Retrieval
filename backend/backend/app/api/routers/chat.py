@@ -114,17 +114,22 @@ async def chat(
         chat_mode="condense_plus_context",
         memory=memory,
         context_prompt=(
-            "You are a helpful chatbot, able to have normal interactions, as well as talk"
-            " about information from documents regarding Public Sector Standard Conditions Of Contract (PSSCOC) and iCoreSpec Engineering Specification Documents."
+            "You are a helpful chatbot, able to have normal interactions, as well as answer questions"
+            " regarding information relating to the Public Sector Standard Conditions Of Contract (PSSCOC) and iCoreSpec Engineering Specification Documents.\n"
+            "All the documents are in the context of the construction industry in Singapore.\n"
             "Here are the relevant documents for the context:\n"
             "{context_str}"
-            "\nInstruction: Based on the above documents, provide a detailed answer for the user question below."
-            " If you cannot answer the question or are unsure of how to answer, inform the user that you do not know."
+            "\nInstruction: Based on the above documents, provide a detailed answer for the user question below.\n"
+            "If you cannot answer the question or are unsure of how to answer, inform the user that you do not know.\n"
+            "If you need to clarify the question, ask the user for clarification.\n"
+            "You are to provide the relevant sources of which you got the information from in the context in brackets."
         ),
     )
     response = chat_engine.stream_chat(
         message=lastMessage.content, chat_history=messages
     )
+
+    logger.info(f"Response Sources: {response.source_nodes}")
 
     # stream response
     async def event_generator():
