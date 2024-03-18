@@ -4,7 +4,7 @@ emoji: 📝
 colorFrom: blue
 colorTo: indigo
 sdk: docker
-python_version: 3.11.4
+python_version: 3.11.8
 app_port: 8000
 pinned: false
 ---
@@ -74,7 +74,7 @@ For more information, see the [DEPLOYMENT.md](./DEPLOYMENT.md).
 - [Python](https://python.org/) - Backend Server Environment
 - [FastAPI](https://fastapi.tiangolo.com/) - Backend API Web Framework
 - [LlamaIndex](https://www.llamaindex.ai/) - Data Framework for LLM
-- [`create-llama`](https://github.com/run-llama/LlamaIndexTS/tree/main/packages/create-llama) - LlamaIndex Application Bootstrap Tool
+- [create-llama](https://github.com/run-llama/LlamaIndexTS/tree/main/packages/create-llama) - LlamaIndex Application Bootstrap Tool
 
 ## 📑 Contributing <a name = "contributing"></a>
 
