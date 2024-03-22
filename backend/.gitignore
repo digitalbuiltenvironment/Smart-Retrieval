@@ -1,4 +1,9 @@
+# Production Files
 __pycache__
 storage
 .env
+
+# Dev Folders
 test.py
+iCoreSpec
+storage-openai
