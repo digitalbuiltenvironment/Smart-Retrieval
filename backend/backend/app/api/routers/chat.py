@@ -130,7 +130,7 @@ async def chat(
         message=lastMessage.content, chat_history=messages
     )
 
-    logger.info(f"Response Sources: {response.source_nodes}")
+    # logger.info(f"Response Sources: {response.source_nodes}")
 
     # stream response
     async def event_generator():
