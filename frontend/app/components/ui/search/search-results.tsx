@@ -11,14 +11,20 @@ const SearchResults: React.FC<SearchHandler> = ({ query, results, isLoading, sea
 
     // Sort results by similarity score whenever results or query change
     useEffect(() => {
-        if (query.trim() === "" && !searchButtonPressed){
+        if (query.trim() === "" && !searchButtonPressed) {
             // Reset sortedResults when query is empty
             setSortedResults([]);
         } else if (query.trim() !== "" && searchButtonPressed) {
-            // Sort results by similarity score
-            const sorted = results.slice().sort((a, b) => b.similarity_score - a.similarity_score);
-            // Update sortedResults state
-            setSortedResults(sorted);
+            // if results are empty
+            if (results.length === 0) {
+                setSortedResults([]);
+            }
+            else {
+                // Sort results by similarity score
+                const sorted = results.slice().sort((a, b) => b.similarity_score - a.similarity_score);
+                // Update sortedResults state
+                setSortedResults(sorted);
+            }
         }
     }, [query, results]);
 
