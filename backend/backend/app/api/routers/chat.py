@@ -11,10 +11,11 @@ from llama_index.memory import ChatMemoryBuffer
 from llama_index.prompts import PromptTemplate
 from pydantic import BaseModel
 
+from backend.app.utils import auth
 from backend.app.utils.index import get_index
 from backend.app.utils.json import json_to_model
 
-chat_router = r = APIRouter()
+chat_router = r = APIRouter(dependencies=[Depends(auth.validate_user)])
 
 """
 This router is for chatbot functionality which consist of chat memory and chat engine.

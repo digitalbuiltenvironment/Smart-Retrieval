@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, Request
 
-healthcheck_router = r = APIRouter()
+from backend.app.utils import auth
+
+healthcheck_router = r = APIRouter(dependencies=[Depends(auth.validate_user)])
 
 """
 This router is for healthcheck functionality.

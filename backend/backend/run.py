@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 if __name__ == "__main__":
-    environment = os.getenv("ENVIRONMENT", "dev")  # Default to 'development' if not set
+    environment = os.getenv("ENVIRONMENT", "dev")  # Default to 'dev' if not set
     if environment == "dev":
         # Run the app with the development settings to auto reload
         uvicorn.run(app="main:app", host="0.0.0.0", reload=True)

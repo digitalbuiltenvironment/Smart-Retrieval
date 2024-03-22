@@ -17,13 +17,15 @@ load_dotenv()
 
 app = FastAPI()
 
-environment = os.getenv("ENVIRONMENT", "dev")  # Default to 'development' if not set
+environment = os.getenv("ENVIRONMENT", "dev")  # Default to 'dev' if not set
 
 # Add allowed origins from environment variables
 allowed_origins = os.getenv("ALLOWED_ORIGINS", "*")
 
 if environment == "dev":
+    # In development, allow all origins, methods, and headers
     logger = logging.getLogger("uvicorn")
+    logger.level = logging.DEBUG
     logger.warning("Running in development mode - allowing CORS for all origins")
     app.add_middleware(
         middleware_class=CORSMiddleware,
@@ -36,8 +38,9 @@ if environment == "dev":
 if environment == "prod":
     # In production, specify the allowed origins
     allowed_origins = allowed_origins.split(",") if allowed_origins != "*" else ["*"]
-
+    # Set the logger level to INFO
     logger = logging.getLogger("uvicorn")
+    logger.level = logging.INFO
     logger.info(f"Running in production mode - allowing CORS for {allowed_origins}")
     app.add_middleware(
         middleware_class=CORSMiddleware,
@@ -48,6 +51,9 @@ if environment == "prod":
     )
 
 logger.info(f"CUDA available: {is_cuda_available()}")
+
+# Set logger for httpx to WARNING
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
 app.include_router(chat_router, prefix="/api/chat")
 app.include_router(query_router, prefix="/api/query")
