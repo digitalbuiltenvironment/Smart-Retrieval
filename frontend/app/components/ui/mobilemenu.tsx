@@ -70,7 +70,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, logoSrc, items
                 {/* Mobile menu content */}
                 <div className="w-64 p-4 rounded-r-md">
                     {items.map((item, index) => (
-                        <HeaderNavLink key={index} href={item.href} onClick={onClose}>
+                        <HeaderNavLink key={index} href={item.href} title={item.label} onClick={onClose}>
                             <div className="flex items-center mb-4">
                                 {item.icon}
                                 {item.label}

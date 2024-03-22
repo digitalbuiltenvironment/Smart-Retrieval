@@ -1,7 +1,7 @@
 "use client";
 
 import Image from 'next/image';
-import { Home, InfoIcon, MessageCircle, Search, FileQuestion, Menu, X } from 'lucide-react';
+import { Home, InfoIcon, MessageCircle, Search, FileQuestion, Menu, X, User2, LogOut, LogIn } from 'lucide-react';
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useMedia } from 'react-use';
@@ -9,7 +9,8 @@ import useSWR from 'swr';
 import logo from '@/public/smart-retrieval-logo.webp';
 import { HeaderNavLink } from '@/app/components/ui/navlink';
 import { MobileMenu } from '@/app/components/ui/mobilemenu';
-import { IconSpinner } from '@/app/components/ui/icons'
+import { IconSpinner } from '@/app/components/ui/icons';
+import { useSession, signOut } from 'next-auth/react';
 
 const MobileMenuItems = [
   {
@@ -43,13 +44,21 @@ export default function Header() {
   const isLargeScreen = useMedia('(min-width: 1024px)', false);
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+  // Get user session for conditional rendering of user profile and logout buttons and for fetching the API status
+  const { data: session, status } = useSession();
+  // console.log('session:', session, 'status:', status);
+  const supabaseAccessToken = session?.supabaseAccessToken;
   // Use SWR for API status fetching
-  const healthcheck_api = process.env.NEXT_PUBLIC_HEALTHCHECK_API;
+  const healthcheck_api = "/api/status";
   const { data, error: apiError, isLoading } = useSWR(healthcheck_api, async (url) => {
     try {
       // Fetch the data
       const response = await fetch(url, {
         signal: AbortSignal.timeout(5000), // Abort the request if it takes longer than 5 seconds
+        // Add the access token to the request headers
+        headers: {
+          'Authorization': `Bearer ${supabaseAccessToken}`,
+        }
       });
       if (!response.ok) {
         throw new Error(response.statusText || 'Unknown Error');
@@ -73,6 +82,7 @@ export default function Header() {
       console.error('[Header] Error fetching Backend API Status:', apiError.message);
     }
   }
+
 
   useEffect(() => {
     setMounted(true);
@@ -135,31 +145,31 @@ export default function Header() {
             </button>
           </div>
           <div className={`hidden items-center gap-4 lg:flex`}>
-            <HeaderNavLink href="/">
+            <HeaderNavLink href="/" title='Home'>
               <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
                 <Home className="mr-1 h-4 w-4" />
                 Home
               </div>
             </HeaderNavLink>
-            <HeaderNavLink href="/about">
+            <HeaderNavLink href="/about" title='About Us'>
               <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
                 <InfoIcon className="mr-1 h-4 w-4" />
                 About
               </div>
             </HeaderNavLink>
-            <HeaderNavLink href="/chat">
+            <HeaderNavLink href="/chat" title='Chat'>
               <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
                 <MessageCircle className="mr-1 h-4 w-4" />
                 Chat
               </div>
             </HeaderNavLink>
-            <HeaderNavLink href="/query">
+            <HeaderNavLink href="/query" title='Q&A'>
               <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
                 <FileQuestion className="mr-1 h-4 w-4" />
                 Q&A
               </div>
             </HeaderNavLink>
-            <HeaderNavLink href="/search">
+            <HeaderNavLink href="/search" title='Search'>
               <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
                 <Search className="mr-1 h-4 w-4" />
                 Search
@@ -169,7 +179,7 @@ export default function Header() {
           <div className="flex items-center ml-auto">
             {/* Status Page Button/Indicator */}
             <span className='flex items-center mr-1'>API:</span>
-            <HeaderNavLink href='/status'>
+            <HeaderNavLink href='/status' title='API Status'>
               <div className="flex items-center mr-2 text-xl transition duration-300 ease-in-out transform hover:scale-125">
                 {isLoading ? (
                   <IconSpinner className="mr-2 animate-spin" />
@@ -201,8 +211,46 @@ export default function Header() {
                 </span>
               )}
             </button>
+
+            <span className="lg:text-lg font-nunito ml-2 mr-2"> </span>
+
+            {/* Conditionally render the user profile and logout buttons based on the user's authentication status */}
+            {status === 'loading' ? (
+              <div className="flex items-center ml-2 mr-2 text-xl transition duration-300 ease-in-out transform hover:scale-125">
+                <IconSpinner className="mr-2 animate-spin" />
+              </div>
+            ) : session ? (
+              <>
+                {/* User Profile Button */}
+                <HeaderNavLink href="/profile" title='Profile'>
+                  <div className="flex items-center ml-2 mr-2 text-xl transition duration-300 ease-in-out transform hover:scale-125">
+                    <User2 className="mr-1 h-5 w-5" />
+                  </div>
+                </HeaderNavLink>
+
+                {/* Sign Out Button */}
+                <button title='Sign Out'
+                  onClick={
+                    async () => {
+                      await signOut();
+                    }
+                  }>
+                  <div className="flex items-center ml-2 text-xl transition duration-300 ease-in-out transform hover:scale-125">
+                    <LogOut className="mr-1 h-5 w-5" />
+                  </div>
+                </button>
+              </>
+            ) : (
+              <HeaderNavLink href="/sign-in" title='Sign In'>
+                <div className="flex items-center ml-2 transition duration-300 ease-in-out transform hover:scale-125">
+                  <LogIn className="mr-1 h-5 w-5" />
+                  Sign In
+                </div>
+              </HeaderNavLink>
+            )}
           </div>
         </div >
+
         {/* Mobile menu component */}
         < MobileMenu isOpen={isMobileMenuOpen} onClose={() => setMobileMenuOpen(false)
         } logoSrc={logo} items={MobileMenuItems} />

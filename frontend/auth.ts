@@ -53,7 +53,8 @@ const decryptData = async (encKey: string, block: { [s: string]: unknown; } | Ar
 // to `NextAuth` in `app/api/auth/[...nextauth]/route.ts`
 export const config = {
     // Configure one or more authentication providers
-    debug: true,    // Enable debug messages in the console if you are having problems
+    // Enable debug messages if running in development
+    debug: process.env.NODE_ENV === 'development',
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -133,7 +134,7 @@ export const config = {
                     aud: "authenticated",
                     exp: Math.floor(new Date(session.expires).getTime() / 1000),
                     sub: user.id,
-                    email: user.email,
+                    // email: user.email,
                     role: "authenticated",
                 }
                 session.supabaseAccessToken = jwt.sign(payload, signingSecret)

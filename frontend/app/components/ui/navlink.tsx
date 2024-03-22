@@ -5,12 +5,13 @@ import Link from 'next/link';
 
 export interface NavLinkProps {
     href: string;
+    title: string;
     children: React.ReactNode;
     onClick?: () => void; // Include onClick as an optional prop
     target?: string;
 }
 
-const HeaderNavLink: React.FC<NavLinkProps> = ({ href, children, onClick }) => {
+const HeaderNavLink: React.FC<NavLinkProps> = ({ href, title, children, onClick }) => {
     // Use the useRouter hook to get information about the current route
     const pathname = usePathname();
 
@@ -24,7 +25,7 @@ const HeaderNavLink: React.FC<NavLinkProps> = ({ href, children, onClick }) => {
     };
 
     return (
-        <Link href={href} passHref>
+        <Link href={href} passHref title={title}>
             {/* Add a class to highlight the active tab */}
             <div className={`flex items-center font-bold ${isActive ? 'text-blue-500' : ''}`} onClick={handleClick}>
                 {children}
