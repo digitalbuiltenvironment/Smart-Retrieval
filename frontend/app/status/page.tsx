@@ -5,10 +5,9 @@ import { Button } from "@nextui-org/react";
 import { IconSpinner } from '@/app/components/ui/icons';
 import { useSession } from 'next-auth/react';
 
-// Define the API endpoint
-const healthcheck_api = "/api/status";
-
 const StatusPage = () => {
+  // Define the API endpoint
+  const healthcheck_api = "/api/status";
   const { data: session, status } = useSession();
   const supabaseAccessToken = session?.supabaseAccessToken;
   // console.log('supabaseAccessToken:', supabaseAccessToken);
