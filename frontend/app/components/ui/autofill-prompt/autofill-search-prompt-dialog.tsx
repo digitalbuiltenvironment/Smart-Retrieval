@@ -81,8 +81,7 @@ export default function AutofillSearchQuery(
         <div className="relative mx-auto">
           <div className="rounded-lg pt-5 pr-10 pl-10 flex flex-col divide-y overflow-y-auto pb-4 bg-white dark:bg-zinc-700/30 shadow-xl">
             <h2 className="text-lg text-center font-semibold mb-4">How can I help you today?</h2>
-            {dialogMessage && <p className="text-center text-sm text-gray-500 mb-4">{dialogMessage}</p>}
-            <p className="text-center text-sm text-gray-500 mb-4">Smart Retrieval may not be 100% accurate. Consider checking important information.</p>
+            {/* {dialogMessage && <p className="text-center text-sm text-gray-500 mb-4">{dialogMessage}</p>} */}
             {randomQuestions.map((question, index) => (
               <ul>
                 <li key={index} className={`p-2 mb-2 border border-zinc-500/30 dark:border-white rounded-lg hover:bg-zinc-500/30 transition duration-300 ease-in-out transform cursor-pointer ${index <= currentQuestionIndex ? 'opacity-100 duration-500' : 'opacity-0'}`}>

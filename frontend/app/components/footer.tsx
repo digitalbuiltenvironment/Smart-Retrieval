@@ -13,7 +13,7 @@ export default function Footer() {
     };
 
     return (
-        <footer>
+        <footer className="z-10">
             <div className="flex flex-col items-center justify-center bg-gray-800 text-white p-4 mb-4 rounded-lg shadow-xl">
                 <div className="flex flex-col items-center text-red-500">
                     <button className="text-sm text-center underline" onClick={toggleDisclaimer} title="Disclaimer">
