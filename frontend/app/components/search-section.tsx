@@ -2,16 +2,14 @@
 "use client";
 
 import { useState, ChangeEvent, FormEvent } from "react";
-import useSearch from "@/app/components/ui/search/useSearch";
-import SearchResults from "@/app/components/ui/search/search-results";
-import SearchInput from "@/app/components/ui/search/search-input";
-import AutofillSearchQuery from "@/app/components/ui/autofill-prompt/autofill-search-prompt-dialog";
+import { AutofillSearchQuery } from "@/app/components/ui/autofill-prompt";
+import { SearchSelection, useSearch, SearchResults, SearchInput } from "./ui/search";
 
 const SearchSection: React.FC = () => {
   const [query, setQuery] = useState("");
   const { searchResults, isLoading, handleSearch } = useSearch();
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
-
+  const [docSelected, setDocSelected] = useState<string>('');
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -26,21 +24,38 @@ const SearchSection: React.FC = () => {
 
   return (
     <div className="space-y-4 max-w-5xl w-full">
-      <SearchInput
-        query={query}
-        isLoading={isLoading}
-        results={searchResults}
-        onInputChange={handleInputChange}
-        onSearchSubmit={handleSearchSubmit}
-      />
-      <AutofillSearchQuery
-        query={query}
-        isLoading={isLoading}
-        results={searchResults}
-        onInputChange={handleInputChange}
-        onSearchSubmit={handleSearchSubmit}
-      />
-      <SearchResults query={query} results={searchResults} isLoading={isLoading} searchButtonPressed={searchButtonPressed} />
+      {docSelected ? (
+        <>
+          <h2 className="text-lg text-center font-semibold mb-4">Searching in {docSelected}</h2>
+          <SearchInput
+            docSelected={docSelected}
+            query={query}
+            isLoading={isLoading}
+            results={searchResults}
+            onInputChange={handleInputChange}
+            onSearchSubmit={handleSearchSubmit}
+          />
+          <AutofillSearchQuery
+            docSelected={docSelected}
+            query={query}
+            isLoading={isLoading}
+            results={searchResults}
+            onInputChange={handleInputChange}
+            onSearchSubmit={handleSearchSubmit}
+          />
+          <SearchResults
+            query={query}
+            results={searchResults}
+            isLoading={isLoading}
+            searchButtonPressed={searchButtonPressed}
+          />
+        </>
+      ) : (
+        <SearchSelection
+          docSelected={docSelected}
+          handleDocSelect={setDocSelected}
+        />
+      )}
     </div>
   );
 };

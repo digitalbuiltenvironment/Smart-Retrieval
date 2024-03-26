@@ -1,16 +1,12 @@
 import { useEffect, useState } from "react";
-import { QuestionsBankProp, psscocQuestionsBank } from "@/app/components/ui/autofill-prompt/autofill-prompt.interface";
+import { QuestionsBankProp, psscocQuestionsBank, eirQuestionsBank } from "@/app/components/ui/autofill-prompt/autofill-prompt.interface";
 import { SearchHandler } from "@/app/components/ui/search/search.interface";
 
 export default function AutofillSearchQuery(
   props: Pick<
     SearchHandler,
-    "query" | "isLoading" | "onSearchSubmit" | "onInputChange" | "results" | "searchButtonPressed"
+    "docSelected" | "query" | "isLoading" | "onSearchSubmit" | "onInputChange" | "results" | "searchButtonPressed"
   >,
-  // Optional prop for the dialog message
-  dialogMessage?: string,
-  // Optional prop for the selected document set
-  docSelected?: string
 ) {
   // Keep track of whether to show the overlay
   const [showOverlay, setShowOverlay] = useState(true);
@@ -18,6 +14,8 @@ export default function AutofillSearchQuery(
   const [randomQuestions, setRandomQuestions] = useState<QuestionsBankProp[]>([]);
   // Keep track of the current question index
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  // Questions bank for PSSCOC or EIR
+  const [questionsBank, setQuestionsBank] = useState<QuestionsBankProp[]>(psscocQuestionsBank);
 
   // Shuffle the array using Fisher-Yates algorithm
   function shuffleArray(array: any[]) {
@@ -32,8 +30,15 @@ export default function AutofillSearchQuery(
 
   // Randomly select a subset of 3-4 questions
   useEffect(() => {
+    // Select the questions bank based on the document set selected
+    if (props.docSelected === "EIR") {
+      setQuestionsBank(eirQuestionsBank);
+    }
+    else {
+      setQuestionsBank(psscocQuestionsBank);
+    }
     // Shuffle the questionsBank array
-    const shuffledQuestions = shuffleArray(psscocQuestionsBank);
+    const shuffledQuestions = shuffleArray(questionsBank);
     // Get a random subset of 3-4 questions
     const subsetSize = Math.floor(Math.random() * 2) + 3; // Randomly choose between 3 and 4
     const selectedQuestions = shuffledQuestions.slice(0, subsetSize);
@@ -41,7 +46,7 @@ export default function AutofillSearchQuery(
     setTimeout(() => {
       setRandomQuestions(selectedQuestions);
     }, 300);
-  }, []);
+  }, [questionsBank, props.docSelected]);
 
 
   // Hide overlay when there are query
@@ -80,7 +85,7 @@ export default function AutofillSearchQuery(
       {showOverlay && (
         <div className="relative mx-auto">
           <div className="rounded-lg pt-5 pr-10 pl-10 flex flex-col divide-y overflow-y-auto pb-4 bg-white dark:bg-zinc-700/30 shadow-xl">
-            <h2 className="text-lg text-center font-semibold mb-4">How can I help you today?</h2>
+            <h2 className="text-lg text-center font-semibold mb-4">How can I help with {props.docSelected} today?</h2>
             {/* {dialogMessage && <p className="text-center text-sm text-gray-500 mb-4">{dialogMessage}</p>} */}
             {randomQuestions.map((question, index) => (
               <ul>

@@ -5,28 +5,30 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { SearchHandler, SearchResult } from "@/app/components/ui/search/search.interface";
 
-const SearchResults: React.FC<SearchHandler> = ({ query, results, isLoading, searchButtonPressed }) => {
+export default function SearchResults(
+     props: Pick<SearchHandler, "query" | "results" | "isLoading" | "searchButtonPressed">
+    ) {
     const [sortedResults, setSortedResults] = useState<SearchResult[]>([]);
     const [expandedResult, setExpandedResult] = useState<number | null>(null);
 
     // Sort results by similarity score whenever results or query change
     useEffect(() => {
-        if (query.trim() === "" && !searchButtonPressed) {
+        if (props.query.trim() === "" && !props.searchButtonPressed) {
             // Reset sortedResults when query is empty
             setSortedResults([]);
-        } else if (query.trim() !== "" && searchButtonPressed) {
+        } else if (props.query.trim() !== "" && props.searchButtonPressed) {
             // if results are empty
-            if (results.length === 0) {
+            if (props.results.length === 0) {
                 setSortedResults([]);
             }
             else {
                 // Sort results by similarity score
-                const sorted = results.slice().sort((a, b) => b.similarity_score - a.similarity_score);
+                const sorted = props.results.slice().sort((a, b) => b.similarity_score - a.similarity_score);
                 // Update sortedResults state
                 setSortedResults(sorted);
             }
         }
-    }, [query, results]);
+    }, [props.query, props.results]);
 
     // Log sortedResults outside of useEffect to ensure you're getting the updated state
     // console.log("Sorted results:", sortedResults);
@@ -42,19 +44,26 @@ const SearchResults: React.FC<SearchHandler> = ({ query, results, isLoading, sea
 
     // Handle Reseting the expanded result when the search button is pressed
     useEffect(() => {
-        if (searchButtonPressed) {
+        if (props.searchButtonPressed) {
             setExpandedResult(null);
         }
-    }, [searchButtonPressed]);
+    }, [props.searchButtonPressed]);
 
-    // Handle when there are no search results and search button is not pressed
-    if (sortedResults.length === 0 && !searchButtonPressed) {
+    // Handle when query is empty and search button is pressed
+    if (props.query.trim() === "" && props.searchButtonPressed) {
         return (
             null
         );
     }
 
-    if (isLoading) {
+    // Handle when there are no search results and search button is not pressed
+    if (sortedResults.length === 0 && !props.searchButtonPressed) {
+        return (
+            null
+        );
+    }
+
+    if (props.isLoading) {
         return (
             <div className="flex w-full items-center justify-center rounded-xl bg-white dark:bg-zinc-700/30 p-4 shadow-xl">
                 <IconSpinner className="mr-2 animate-spin" />
@@ -64,7 +73,7 @@ const SearchResults: React.FC<SearchHandler> = ({ query, results, isLoading, sea
     }
 
     // Handle when there are no search results
-    if (sortedResults.length === 0 && query.trim() !== "" && searchButtonPressed) {
+    if (sortedResults.length === 0 && props.query.trim() !== "" && props.searchButtonPressed) {
         return (
             <div className="flex w-full items-center justify-center rounded-xl bg-white dark:bg-zinc-700/30 p-4 shadow-xl">
                 <p>No results found.</p>
@@ -141,5 +150,3 @@ const SearchResults: React.FC<SearchHandler> = ({ query, results, isLoading, sea
         </div>
     );
 };
-
-export default SearchResults;
