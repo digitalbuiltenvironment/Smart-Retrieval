@@ -51,6 +51,8 @@ if environment == "prod":
     )
 
 logger.info(f"CUDA available: {is_cuda_available()}")
+logger.info("Use Local LLM: " + os.getenv("USE_LOCAL_LLM", "false"))
+logger.info("Use Local Vector Store: " + os.getenv("USE_LOCAL_VECTOR_STORE", "false"))
 
 # Set logger for httpx to WARNING
 logging.getLogger("httpx").setLevel(logging.WARNING)

@@ -19,6 +19,7 @@ docx2txt = "^0.8"
 doc2docx = "^0.2.4"
 supabase = "^2.4.0"
 pyjwt = "^2.8.0"
+vecs = "^0.4.3"
 
 [tool.poetry.group.dev]
 optional = true
