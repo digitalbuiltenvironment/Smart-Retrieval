@@ -20,7 +20,7 @@ export default function ChatInput(
           autoFocus
           name="message"
           placeholder="Type a Message"
-          className="flex-1 bg-white dark:bg-zinc-500/30 z-10"
+          className="flex-1 bg-white dark:bg-zinc-500/30"
           value={props.input}
           onChange={props.handleInputChange}
         />

@@ -29,23 +29,25 @@ export default function ChatMessages(
   }, [messageLength, lastMessage]);
 
   return (
-    <div className="w-full rounded-xl bg-white dark:bg-zinc-700/30 dark:from-inherit p-4 shadow-xl pb-0">
-      <div
-        className="flex h-[50vh] flex-col gap-5 divide-y overflow-y-auto pb-4"
-        ref={scrollableChatContainerRef}
-      >
-        {props.messages.map((m) => (
-          <ChatMessage key={m.id} {...m} />
-        ))}
+    messageLength > 0 && (
+      <div className="w-full rounded-xl bg-white dark:bg-zinc-700/30 dark:from-inherit p-4 shadow-xl pb-0">
+        <div
+          className="flex h-[50vh] flex-col gap-5 divide-y overflow-y-auto pb-4"
+          ref={scrollableChatContainerRef}
+        >
+          {props.messages.map((m) => (
+            <ChatMessage key={m.id} {...m} />
+          ))}
+        </div>
+        <div className="flex justify-end py-4">
+          <ChatActions
+            reload={props.reload}
+            stop={props.stop}
+            showReload={showReload}
+            showStop={showStop}
+          />
+        </div>
       </div>
-      <div className="flex justify-end py-4">
-        <ChatActions
-          reload={props.reload}
-          stop={props.stop}
-          showReload={showReload}
-          showStop={showStop}
-        />
-      </div>
-    </div>
+    )
   );
 }

@@ -5,6 +5,8 @@ export interface Message {
 }
 
 export interface ChatHandler {
+  docSelected: string;
+  handleDocSelect: (doc: string) => void;
   messages: Message[];
   input: string;
   isLoading: boolean;
