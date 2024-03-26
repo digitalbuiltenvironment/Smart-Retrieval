@@ -152,10 +152,9 @@ def create_index():
             dimension=dimension,
         )
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        index = VectorStoreIndex.from_vector_store(vector_store=vector_store)
         logger.info("Checking if index exists in Supabase...")
-        logger.info(f"Index summary: {index.summary}")
-        if index.summary == "None":
+        index = load_existing_index()
+        if index.index_id is None:
             logger.info("Creating new index")
             # load the documents and create the index
             try:
@@ -175,7 +174,7 @@ def create_index():
 
 def load_existing_index():
     # load the existing index
-    if USE_LOCAL_VECTOR_STORE == "true":
+    if USE_LOCAL_VECTOR_STORE:
         # load the index from local storage
         logger.info(f"Loading index from {STORAGE_DIR}...")
         storage_context = StorageContext.from_defaults(persist_dir=STORAGE_DIR)
@@ -183,17 +182,18 @@ def load_existing_index():
             storage_context, service_context=service_context
         )
         logger.info(f"Finished loading index from {STORAGE_DIR}")
+        logger.info(f"Index ID: {index.index_id}")
         return index
     else:
         # load the index from Supabase
+        logger.info("Loading index from Supabase...")
         vector_store = SupabaseVectorStore(
             postgres_connection_string=os.getenv("POSTGRES_CONNECTION_STRING"),
             collection_name="base_demo",
         )
-        storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        index = load_index_from_storage(
-            storage_context, service_context=service_context
-        )
+        index = VectorStoreIndex.from_vector_store(vector_store=vector_store)
+        logger.info("Finished loading index from Supabase")
+        logger.info(f"Index ID: {index.index_id}")
         return index
 
 
