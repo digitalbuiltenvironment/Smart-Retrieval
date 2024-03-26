@@ -34,7 +34,7 @@ const HeaderNavLink: React.FC<NavLinkProps> = ({ href, title, children, onClick 
     );
 };
 
-const FooterNavLink: React.FC<NavLinkProps> = ({ href, children, onClick, target }) => {
+const FooterNavLink: React.FC<NavLinkProps> = ({ href, title, children, onClick, target }) => {
     const handleClick = () => {
         if (onClick) {
             onClick(); // Call the onClick handler if provided
@@ -42,7 +42,7 @@ const FooterNavLink: React.FC<NavLinkProps> = ({ href, children, onClick, target
     };
 
     return (
-        <Link href={href} passHref target={target}>
+        <Link href={href} passHref target={target} title={title}>
             {/* Add a class to highlight the active tab */}
             <div className="flex items-center font-bold" onClick={handleClick}>
                 {children}

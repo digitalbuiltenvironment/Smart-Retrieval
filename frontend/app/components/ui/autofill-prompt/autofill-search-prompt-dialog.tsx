@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { QuestionsBankProp, questionsBank } from "@/app/components/ui/autofill-prompt/autofill-prompt.interface";
+import { QuestionsBankProp, psscocQuestionsBank } from "@/app/components/ui/autofill-prompt/autofill-prompt.interface";
 import { SearchHandler } from "@/app/components/ui/search/search.interface";
 
 export default function AutofillSearchQuery(
@@ -7,6 +7,10 @@ export default function AutofillSearchQuery(
     SearchHandler,
     "query" | "isLoading" | "onSearchSubmit" | "onInputChange" | "results" | "searchButtonPressed"
   >,
+  // Optional prop for the dialog message
+  dialogMessage?: string,
+  // Optional prop for the selected document set
+  docSelected?: string
 ) {
   // Keep track of whether to show the overlay
   const [showOverlay, setShowOverlay] = useState(true);
@@ -29,7 +33,7 @@ export default function AutofillSearchQuery(
   // Randomly select a subset of 3-4 questions
   useEffect(() => {
     // Shuffle the questionsBank array
-    const shuffledQuestions = shuffleArray(questionsBank);
+    const shuffledQuestions = shuffleArray(psscocQuestionsBank);
     // Get a random subset of 3-4 questions
     const subsetSize = Math.floor(Math.random() * 2) + 3; // Randomly choose between 3 and 4
     const selectedQuestions = shuffledQuestions.slice(0, subsetSize);
@@ -77,6 +81,8 @@ export default function AutofillSearchQuery(
         <div className="relative mx-auto">
           <div className="rounded-lg pt-5 pr-10 pl-10 flex flex-col divide-y overflow-y-auto pb-4 bg-white dark:bg-zinc-700/30 shadow-xl">
             <h2 className="text-lg text-center font-semibold mb-4">How can I help you today?</h2>
+            {dialogMessage && <p className="text-center text-sm text-gray-500 mb-4">{dialogMessage}</p>}
+            <p className="text-center text-sm text-gray-500 mb-4">Smart Retrieval may not be 100% accurate. Consider checking important information.</p>
             {randomQuestions.map((question, index) => (
               <ul>
                 <li key={index} className={`p-2 mb-2 border border-zinc-500/30 dark:border-white rounded-lg hover:bg-zinc-500/30 transition duration-300 ease-in-out transform cursor-pointer ${index <= currentQuestionIndex ? 'opacity-100 duration-500' : 'opacity-0'}`}>
