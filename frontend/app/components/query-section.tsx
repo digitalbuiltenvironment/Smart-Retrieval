@@ -2,7 +2,7 @@
 
 import { useChat } from "ai/react";
 import { ChatInput, ChatMessages } from "@/app/components/ui/chat";
-import AutofillQuestion from "@/app/components/ui/autofill-prompt/autofill-prompt-dialog";
+import { AutofillQuestion } from "./ui/autofill-prompt";
 import { useSession } from "next-auth/react";
 
 export default function QuerySection() {
@@ -32,6 +32,7 @@ export default function QuerySection() {
                 stop={stop}
             />
             <AutofillQuestion
+                docSelected="PSSCOC"
                 messages={messages}
                 isLoading={isLoading}
                 handleSubmit={handleSubmit}

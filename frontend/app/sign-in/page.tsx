@@ -2,6 +2,8 @@
 
 import { GoogleLoginButton, SGIDLoginButton } from '@/app/components/ui/login-buttons';
 import { useRouter } from 'next/navigation';
+import { Suspense } from 'react'
+import { Skeleton } from "@nextui-org/react";
 
 const SignInPage = () => {
   const router = useRouter();
@@ -15,8 +17,15 @@ const SignInPage = () => {
               Your intelligent solution for quick and accurate information retrieval.
             </p>
             <div className="flex flex-col gap-4">
-              <GoogleLoginButton />
-              <SGIDLoginButton />
+              <Suspense fallback={
+                <>
+                  <Skeleton/>
+                  <Skeleton/>
+                </>
+              }>
+                <GoogleLoginButton />
+                <SGIDLoginButton />
+              </Suspense>
               <p className="text-gray-200 text-sm">
                 Note: SGID login is only available via SingPass App.
               </p>
