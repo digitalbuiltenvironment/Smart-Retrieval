@@ -21,10 +21,14 @@ export default function ChatSection() {
     stop,
   } = useChat({
     api: process.env.NEXT_PUBLIC_CHAT_API,
-    // Add the access token to the request headers
     headers: {
+      // Add the access token to the request headers
       'Authorization': `Bearer ${supabaseAccessToken}`,
-    }
+    },
+    body: {
+      // Add the selected document to the request body
+      document: docSelected,
+    },
   });
 
   return (
@@ -32,7 +36,6 @@ export default function ChatSection() {
       {docSelected ?
         (
           <>
-            <h2 className="text-lg text-center font-semibold mb-4">Chat with {docSelected}</h2>
             <ChatMessages
               messages={messages}
               isLoading={isLoading}
