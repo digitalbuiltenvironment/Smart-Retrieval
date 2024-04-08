@@ -1,3 +1,4 @@
+import logging
 import os
 
 from fastapi import APIRouter, Depends, Request
@@ -24,6 +25,8 @@ async def healthcheck(
     # else:
     #     results["index"] = False
 
+    logger = logging.getLogger("uvicorn")
+
     # TODO: check if other services are ready
 
     # Try to connect to supabase
@@ -39,15 +42,17 @@ async def healthcheck(
         ),
     )
 
-    response = supabase.table("users").select("id").execute()
+    response = supabase.table("users").select("id", count="exact").execute()
 
-    if response.count >= 0:
+    # logger.info(f"Supabase: {response}")
+
+    if response.count is not None:
         results["supabase"] = True
     else:
         results["supabase"] = False
 
     results["backend"] = True
-    # logger.info("Healthcheck: {results}")
+    logger.debug(f"Healthcheck: {results}")
     return results
 
 
