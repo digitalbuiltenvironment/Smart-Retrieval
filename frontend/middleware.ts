@@ -15,7 +15,7 @@ export const middleware = async (request: NextRequest) => {
 
         // Check the database for the session token
         const supabase = createClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+            process.env.SUPABASE_URL ?? '',
             process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
             { db: { schema: 'next_auth' } },
         );

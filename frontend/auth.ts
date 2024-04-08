@@ -94,7 +94,7 @@ export const config = {
     ],
     // Persist accounts and session state to Supabase
     adapter: SupabaseAdapter({
-        url: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+        url: process.env.SUPABASE_URL || '',
         secret: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
     }) as Adapter,
     pages: {
