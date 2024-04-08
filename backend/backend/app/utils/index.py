@@ -20,6 +20,7 @@ from llama_index.llms.llama_utils import (
     messages_to_prompt,
 )
 from llama_index.vector_stores.supabase import SupabaseVectorStore
+from vecs import IndexMeasure
 
 from backend.app.utils.contants import (
     CHUNK_OVERLAP,
@@ -30,6 +31,7 @@ from backend.app.utils.contants import (
     DATA_DIR,
     DEF_EMBED_MODEL_DIMENSIONS,
     DEVICE_TYPE,
+    EMBED_BATCH_SIZE,
     EMBED_MODEL_DIMENSIONS,
     EMBED_MODEL_NAME,
     EMBED_POOLING,
@@ -98,7 +100,7 @@ else:
         api_key=os.getenv("OPENAI_API_KEY"),
     )
     # By default, LlamaIndex uses text-embedding-ada-002 from OpenAI
-    embed_model = OpenAIEmbedding(embed_batch_size=42)
+    embed_model = OpenAIEmbedding(embed_batch_size=EMBED_BATCH_SIZE)
 
     prompt_helper = PromptHelper(
         chunk_size_limit=CHUNK_SIZE_LIMIT,
@@ -118,99 +120,124 @@ else:
 
 
 def create_index():
-    # if use local vector store, store the index locally
+    # if use local vector store, create & store the index locally
     if USE_LOCAL_VECTOR_STORE:
-        logger.info("Checking if index exists locally...")
-        # check if storage already exists
-        if not os.path.exists(STORAGE_DIR):
-            logger.info("Creating new index")
-            # load the documents and create the index
-            try:
-                documents = SimpleDirectoryReader(
-                    input_dir=DATA_DIR, recursive=True
-                ).load_data()
-            except ValueError as e:
-                logger.error(f"{e}")
-            index = VectorStoreIndex.from_documents(
-                documents=documents, service_context=service_context, show_progress=True
-            )
-            # store it for later
-            index.storage_context.persist(STORAGE_DIR)
-            logger.info(f"Finished creating new index. Stored in {STORAGE_DIR}")
-        else:
-            # do nothing
-            logger.info(f"Index already exist at {STORAGE_DIR}...")
-    # else, store the index in Supabase
+        # get the folders in the data directory
+        collection_names = os.listdir(DATA_DIR)
+        # to create each folder as a collection in local storage
+        for collection_name in collection_names:
+            logger.info(f"Checking if [{collection_names}] index exists locally...")
+            # build the new data directory
+            new_data_dir = os.path.join(DATA_DIR, collection_name)
+            # build the new storage directory
+            new_storage_dir = os.path.join(STORAGE_DIR, collection_name)
+            # check if storage folder and index files already exists
+            if (
+                not os.path.exists(new_storage_dir)
+                or len(os.listdir(new_storage_dir))
+                < 4  # 4 files should be present if using simplevectorstore
+            ):
+                logger.info(f"Creating [{collection_names}] index")
+                # load the documents and create the index
+                try:
+                    documents = SimpleDirectoryReader(
+                        input_dir=new_data_dir, recursive=True
+                    ).load_data()
+                except ValueError as e:
+                    logger.error(f"{e}")
+                index = VectorStoreIndex.from_documents(
+                    documents=documents,
+                    service_context=service_context,
+                    show_progress=True,
+                )
+                # store it for later
+                index.storage_context.persist(STORAGE_DIR)
+                logger.info(f"Finished creating new index. Stored in {STORAGE_DIR}")
+            else:
+                # do nothing
+                logger.info(f"Index already exist at {STORAGE_DIR}...")
+    # else, create & store the index in Supabase pgvector
     else:
-        # check if remote storage already exists
-        dimension = (
-            EMBED_MODEL_DIMENSIONS if USE_LOCAL_LLM else DEF_EMBED_MODEL_DIMENSIONS
-        )
-        vector_store = SupabaseVectorStore(
-            postgres_connection_string=os.getenv("POSTGRES_CONNECTION_STRING"),
-            collection_name="base_demo",
-            dimension=dimension,
-        )
-        storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        logger.info("Checking if index exists in Supabase...")
-        index = load_existing_index()
-        if index.index_id is None:
-            logger.info("Creating new index")
+        # get the folders in the data directory
+        collection_names = os.listdir(DATA_DIR)
+        # to create each folder as a collection in Supabase
+        for collection_name in collection_names:
+            # check if remote storage already exists
+            logger.info(f"Checking if [{collection_name}] index exists in Supabase...")
+            # set the dimension based on the LLM model used
+            dimension = (
+                EMBED_MODEL_DIMENSIONS if USE_LOCAL_LLM else DEF_EMBED_MODEL_DIMENSIONS
+            )
+            # create the vector store, will create the collection if it does not exist
+            vector_store = SupabaseVectorStore(
+                postgres_connection_string=os.getenv("POSTGRES_CONNECTION_STRING"),
+                collection_name=collection_name,
+                dimension=dimension,
+            )
+            # create the storage context
+            storage_context = StorageContext.from_defaults(vector_store=vector_store)
+            logger.info(f"Creating [{collection_name}] index")
+            # create the data directory
+            new_data_dir = os.path.join(DATA_DIR, collection_name)
             # load the documents and create the index
             try:
                 documents = SimpleDirectoryReader(
-                    input_dir=DATA_DIR, recursive=True
+                    input_dir=new_data_dir, recursive=True
                 ).load_data()
             except ValueError as e:
                 logger.error(f"{e}")
             index = VectorStoreIndex.from_documents(
-                documents=documents, storage_context=storage_context, show_progress=True
+                documents=documents,
+                storage_context=storage_context,
+                show_progress=True,
             )
-            logger.info("Finished creating new index")
-        else:
-            # do nothing
-            logger.info("Index already exist in Supabase...")
+            logger.info(f"Finished creating [{collection_name}] vector store")
 
 
-def load_existing_index():
+def load_existing_index(collection_name="PSSCOC"):
     # load the existing index
     if USE_LOCAL_VECTOR_STORE:
+        # create the storage directory
+        new_storage_dir = os.path.join(STORAGE_DIR, collection_name)
         # load the index from local storage
-        logger.info(f"Loading index from {STORAGE_DIR}...")
-        storage_context = StorageContext.from_defaults(persist_dir=STORAGE_DIR)
+        logger.info(f"Loading [{collection_name}] index from {new_storage_dir}...")
+        storage_context = StorageContext.from_defaults(persist_dir=new_storage_dir)
         index = load_index_from_storage(
             storage_context, service_context=service_context
         )
-        logger.info(f"Finished loading index from {STORAGE_DIR}")
+        logger.info(
+            f"Finished loading [{collection_name}] index from {new_storage_dir}"
+        )
         logger.info(f"Index ID: {index.index_id}")
         return index
     else:
         # load the index from Supabase
-        logger.info("Loading index from Supabase...")
+        logger.info(f"Loading [{collection_name}] index from Supabase...")
+        # set the dimension based on the LLM model used
+        dimension = (
+            EMBED_MODEL_DIMENSIONS if USE_LOCAL_LLM else DEF_EMBED_MODEL_DIMENSIONS
+        )
+        # create the vector store
         vector_store = SupabaseVectorStore(
             postgres_connection_string=os.getenv("POSTGRES_CONNECTION_STRING"),
-            collection_name="base_demo",
+            collection_name=collection_name,
+            dimension=dimension,
         )
+        # check if the vector store has been indexed
+        if not vector_store._collection.is_indexed_for_measure(
+            IndexMeasure.cosine_distance
+        ):
+            logger.info(f"Indexing [{collection_name}] vector store...")
+            vector_store._collection.create_index()
+            logger.info(f"Finished indexing [{collection_name}] vector store")
+        logger.info(vector_store._collection.name)
         index = VectorStoreIndex.from_vector_store(vector_store=vector_store)
-        logger.info("Finished loading index from Supabase")
+        logger.info(f"Finished loading [{collection_name}] index from Supabase")
         logger.info(f"Index ID: {index.index_id}")
         return index
 
 
-def get_index():
-    # check if storage already exists
-    if not os.path.exists(STORAGE_DIR):
-        # create the index if it does not exist
-        create_index()
-        # load the index from storage
-        index = load_existing_index()
-    # check if storage is empty, 4 files should be present if using simplevectorstore
-    elif os.path.exists(STORAGE_DIR) and len(os.listdir(STORAGE_DIR)) < 4:
-        # create the index if it does not exist
-        create_index()
-        # load the index from storage
-        index = load_existing_index()
-    else:
-        # load the index from storage
-        index = load_existing_index()
+def get_index(collection_name):
+    # load the index from storage
+    index = load_existing_index(collection_name)
     return index

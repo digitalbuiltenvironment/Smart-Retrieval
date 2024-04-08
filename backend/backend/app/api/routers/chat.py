@@ -4,7 +4,6 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
 from fastapi.websockets import WebSocketDisconnect
-from llama_index import VectorStoreIndex
 from llama_index.llms.base import ChatMessage
 from llama_index.llms.types import MessageRole
 from llama_index.memory import ChatMemoryBuffer
@@ -35,6 +34,7 @@ class _Message(BaseModel):
 
 class _ChatData(BaseModel):
     messages: List[_Message]
+    document: str
 
 
 # custom prompt template to be used by chat engine
@@ -70,8 +70,13 @@ async def chat(
     # Note: To support clients sending a JSON object using content-type "text/plain",
     # we need to use Depends(json_to_model(_ChatData)) here
     data: _ChatData = Depends(json_to_model(_ChatData)),
-    index: VectorStoreIndex = Depends(get_index),
 ):
+    logger = logging.getLogger("uvicorn")
+    # get the document set selected from the request body
+    document_set = data.document
+    logger.info(f"Document Set: {document_set}")
+    # get the index for the selected document set
+    index = get_index(collection_name=document_set)
     # check preconditions and get last message
     if len(data.messages) == 0:
         raise HTTPException(
@@ -93,8 +98,6 @@ async def chat(
         for m in data.messages
     ]
 
-    logger = logging.getLogger("uvicorn")
-
     # query_engine = index.as_query_engine()
     # chat_engine = CondenseQuestionChatEngine.from_defaults(
     #     query_engine=query_engine,
@@ -103,9 +106,11 @@ async def chat(
     #     verbose=True,
     # )
 
+    logger.info(f"Messages: {messages}")
+
     memory = ChatMemoryBuffer.from_defaults(
         chat_history=messages,
-        token_limit=2000,
+        token_limit=3900,
     )
 
     logger.info(f"Memory: {memory.get()}")
@@ -116,7 +121,7 @@ async def chat(
         memory=memory,
         context_prompt=(
             "You are a helpful chatbot, able to have normal interactions, as well as answer questions"
-            " regarding information relating to the Public Sector Standard Conditions Of Contract (PSSCOC) and iCoreSpec Engineering Specification Documents.\n"
+            " regarding information relating to the Public Sector Standard Conditions Of Contract (PSSCOC) Documents and JTC's Employer Information Requirements (EIR) Documents.\n"
             "All the documents are in the context of the construction industry in Singapore.\n"
             "Here are the relevant documents for the context:\n"
             "{context_str}"
