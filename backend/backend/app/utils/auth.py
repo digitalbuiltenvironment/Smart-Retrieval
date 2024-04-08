@@ -16,6 +16,9 @@ API_AUTH_HEADER_NAME: str = os.getenv(
     key="API_AUTH_HEADER_NAME", default="Authorization"
 )
 
+# Retrieve the Backend API key header from the environment
+API_KEY_HEADER_NAME: str = os.getenv(key="API_KEY_HEADER_NAME", default="X-API-Key")
+
 # Create an API key header instance
 API_AUTH_HEADER = APIKeyHeader(name=API_AUTH_HEADER_NAME, auto_error=False)
 
@@ -23,7 +26,7 @@ API_AUTH_HEADER = APIKeyHeader(name=API_AUTH_HEADER_NAME, auto_error=False)
 BACKEND_API_KEY: str = os.getenv(key="BACKEND_API_KEY")
 
 # Create an API key header instance
-API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=False)
+API_KEY_HEADER = APIKeyHeader(name=API_KEY_HEADER_NAME, auto_error=False)
 
 JWT_SECRET: str = os.getenv("SUPABASE_JWT_SECRET")
 JWT_ALGORITHM = "HS256"
