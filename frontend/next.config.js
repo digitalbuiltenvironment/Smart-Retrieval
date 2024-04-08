@@ -3,6 +3,22 @@ const nextConfig = {
   // experimental: {
   //   serverComponentsExternalPackages: ["llamaindex"],
   // },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.googleusercontent.com",
+        port: "",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.imgur.com",
+        port: "",
+        pathname: "**",
+      }
+    ]
+  },
   compiler: {
     // Enables the styled-components SWC transform
     styledComponents: true
@@ -12,7 +28,7 @@ const nextConfig = {
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      config.externals.push({ "bufferutil": "bufferutil", "utf-8-validate": "utf-8-validate", "supports-color": "supports-color" }); 
+      config.externals.push({ "bufferutil": "bufferutil", "utf-8-validate": "utf-8-validate", "supports-color": "supports-color" });
     }
     return config;
   }
