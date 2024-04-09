@@ -31,11 +31,11 @@ if __name__ == "__main__":
         # Create the vector store
         from backend.app.utils.index import create_index
 
-        logger.info("Creating vector stores first...")
+        logger.info("Indexing Documents & Creating Vector Stores...")
         create_index()
-        logger.info("Vector stores created successfully! Running App...")
+        logger.info("Vector Stores created successfully! Exiting...")
         # Run the app
-        run_app()
+        # run_app()
     else:
         # Run the app
         run_app()
