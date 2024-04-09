@@ -6,8 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { SearchHandler, SearchResult } from "@/app/components/ui/search/search.interface";
 
 export default function SearchResults(
-     props: Pick<SearchHandler, "query" | "results" | "isLoading" | "searchButtonPressed">
-    ) {
+    props: Pick<SearchHandler, "query" | "results" | "isLoading" | "searchButtonPressed">
+) {
     const [sortedResults, setSortedResults] = useState<SearchResult[]>([]);
     const [expandedResult, setExpandedResult] = useState<number | null>(null);
 
@@ -17,11 +17,10 @@ export default function SearchResults(
             // Reset sortedResults when query is empty
             setSortedResults([]);
         } else if (props.query.trim() !== "" && props.searchButtonPressed) {
-            // if results are empty
-            if (props.results.length === 0) {
+            // if results are empty or not an array
+            if (!Array.isArray(props.results) || props.results.length === 0) {
                 setSortedResults([]);
-            }
-            else {
+            } else {
                 // Sort results by similarity score
                 const sorted = props.results.slice().sort((a, b) => b.similarity_score - a.similarity_score);
                 // Update sortedResults state

@@ -71,16 +71,18 @@ def get_user_from_JWT(token: str):
     )
 
     payload = decodeJWT(token)
-    user_id = payload["sub"]
 
-    if user_id is not None:
+    if payload is not None:
+        user_id = payload["sub"]
         # Try to get the user from the database using the user_id
         response = supabase.table("users").select("*").eq("id", user_id).execute()
         # print(response.data)
         if len(response.data) == 0:
             return False
-        return True
-    return False
+        else:
+            return True
+    else:
+        return False
 
 
 async def validate_user(
@@ -89,13 +91,17 @@ async def validate_user(
 ):
     try:
         logger = logging.getLogger("uvicorn")
-        # logger.debug(f"Auth Token: {auth_token} | API Key: {api_key}")
+        # logger.info(f"Auth Token: {auth_token} | API Key: {api_key}")
         if auth_token is not None or api_key is not None:
             # If the access token is empty, use the 'X-API-Key' from the header
-            if auth_token is None:
+            if auth_token is None or "null" in auth_token:
                 # Access the 'X-API-Key' header directly
                 if BACKEND_API_KEY is None:
                     raise ValueError("Backend API key is not set in Backend Service!")
+                if "null" in api_key:
+                    raise ValueError(
+                        "Invalid API key provided in the 'X-API-Key' header!"
+                    )
                 # If the 'X-API-Key' does not match the backend API key, raise an error
                 if api_key != BACKEND_API_KEY:
                     raise ValueError(
@@ -123,7 +129,7 @@ async def validate_user(
                         "Invalid token scheme. Please use the format 'Bearer [token]'"
                     )
                 # Verify the JWT token is valid
-                if verify_jwt(jwtoken=jwtoken) is None:
+                if verify_jwt(jwtoken=jwtoken):
                     return "Invalid token. Please provide a valid token."
                 # Check if the user exists in the database
                 if get_user_from_JWT(token=jwtoken):

@@ -4,7 +4,6 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
 from fastapi.websockets import WebSocketDisconnect
-from llama_index import VectorStoreIndex
 from llama_index.llms.types import MessageRole
 from pydantic import BaseModel
 
@@ -28,6 +27,7 @@ class _Message(BaseModel):
 
 class _ChatData(BaseModel):
     messages: List[_Message]
+    document: str
 
 
 @r.post("")
@@ -36,8 +36,13 @@ async def query(
     # Note: To support clients sending a JSON object using content-type "text/plain",
     # we need to use Depends(json_to_model(_ChatData)) here
     data: _ChatData = Depends(json_to_model(_ChatData)),
-    index: VectorStoreIndex = Depends(get_index),
 ):
+    logger = logging.getLogger("uvicorn")
+    # get the document set selected from the request body
+    document_set = data.document
+    logger.info(f"Document Set: {document_set}")
+    # get the index for the selected document set
+    index = get_index(collection_name=document_set)
     # check preconditions and get last message which is query
     if len(data.messages) == 0:
         raise HTTPException(
@@ -50,7 +55,6 @@ async def query(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Last message must be from user",
         )
-    logger = logging.getLogger("uvicorn")
     logger.info(f"Query: {lastMessage}")
 
     # Query index

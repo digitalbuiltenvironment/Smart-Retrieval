@@ -124,11 +124,12 @@ export const config = {
                 token.accessToken = account.access_token
                 token.id = profile?.sub
             }
-            return token
+            return token;
         },
         async session({ session, token, user }) {
             // Send properties to the client, like an access_token from a provider.
             const signingSecret = process.env.SUPABASE_JWT_SECRET
+            // console.log('Signing Secret:', signingSecret);
             if (signingSecret) {
                 const payload = {
                     aud: "authenticated",
@@ -137,11 +138,12 @@ export const config = {
                     // email: user.email,
                     role: "authenticated",
                 }
-                session.supabaseAccessToken = jwt.sign(payload, signingSecret)
+                session.supabaseAccessToken = jwt.sign(payload, signingSecret) as string;
+                // console.log('New Session:', session);
                 // session.jwt = token.jwt as string;
                 // session.id = token.id as string;
             }
-            return session
+            return session;
         },
 
     }
