@@ -2,6 +2,7 @@
 __pycache__
 storage
 .env
+**/data/EIR/
 
 # Dev Folders
 test.py
