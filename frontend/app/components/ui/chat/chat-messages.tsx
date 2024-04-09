@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 
-import ChatActions from "./chat-actions";
-import ChatMessage from "./chat-message";
-import { ChatHandler } from "./chat.interface";
+import ChatActions from "@/app/components/ui/chat/chat-actions";
+import ChatMessage from "@/app/components/ui/chat/chat-message";
+import { ChatHandler } from "@/app/components/ui/chat/chat.interface";
 
 export default function ChatMessages(
   props: Pick<ChatHandler, "messages" | "isLoading" | "reload" | "stop">,
