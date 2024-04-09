@@ -10,6 +10,9 @@ on:
 jobs:
   test-build-node-js-app:
     uses: ./.github/workflows/node-js-tests.yml
+    secrets:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
   test-build-python-package:
     uses: ./.github/workflows/python-tests.yml
   sync-to-deployment-fork:
