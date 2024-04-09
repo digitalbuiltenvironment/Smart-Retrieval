@@ -53,7 +53,7 @@ export default function Header() {
   const signinPage = "/sign-in?callbackUrl=" + encodedPath;
 
   // Get user session for conditional rendering of user profile and logout buttons and for fetching the API status
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession()
   // console.log('session:', session, 'status:', status);
   const supabaseAccessToken = session?.supabaseAccessToken;
   // Use SWR for API status fetching
@@ -94,7 +94,7 @@ export default function Header() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+  }, [session]);
 
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
