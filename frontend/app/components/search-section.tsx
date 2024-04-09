@@ -19,7 +19,7 @@ const SearchSection: React.FC = () => {
   const handleSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
     setSearchButtonPressed(true);
-    handleSearch(query);
+    handleSearch(query, docSelected);
   };
 
   return (

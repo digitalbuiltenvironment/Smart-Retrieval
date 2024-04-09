@@ -2,7 +2,6 @@ import logging
 import re
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from llama_index import VectorStoreIndex
 from llama_index.postprocessor import SimilarityPostprocessor
 from llama_index.retrievers import VectorIndexRetriever
 
@@ -22,16 +21,18 @@ Instead it returns the relevant information from the index.
 @r.get("")
 async def search(
     request: Request,
-    index: VectorStoreIndex = Depends(get_index),
     query: str = None,
+    docSelected: str = None,
 ):
     # query = request.query_params.get("query")
     logger = logging.getLogger("uvicorn")
-    logger.info(f"Search: {query}")
-    if query is None:
+    logger.info(f"Document Set: {docSelected} | Search: {query}")
+    # get the index for the selected document set
+    index = get_index(collection_name=docSelected)
+    if query is None or docSelected is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No search info provided",
+            detail="No search info/document set provided",
         )
 
     # configure retriever
