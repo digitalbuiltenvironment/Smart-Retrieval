@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Skeleton } from "@nextui-org/react";
 import Image from 'next/image';
+import { User2 } from 'lucide-react';
 
 const ProfilePage: React.FC = () => {
     const [name, setName] = useState('');
@@ -62,7 +63,8 @@ const ProfilePage: React.FC = () => {
                 <div className="flex flex-col w-full justify-center mr-8 gap-4">
                     <h1>Profile Settings</h1>
                     <Skeleton isLoaded={isLoaded} className='rounded-full w-20'>
-                        <Image className="rounded-full" src={imageURL} alt={name} width={84} height={84} />
+                        {/* use default user image if there is no imageURL */}
+                        {imageURL ? <Image className="rounded-full" src={imageURL} alt={name} width={84} height={84} /> : <User2 size={84} />}
                     </Skeleton>
                     <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
                         <label className="flex flex-col">
