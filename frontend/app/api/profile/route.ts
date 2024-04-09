@@ -2,6 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
+    const { pathname, origin } = request.nextUrl;
+    const signinPage = new URL('/sign-in', origin);
     // Retrieve the session token from the request cookies
     const session = request.cookies.get('next-auth.session-token');
 
@@ -23,7 +25,7 @@ export async function GET(request: NextRequest) {
 
     if (sessionError) {
         console.error('Error fetching session from database:', sessionError.message);
-        return NextResponse.redirect('/sign-in', { status: 302 });
+        return NextResponse.redirect(signinPage.href, { status: 302 });
     }
 
     // Retrieve the user's profile data
@@ -35,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     if (userError) {
         console.error('Error fetching user data from database:', userError.message);
-        return NextResponse.redirect('/sign-in', { status: 302 });
+        return NextResponse.redirect(signinPage.href, { status: 302 });
     }
 
     // console.log('userData:', userData);
