@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
     const { pathname, origin } = request.nextUrl;
     const signinPage = new URL('/sign-in', origin);
     // Retrieve the session token from the request cookies
-    const session = request.cookies.get('next-auth.session-token');
+    const session = request.cookies.get('next-auth.session-token') || request.cookies.get('__Secure-next-auth.session-token');
 
     // Create a new Supabase client
     const supabase = createClient(
