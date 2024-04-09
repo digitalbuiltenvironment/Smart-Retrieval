@@ -10,6 +10,11 @@ on:
     branches: [ "main" ]
   # to run this workflow from another workflow
   workflow_call:
+    secrets:
+      SUPABASE_URL:
+        required: true
+      SUPABASE_SERVICE_ROLE_KEY:
+        required: true
 
 jobs:
   build:
