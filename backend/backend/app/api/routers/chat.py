@@ -110,7 +110,7 @@ async def chat(
 
     memory = ChatMemoryBuffer.from_defaults(
         chat_history=messages,
-        token_limit=3900,
+        token_limit=4096,
     )
 
     logger.info(f"Memory: {memory.get()}")
