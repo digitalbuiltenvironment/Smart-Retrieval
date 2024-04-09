@@ -11,6 +11,7 @@ import { HeaderNavLink } from '@/app/components/ui/navlink';
 import { MobileMenu } from '@/app/components/ui/mobilemenu';
 import { IconSpinner } from '@/app/components/ui/icons';
 import { useSession, signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 
 const MobileMenuItems = [
   {
@@ -44,6 +45,13 @@ export default function Header() {
   const isLargeScreen = useMedia('(min-width: 1024px)', false);
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+  // Get the current path
+  const currentPath = usePathname();
+  // Ensure the currentPath is encoded
+  const encodedPath = encodeURIComponent(currentPath);
+  // Add callbackUrl params to the signinPage URL
+  const signinPage = "/sign-in?callbackUrl=" + encodedPath;
+
   // Get user session for conditional rendering of user profile and logout buttons and for fetching the API status
   const { data: session, status } = useSession();
   // console.log('session:', session, 'status:', status);
@@ -241,7 +249,7 @@ export default function Header() {
                 </button>
               </>
             ) : (
-              <HeaderNavLink href="/sign-in" title='Sign In'>
+              <HeaderNavLink href={signinPage} title='Sign In'>
                 <div className="flex items-center ml-2 transition duration-300 ease-in-out transform hover:scale-125">
                   <LogIn className="mr-1 h-5 w-5" />
                   Sign In

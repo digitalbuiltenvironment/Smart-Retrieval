@@ -20,13 +20,18 @@ function GoogleLoginButton({
 }: LoginButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams()
-  const callbackURL = searchParams.get("callbackUrl"); // Get the 'callbackURL' query parameter
+  let tempcallbackURL = searchParams.get("callbackUrl"); // Get the 'callbackURL' query parameter
+  let callbackURL = tempcallbackURL;
+  // if callbackURL is not provided, default to home page
+  if (!tempcallbackURL) {
+    callbackURL = '/';
+  }
   return (
     <Button
       variant="outline"
       onClick={() => {
         setIsLoading(true);
-        signIn('google', {redirect: true, callbackUrl: callbackURL as string});
+        signIn('google', { redirect: true, callbackUrl: callbackURL as string });
       }}
       className={cn(className)}
       {...props}
@@ -50,13 +55,18 @@ function SGIDLoginButton({
 }: LoginButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams()
-  const callbackURL = searchParams.get("callbackUrl"); // Get the 'callbackURL' query parameter
+  const tempcallbackURL = searchParams.get("callbackUrl"); // Get the 'callbackURL' query parameter
+  let callbackURL = tempcallbackURL;
+  // if callbackURL is not provided, default to home page
+  if (!tempcallbackURL) {
+    callbackURL = '/';
+  }
   return (
     <Button
       variant="outline"
       onClick={() => {
         setIsLoading(true);
-        signIn('sgid', {redirect: true, callbackUrl: callbackURL as string});
+        signIn('sgid', { redirect: true, callbackUrl: callbackURL as string });
       }}
       className={cn(className)}
       {...props}
