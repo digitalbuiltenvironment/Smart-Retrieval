@@ -8,7 +8,7 @@ export const middleware = async (request: NextRequest) => {
     // Add callbackUrl params to the signinPage URL
     signinPage.searchParams.set('callbackUrl', pathname);
     // Retrieve the session token from the request cookies
-    const session = request.cookies.get('next-auth.session-token');
+    const session = request.cookies.get('next-auth.session-token') || request.cookies.get('__Secure-next-auth.session-token');
 
     if (session) {
         // console.log('session:', session);
