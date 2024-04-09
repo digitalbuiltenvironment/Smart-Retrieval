@@ -70,22 +70,22 @@ const ProfilePage: React.FC = () => {
                         <label className="flex flex-col">
                             <span className='mb-2'>Name:</span>
                             <Skeleton isLoaded={isLoaded} className="rounded-lg">
-                                <input className='h-8 rounded-lg w-full bg-gray-400 dark:bg-zinc-700/30 border' type="text" value={name} onChange={handleNameChange} />
+                                <input className='h-8 rounded-lg w-full bg-gray-300 dark:bg-zinc-700/65 border px-2' type="text" value={name} onChange={handleNameChange} />
                             </Skeleton>
                         </label>
                         <label className="flex flex-col">
                             <span className='mb-2'>Email:</span>
                             <Skeleton isLoaded={isLoaded} className="rounded-lg">
-                                <input className='h-8 rounded-lg w-full bg-gray-400 dark:bg-zinc-700/30 border' type="email" value={email} onChange={handleEmailChange} />
+                                <input className='h-8 rounded-lg w-full bg-gray-300 dark:bg-zinc-700/65 border px-2' type="email" value={email} onChange={handleEmailChange} />
                             </Skeleton>
                         </label>
                         <label className="flex flex-col">
                             <span className='mb-2'>Image URL:</span>
                             <Skeleton isLoaded={isLoaded} className="rounded-lg">
-                                <textarea className='rounded-lg w-full bg-gray-400 dark:bg-zinc-700/30 border' value={imageURL} onChange={handleImageURLChange} />
+                                <textarea className='rounded-lg w-full bg-gray-300 dark:bg-zinc-700/65 border px-2' value={imageURL} onChange={handleImageURLChange} />
                             </Skeleton>
                         </label>
-                        <button type="submit" className="text-center items-center text-l disabled:bg-orange-400 bg-blue-500 text-white px-6 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105">Save</button>
+                        <button type="submit" disabled className="text-center items-center text-l disabled:bg-orange-400 bg-blue-500 text-white px-6 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105 disabled:hover:scale-100">Save</button>
                     </form>
                 </div>
             </div>
