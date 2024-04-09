@@ -31,10 +31,16 @@ jobs:
         cache-dependency-path: ./frontend/package-lock.json
     - name: Install Dependencies
       working-directory: ./frontend
-      run: npm ci
-    - name: Build Package
+      run: npm install
+    - name: Disable Next.js Telemetry
+      working-directory: ./frontend
+      run: npx next telemetry disable
+    - name: Test Build Package
       working-directory: ./frontend
       run: npm run build --if-present
+      env:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
   # - name: Run Test
     # working-directory: ./frontend
     # run: npm test
