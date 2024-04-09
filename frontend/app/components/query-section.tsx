@@ -25,7 +25,7 @@ export default function QuerySection() {
 
     return (
         <div className="space-y-4 max-w-5xl w-full">
-            <ChatMessages
+            {/* <ChatMessages
                 messages={messages}
                 isLoading={isLoading}
                 reload={reload}
@@ -44,7 +44,14 @@ export default function QuerySection() {
                 handleSubmit={handleSubmit}
                 handleInputChange={handleInputChange}
                 isLoading={isLoading}
-            />
+            /> */}
+
+            {/* Maintenance Page */}
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-center" role="alert">
+                <strong className="font-bold">A new feature is coming your way!</strong>
+                <br />
+                <span className="block sm:inline">The Q&A Page is currently undergoing upgrades. Please check back later.</span>
+            </div>
         </div>
     );
 }
