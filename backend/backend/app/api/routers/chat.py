@@ -4,17 +4,17 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
 from fastapi.websockets import WebSocketDisconnect
-from llama_index import VectorStoreIndex
 from llama_index.llms.base import ChatMessage
 from llama_index.llms.types import MessageRole
 from llama_index.memory import ChatMemoryBuffer
 from llama_index.prompts import PromptTemplate
 from pydantic import BaseModel
 
+from backend.app.utils import auth
 from backend.app.utils.index import get_index
 from backend.app.utils.json import json_to_model
 
-chat_router = r = APIRouter()
+chat_router = r = APIRouter(dependencies=[Depends(auth.validate_user)])
 
 """
 This router is for chatbot functionality which consist of chat memory and chat engine.
@@ -34,6 +34,7 @@ class _Message(BaseModel):
 
 class _ChatData(BaseModel):
     messages: List[_Message]
+    document: str
 
 
 # custom prompt template to be used by chat engine
@@ -69,8 +70,13 @@ async def chat(
     # Note: To support clients sending a JSON object using content-type "text/plain",
     # we need to use Depends(json_to_model(_ChatData)) here
     data: _ChatData = Depends(json_to_model(_ChatData)),
-    index: VectorStoreIndex = Depends(get_index),
 ):
+    logger = logging.getLogger("uvicorn")
+    # get the document set selected from the request body
+    document_set = data.document
+    logger.info(f"Document Set: {document_set}")
+    # get the index for the selected document set
+    index = get_index(collection_name=document_set)
     # check preconditions and get last message
     if len(data.messages) == 0:
         raise HTTPException(
@@ -92,8 +98,6 @@ async def chat(
         for m in data.messages
     ]
 
-    logger = logging.getLogger("uvicorn")
-
     # query_engine = index.as_query_engine()
     # chat_engine = CondenseQuestionChatEngine.from_defaults(
     #     query_engine=query_engine,
@@ -102,9 +106,11 @@ async def chat(
     #     verbose=True,
     # )
 
+    logger.info(f"Messages: {messages}")
+
     memory = ChatMemoryBuffer.from_defaults(
         chat_history=messages,
-        token_limit=2000,
+        token_limit=3900,
     )
 
     logger.info(f"Memory: {memory.get()}")
@@ -114,16 +120,22 @@ async def chat(
         chat_mode="condense_plus_context",
         memory=memory,
         context_prompt=(
-            "You are a chatbot, able to have normal interactions, as well as talk"
-            " about information from documents regarding Public Sector Standard Conditions Of Contract (PSSCOC)."
+            "You are a helpful chatbot, able to have normal interactions, as well as answer questions"
+            " regarding information relating to the Public Sector Standard Conditions Of Contract (PSSCOC) Documents and JTC's Employer Information Requirements (EIR) Documents.\n"
+            "All the documents are in the context of the construction industry in Singapore.\n"
             "Here are the relevant documents for the context:\n"
             "{context_str}"
-            "\nInstruction: Based on the above documents, provide a detailed answer for the user question below. If you cannot answer the question, inform the user that you do not know."
+            "\nInstruction: Based on the above documents, provide a detailed answer for the user question below.\n"
+            "If you cannot answer the question or are unsure of how to answer, inform the user that you do not know.\n"
+            "If you need to clarify the question, ask the user for clarification.\n"
+            "You are to provide the relevant sources of which you got the information from in the context in brackets."
         ),
     )
     response = chat_engine.stream_chat(
         message=lastMessage.content, chat_history=messages
     )
+
+    # logger.info(f"Response Sources: {response.source_nodes}")
 
     # stream response
     async def event_generator():

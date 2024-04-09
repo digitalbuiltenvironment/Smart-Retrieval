@@ -1,6 +1,12 @@
-from fastapi import APIRouter, Request
+import logging
+import os
 
-healthcheck_router = r = APIRouter()
+from fastapi import APIRouter, Depends, Request
+from supabase import Client, ClientOptions, create_client
+
+from backend.app.utils import auth
+
+healthcheck_router = r = APIRouter(dependencies=[Depends(auth.validate_user)])
 
 """
 This router is for healthcheck functionality.
@@ -19,14 +25,37 @@ async def healthcheck(
     # else:
     #     results["index"] = False
 
+    logger = logging.getLogger("uvicorn")
+
     # TODO: check if other services are ready
 
-    # logger.info("Healthcheck: {results}")
+    # Try to connect to supabase
+    supabase_url: str = os.environ.get("SUPABASE_URL")
+    supabase_key: str = os.environ.get("SUPABASE_ANON_KEY")
 
-    results = {"status": "OK"}
+    supabase: Client = create_client(
+        supabase_url=supabase_url,
+        supabase_key=supabase_key,
+        options=ClientOptions(
+            postgrest_client_timeout=10,
+            storage_client_timeout=10,
+        ),
+    )
+
+    response = supabase.table("users").select("id", count="exact").execute()
+
+    # logger.info(f"Supabase: {response}")
+
+    if response.count is not None:
+        results["supabase"] = True
+    else:
+        results["supabase"] = False
+
+    results["backend"] = True
+    logger.debug(f"Healthcheck: {results}")
     return results
 
 
 # Simple test to check if the healthcheck endpoint is working
 def test_healthcheck():
-    assert healthcheck() == {"status": "OK"}
+    assert healthcheck() == {"status": True, "supabase": True}

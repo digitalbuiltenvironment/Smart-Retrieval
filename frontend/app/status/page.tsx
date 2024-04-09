@@ -3,18 +3,26 @@
 import useSWR from 'swr';
 import { Button } from "@nextui-org/react";
 import { IconSpinner } from '@/app/components/ui/icons';
-
-// Define the API endpoint
-const healthcheck_api = process.env.NEXT_PUBLIC_HEALTHCHECK_API;
+import { useSession } from 'next-auth/react';
 
 const StatusPage = () => {
+  // Define the API endpoint
+  const healthcheck_api = "/api/status";
+  const { data: session, status } = useSession();
+  const supabaseAccessToken = session?.supabaseAccessToken;
+  // console.log('supabaseAccessToken:', supabaseAccessToken);
+
   // Use SWR hook to fetch data with caching and revalidation
   const { data, error, isValidating, mutate } = useSWR(healthcheck_api, async (url) => {
     try {
       // Fetch the data
       const response = await fetch(url, {
         signal: AbortSignal.timeout(5000), // Abort the request if it takes longer than 5 seconds
-        });
+        // Add the access token to the request headers
+        headers: {
+          'Authorization': `Bearer ${supabaseAccessToken}`,
+        }
+      });
       if (!response.ok) {
         throw new Error(response.statusText || 'Unknown Error');
       }

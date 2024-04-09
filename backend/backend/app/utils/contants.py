@@ -30,6 +30,11 @@ CHUNK_OVERLAP = 100
 # Embedding Model Constants
 EMBED_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 EMBED_POOLING = "mean"
+EMBED_MODEL_DIMENSIONS = 384  # MiniLM-L6-v2 uses 384 dimensions
+DEF_EMBED_MODEL_DIMENSIONS = (
+    1536  # Default embedding model dimensions used by OpenAI text-embedding-ada-002
+)
+EMBED_BATCH_SIZE = 100  # batch size for openai embeddings
 
 # Prompt Helper Constants
 # set maximum input size

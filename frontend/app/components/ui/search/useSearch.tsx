@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { SearchResult } from "@/app/components/ui/search/search.interface";
+import { useSession } from 'next-auth/react';
 
 interface UseSearchResult {
     searchResults: SearchResult[];
@@ -15,6 +16,9 @@ const useSearch = (): UseSearchResult => {
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isSearchButtonPressed, setIsSearchButtonPressed] = useState(false);
+    const { data: session, status } = useSession();
+    // console.log('session:', session, 'status:', status);
+    const supabaseAccessToken = session?.supabaseAccessToken;
 
     const handleSearch = async (query: string): Promise<void> => {
         setIsSearchButtonPressed(isSearchButtonPressed);
@@ -38,6 +42,10 @@ const useSearch = (): UseSearchResult => {
             }
             const response = await fetch(`${search_api}?query=${query}`, {
                 signal: AbortSignal.timeout(120000), // Abort the request if it takes longer than 120 seconds
+                // Add the access token to the request headers
+                headers: {
+                    'Authorization': `Bearer ${supabaseAccessToken}`,
+                }
             });
             const data = await response.json();
             setSearchResults(data);

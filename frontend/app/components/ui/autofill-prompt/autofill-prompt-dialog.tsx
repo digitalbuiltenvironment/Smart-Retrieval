@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { QuestionsBankProp, questionsBank } from "@/app/components/ui/autofill-prompt/autofill-prompt.interface";
+import { QuestionsBankProp, psscocQuestionsBank, eirQuestionsBank } from "@/app/components/ui/autofill-prompt/autofill-prompt.interface";
 import { ChatHandler } from "@/app/components/ui/chat/chat.interface";
 
 export default function AutofillQuestion(
   props: Pick<
     ChatHandler,
-    "messages" | "isLoading" | "handleSubmit" | "handleInputChange" | "input"
+    "docSelected" | "messages" | "isLoading" | "handleSubmit" | "handleInputChange" | "input"
   >,
 ) {
   // Keep track of whether to show the overlay
@@ -14,6 +14,8 @@ export default function AutofillQuestion(
   const [randomQuestions, setRandomQuestions] = useState<QuestionsBankProp[]>([]);
   // Keep track of the current question index
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  // Questions bank for PSSCOC or EIR
+  const [questionsBank, setQuestionsBank] = useState<QuestionsBankProp[]>(psscocQuestionsBank);
 
   // Shuffle the array using Fisher-Yates algorithm
   function shuffleArray(array: any[]) {
@@ -28,6 +30,13 @@ export default function AutofillQuestion(
 
   // Randomly select a subset of 3-4 questions
   useEffect(() => {
+    // Select the questions bank based on the document set selected
+    if (props.docSelected === "EIR") {
+      setQuestionsBank(eirQuestionsBank);
+    }
+    else {
+      setQuestionsBank(psscocQuestionsBank);
+    }
     // Shuffle the questionsBank array
     const shuffledQuestions = shuffleArray(questionsBank);
     // Get a random subset of 3-4 questions
@@ -37,7 +46,7 @@ export default function AutofillQuestion(
     setTimeout(() => {
       setRandomQuestions(selectedQuestions);
     }, 300);
-  }, []);
+  }, [questionsBank, props.docSelected]);
 
 
   // Hide overlay when there are messages
@@ -72,9 +81,9 @@ export default function AutofillQuestion(
   return (
     <>
       {showOverlay && (
-        <div className="fixed inset-0 flex items-center justify-center">
+        <div className="w-full rounded-xl bg-white dark:bg-zinc-700/30 dark:from-inherit p-4 shadow-xl pb-0">
           <div className="rounded-lg pt-5 pr-10 pl-10 flex h-[50vh] flex-col divide-y overflow-y-auto pb-4">
-            <h2 className="text-lg text-center font-semibold mb-4">How can I help you today?</h2>
+            <h2 className="text-lg text-center font-semibold mb-4">How can I help you with {props.docSelected} today?</h2>
             {randomQuestions.map((question, index) => (
               <ul>
                 <li key={index} className={`p-2 mb-2 border border-zinc-500/30 dark:border-white rounded-lg hover:bg-zinc-500/30 transition duration-300 ease-in-out transform cursor-pointer ${index <= currentQuestionIndex ? 'opacity-100 duration-500' : 'opacity-0'}`}>

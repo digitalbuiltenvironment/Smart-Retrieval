@@ -14,34 +14,37 @@ export default function ChatInput(
   return (
     <form
       onSubmit={props.handleSubmit}
-      className="flex w-full items-start justify-between gap-4 rounded-xl bg-white dark:bg-zinc-700/30 p-4 shadow-xl"
+      className="w-full items-start justify-between gap-4 rounded-xl bg-white dark:bg-zinc-700/30 p-4 shadow-xl"
     >
-      <Input
-        autoFocus
-        name="message"
-        placeholder="Type a Message"
-        className="flex-1 bg-white dark:bg-zinc-500/30 z-10"
-        value={props.input}
-        onChange={props.handleInputChange}
-      />
-      <Button type="submit" disabled={props.isLoading} className="hidden md:flex items-center transition duration-300 ease-in-out transform hover:scale-110 z-10">
-        {props.isLoading ? (
-          <IconSpinner className="animate-spin" />
-        ) : (
-          // Fragment to avoid wrapping the text in a button
-          <>
-            <span className="pr-2">Send</span>
+      <div className="flex w-full items-start justify-between gap-4">
+        <Input
+          autoFocus
+          name="message"
+          placeholder="Type a Message"
+          className="flex-1 bg-white dark:bg-zinc-500/30"
+          value={props.input}
+          onChange={props.handleInputChange}
+        />
+        <Button type="submit" disabled={props.isLoading} className="hidden md:flex items-center transition duration-300 ease-in-out transform hover:scale-110 z-10">
+          {props.isLoading ? (
+            <IconSpinner className="animate-spin" />
+          ) : (
+            // Fragment to avoid wrapping the text in a button
+            <>
+              <span className="pr-2">Send</span>
+              <Send className="h-5 w-5" />
+            </>
+          )}
+        </Button>
+        <Button type="submit" disabled={props.isLoading} className="md:hidden z-10"> {/* Hide on larger screens */}
+          {props.isLoading ? (
+            <IconSpinner className="animate-spin" />
+          ) : (
             <Send className="h-5 w-5" />
-          </>
-        )}
-      </Button>
-      <Button type="submit" disabled={props.isLoading} className="md:hidden z-10"> {/* Hide on larger screens */}
-        {props.isLoading ? (
-          <IconSpinner className="animate-spin" />
-        ) : (
-          <Send className="h-5 w-5" />
-        )}
-      </Button>
+          )}
+        </Button>
+      </div>
+      <p className="text-center text-sm text-gray-400 mt-2">Smart Retrieval may not be 100% accurate. Consider checking important information.</p>
     </form>
   );
 }

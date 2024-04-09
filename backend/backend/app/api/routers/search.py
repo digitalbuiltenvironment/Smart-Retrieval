@@ -6,9 +6,10 @@ from llama_index import VectorStoreIndex
 from llama_index.postprocessor import SimilarityPostprocessor
 from llama_index.retrievers import VectorIndexRetriever
 
+from backend.app.utils import auth
 from backend.app.utils.index import get_index
 
-search_router = r = APIRouter()
+search_router = r = APIRouter(dependencies=[Depends(auth.validate_user)])
 
 """
 This router is for search functionality which consist of query engine.
@@ -22,8 +23,9 @@ Instead it returns the relevant information from the index.
 async def search(
     request: Request,
     index: VectorStoreIndex = Depends(get_index),
+    query: str = None,
 ):
-    query = request.query_params.get("query")
+    # query = request.query_params.get("query")
     logger = logging.getLogger("uvicorn")
     logger.info(f"Search: {query}")
     if query is None:

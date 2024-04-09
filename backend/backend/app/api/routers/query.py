@@ -8,10 +8,11 @@ from llama_index import VectorStoreIndex
 from llama_index.llms.types import MessageRole
 from pydantic import BaseModel
 
+from backend.app.utils import auth
 from backend.app.utils.index import get_index
 from backend.app.utils.json import json_to_model
 
-query_router = r = APIRouter()
+query_router = r = APIRouter(dependencies=[Depends(auth.validate_user)])
 
 """
 This router is for query functionality which consist of query engine.
