@@ -71,16 +71,18 @@ def get_user_from_JWT(token: str):
     )
 
     payload = decodeJWT(token)
-    user_id = payload["sub"]
 
-    if user_id is not None:
+    if payload is not None:
+        user_id = payload["sub"]
         # Try to get the user from the database using the user_id
         response = supabase.table("users").select("*").eq("id", user_id).execute()
         # print(response.data)
         if len(response.data) == 0:
             return False
-        return True
-    return False
+        else:
+            return True
+    else:
+        return False
 
 
 async def validate_user(
@@ -123,7 +125,7 @@ async def validate_user(
                         "Invalid token scheme. Please use the format 'Bearer [token]'"
                     )
                 # Verify the JWT token is valid
-                if verify_jwt(jwtoken=jwtoken) is None:
+                if verify_jwt(jwtoken=jwtoken):
                     return "Invalid token. Please provide a valid token."
                 # Check if the user exists in the database
                 if get_user_from_JWT(token=jwtoken):
