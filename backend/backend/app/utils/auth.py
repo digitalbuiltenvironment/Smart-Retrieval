@@ -91,13 +91,17 @@ async def validate_user(
 ):
     try:
         logger = logging.getLogger("uvicorn")
-        # logger.debug(f"Auth Token: {auth_token} | API Key: {api_key}")
+        # logger.info(f"Auth Token: {auth_token} | API Key: {api_key}")
         if auth_token is not None or api_key is not None:
             # If the access token is empty, use the 'X-API-Key' from the header
-            if auth_token is None:
+            if auth_token is None or "null" in auth_token:
                 # Access the 'X-API-Key' header directly
                 if BACKEND_API_KEY is None:
                     raise ValueError("Backend API key is not set in Backend Service!")
+                if "null" in api_key:
+                    raise ValueError(
+                        "Invalid API key provided in the 'X-API-Key' header!"
+                    )
                 # If the 'X-API-Key' does not match the backend API key, raise an error
                 if api_key != BACKEND_API_KEY:
                     raise ValueError(

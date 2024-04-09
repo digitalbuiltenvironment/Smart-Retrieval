@@ -230,7 +230,7 @@ def load_existing_index(collection_name="PSSCOC"):
             logger.info(f"Indexing [{collection_name}] vector store...")
             vector_store._collection.create_index()
             logger.info(f"Finished indexing [{collection_name}] vector store")
-        logger.info(vector_store._collection.name)
+        # logger.info(f"Collection Name: {vector_store._collection.name}")
         index = VectorStoreIndex.from_vector_store(vector_store=vector_store)
         logger.info(f"Finished loading [{collection_name}] index from Supabase")
         logger.info(f"Index ID: {index.index_id}")
