@@ -12,6 +12,7 @@ import { MobileMenu } from '@/app/components/ui/mobilemenu';
 import { IconSpinner } from '@/app/components/ui/icons';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
+import { Skeleton } from "@nextui-org/react";
 
 const MobileMenuItems = [
   {
@@ -220,41 +221,44 @@ export default function Header() {
               )}
             </button>
 
-            <span className="lg:text-lg font-nunito ml-2 mr-2"> </span>
+            <span className="lg:text-lg font-nunito ml-6"></span>
 
             {/* Conditionally render the user profile and logout buttons based on the user's authentication status */}
-            {status === 'loading' ? (
-              <div className="flex items-center ml-2 mr-2 text-xl transition duration-300 ease-in-out transform hover:scale-125">
-                <IconSpinner className="mr-2 animate-spin" />
-              </div>
-            ) : session ? (
+            {session ? (
               <>
-                {/* User Profile Button */}
-                <HeaderNavLink href="/profile" title='Profile'>
-                  <div className="flex items-center ml-2 mr-2 text-xl transition duration-300 ease-in-out transform hover:scale-125">
-                    <User2 className="mr-1 h-5 w-5" />
+                <Skeleton isLoaded={status === 'authenticated'} className="rounded-md p-1">
+                  <div className="flex items-center">
+                    {/* User Profile Button */}
+                    <HeaderNavLink href="/profile" title='Profile'>
+                      <div className="flex items-center mr-6 text-xl transition duration-300 ease-in-out transform hover:scale-125">
+                        <User2 className="mr-1 h-5 w-5" />
+                      </div>
+                    </HeaderNavLink>
+                    {/* Sign Out Button */}
+                    <button title='Sign Out'
+                      onClick={
+                        async () => {
+                          await signOut();
+                        }
+                      }>
+                      <div className="flex items-center text-xl transition duration-300 ease-in-out transform hover:scale-125">
+                        <LogOut className="mr-1 h-5 w-5" />
+                      </div>
+                    </button>
                   </div>
-                </HeaderNavLink>
-
-                {/* Sign Out Button */}
-                <button title='Sign Out'
-                  onClick={
-                    async () => {
-                      await signOut();
-                    }
-                  }>
-                  <div className="flex items-center ml-2 text-xl transition duration-300 ease-in-out transform hover:scale-125">
-                    <LogOut className="mr-1 h-5 w-5" />
-                  </div>
-                </button>
+                </Skeleton>
               </>
             ) : (
-              <HeaderNavLink href={signinPage} title='Sign In'>
-                <div className="flex items-center ml-2 transition duration-300 ease-in-out transform hover:scale-125">
-                  <LogIn className="mr-1 h-5 w-5" />
-                  Sign In
+              <Skeleton isLoaded={status !== 'loading'} className="rounded-md p-2">
+                <div className="flex items-center">
+                  <HeaderNavLink href={signinPage} title='Sign In'>
+                    <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-110">
+                      <LogIn className="mr-1 h-5 w-5" />
+                      Sign In
+                    </div>
+                  </HeaderNavLink>
                 </div>
-              </HeaderNavLink>
+              </Skeleton>
             )}
           </div>
         </div >
