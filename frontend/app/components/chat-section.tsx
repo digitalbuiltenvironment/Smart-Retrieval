@@ -2,15 +2,15 @@
 
 import { useChat } from "ai/react";
 import { ChatInput, ChatMessages } from "@/app/components/ui/chat";
-import ChatSelection from "./ui/chat/chat-selection";
-import AutofillQuestion from "@/app/components/ui/autofill-prompt/autofill-prompt-dialog";
+import { ChatSelection } from "@/app/components/ui/chat";
+import { AutofillQuestion } from "@/app/components/ui/autofill-prompt";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 export default function ChatSection() {
   const { data: session } = useSession();
   const supabaseAccessToken = session?.supabaseAccessToken;
-  const [docSelected, setDocSelected] = useState<string>('');
+  const [collSelected, setCollSelected] = useState<string>('');
   const {
     messages,
     input,
@@ -27,13 +27,13 @@ export default function ChatSection() {
     },
     body: {
       // Add the selected document to the request body
-      document: docSelected,
+      document: collSelected,
     },
   });
 
   return (
     <div className="space-y-4 max-w-5xl w-full relative">
-      {docSelected ?
+      {collSelected ?
         (
           <>
             <ChatMessages
@@ -43,7 +43,7 @@ export default function ChatSection() {
               stop={stop}
             />
             <AutofillQuestion
-              docSelected={docSelected}
+              collSelected={collSelected}
               messages={messages}
               isLoading={isLoading}
               handleSubmit={handleSubmit}
@@ -60,8 +60,8 @@ export default function ChatSection() {
         )
         :
         <ChatSelection
-          docSelected={docSelected}
-          handleDocSelect={setDocSelected}
+          collSelected={collSelected}
+          handleCollSelect={setCollSelected}
         />
       }
     </div>

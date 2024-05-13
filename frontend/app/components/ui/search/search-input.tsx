@@ -5,8 +5,8 @@ import { Input } from "@/app/components/ui/input";
 import { Search } from "lucide-react";
 import { SearchHandler } from "@/app/components/ui/search/search.interface";
 
-export default function SearchInput (
-    props: Pick<SearchHandler, "docSelected" | "isLoading" | "results" | "onInputChange" | "onSearchSubmit" | "query">
+export default function SearchInput(
+    props: Pick<SearchHandler, "collSelected" | "isLoading" | "results" | "onInputChange" | "onSearchSubmit" | "query">
 ) {
     return (
 
@@ -14,6 +14,7 @@ export default function SearchInput (
             onSubmit={props.onSearchSubmit}
             className="w-full items-start justify-between gap-4 rounded-xl bg-white dark:bg-zinc-700/30 p-4 shadow-xl"
         >
+            <h2 className="text-lg text-center font-semibold mb-4">Searching in {props.collSelected}</h2>
             <div className="flex w-full items-start justify-between gap-4">
                 <Input
                     autoFocus

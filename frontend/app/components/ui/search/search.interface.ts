@@ -1,8 +1,8 @@
 import { ChangeEvent, FormEvent } from "react";
 
 export interface SearchHandler {
-    docSelected: string;
-    handleDocSelect: (doc: string) => void;
+    collSelected: string;
+    handleCollSelect: (doc: string) => void;
     query: string;
     isLoading: boolean;
     onInputChange?: (e: ChangeEvent<HTMLInputElement>) => void;

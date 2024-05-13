@@ -10,12 +10,12 @@ const DocumentSet = [
 ];
 
 export default function SearchSelection(
-    props: Pick<SearchHandler, "docSelected" | "handleDocSelect">,
+    props: Pick<SearchHandler, "collSelected" | "handleCollSelect">,
 ) {
     const [currentDocumentIndex, setCurrentDocumentIndex] = useState(0);
 
     const handleDocumentSetChange = (documentSet: string) => {
-        props.handleDocSelect(documentSet);
+        props.handleCollSelect(documentSet);
     };
 
     // Automatically advance to the next document set after a delay
@@ -34,7 +34,7 @@ export default function SearchSelection(
 
     return (
         <div className="w-full rounded-xl bg-white dark:bg-zinc-700/30 dark:from-inherit p-4 shadow-xl pb-0">
-            <div className="rounded-lg pt-5 pr-10 pl-10 flex h-[50vh] flex-col divide-y overflow-y-auto pb-4">
+            <div className="rounded-lg pt-5 pr-10 pl-10 flex h-[50vh] flex-col overflow-y-auto pb-4">
                 <h2 className="text-lg text-center font-semibold mb-4">Select Document Set to Search in:</h2>
                 {/* <p className="text-center text-sm text-gray-500 mb-4">{dialogMessage}</p> */}
                 {DocumentSet.map((title, index) => (

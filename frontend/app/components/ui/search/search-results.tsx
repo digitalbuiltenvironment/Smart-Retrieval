@@ -82,7 +82,8 @@ export default function SearchResults(
 
     const showToastMessage = () => {
         toast.success("Text copied to clipboard!", {
-            position: "top-center",
+            position: "top-right",
+            closeOnClick: true,
         });
     };
 
@@ -96,7 +97,7 @@ export default function SearchResults(
     return (
         <div className="flex w-full items-center justify-between rounded-xl bg-white dark:bg-zinc-700/30 p-4 shadow-xl">
             <ToastContainer />
-            <div className="relative overflow-x-auto">
+            <div className="relative overflow-x-auto rounded-lg">
                 <table className="w-full text-xl text-left rtl:text-right text-gray-500 dark:text-gray-400 p-4">
                     <thead className="text-sm text-center text-gray-700 uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
