@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Skeleton } from "@nextui-org/react";
 import Image from 'next/image';
-import { User2 } from 'lucide-react';
+import { User2, SlidersHorizontal } from 'lucide-react';
+import { HeaderNavLink } from '@/app/components/ui/navlink';
 
 const ProfilePage: React.FC = () => {
     const [name, setName] = useState('');
@@ -32,57 +33,88 @@ const ProfilePage: React.FC = () => {
         // TODO: Handle form submission logic
     };
 
-    // Prefill the form with the user's profile data
-    useEffect(() => {   
-        // Fetch the user's profile data
-        fetch('/api/profile')
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch profile data');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log('Profile data:', data);
-                setName(data.userData.name);
-                setEmail(data.userData.email);
-                setImageURL(data.userData.image);
-            })
-            .catch((error) => {
-                console.error('Error fetching profile data:', error);
-            })
-            .finally(() => {
-                // Set loading state to false after the fetch request completes (whether successfully or with an error)
-                toggleIsLoaded();
+    const fetchProfileData = async () => {
+        try {
+            const response = await fetch('/api/profile');
+            if (!response.ok) {
+                throw new Error('Failed to fetch profile data');
+            }
+            const data = await response.json();
+            console.log('Profile data:', data);
+            setName(data.userData.name);
+            setEmail(data.userData.email);
+            setImageURL(data.userData.image);
+        } catch (error) {
+            console.error('Error fetching profile data:', error);
+        } finally {
+            toggleIsLoaded();
+        }
+    };
+
+    const updateProfileData = async () => {
+        try {
+            const response = await fetch('/api/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    image: imageURL,
+                }),
             });
+            if (!response.ok) {
+                throw new Error('Failed to update profile data');
+            }
+            console.log('Profile data updated successfully!');
+        } catch (error) {
+            console.error('Error updating profile data:', error);
+        }
+    };
+
+    // TODO: Implement check for admin role
+
+    // On component mount, fetch the user's profile data
+    useEffect(() => {
+        // Fetch the user's profile data
+        fetchProfileData();
     }, []);
 
     return (
         <div className="rounded-xl shadow-xl p-4 max-w-5xl w-full bg-white dark:bg-zinc-700/30">
-            <div className="max-w-2xl space-y-2 p-4 flex">
-                <div className="flex flex-col w-full justify-center mr-8 gap-4">
-                    <h1>Profile Settings</h1>
+            <div className="space-y-2 p-4">
+                <div className="flex flex-col w-full justify-center gap-4">
+                    <div className="flex justify-between items-center">
+                        <h1 className='font-bold text-lg'>Profile</h1>
+                        <HeaderNavLink href="/admin" title='Sign In'>
+                            <button className="flex items-center bg-blue-500 text-white rounded-md px-5 py-3 transition duration-300 ease-in-out transform hover:scale-105">
+                                <SlidersHorizontal className="mr-1 h-5 w-5" />
+                                Admin Page
+                            </button>
+                        </HeaderNavLink>
+                    </div>
                     <Skeleton isLoaded={isLoaded} className='rounded-full w-20'>
                         {/* use default user image if there is no imageURL */}
                         {imageURL ? <Image className="rounded-full" src={imageURL} alt={name} width={84} height={84} /> : <User2 size={84} />}
                     </Skeleton>
-                    <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+                    <form onSubmit={handleSubmit} className='flex flex-col gap-4 max-w-2xl'>
                         <label className="flex flex-col">
                             <span className='mb-2'>Name:</span>
                             <Skeleton isLoaded={isLoaded} className="rounded-lg">
-                                <input className='h-8 rounded-lg w-full bg-gray-300 dark:bg-zinc-700/65 border px-2' type="text" value={name} onChange={handleNameChange} />
+                                <input disabled className='h-10 rounded-lg w-full bg-gray-300 dark:bg-zinc-700/65 border px-2' type="text" value={name} onChange={handleNameChange} />
                             </Skeleton>
                         </label>
                         <label className="flex flex-col">
                             <span className='mb-2'>Email:</span>
                             <Skeleton isLoaded={isLoaded} className="rounded-lg">
-                                <input className='h-8 rounded-lg w-full bg-gray-300 dark:bg-zinc-700/65 border px-2' type="email" value={email} onChange={handleEmailChange} />
+                                <input disabled className='h-10 rounded-lg w-full bg-gray-300 dark:bg-zinc-700/65 border px-2' type="email" value={email} onChange={handleEmailChange} />
                             </Skeleton>
                         </label>
                         <label className="flex flex-col">
                             <span className='mb-2'>Image URL:</span>
                             <Skeleton isLoaded={isLoaded} className="rounded-lg">
-                                <textarea className='rounded-lg w-full bg-gray-300 dark:bg-zinc-700/65 border px-2' value={imageURL} onChange={handleImageURLChange} />
+                                <textarea disabled className='h-14 rounded-lg w-full bg-gray-300 dark:bg-zinc-700/65 border px-2' value={imageURL} onChange={handleImageURLChange} />
                             </Skeleton>
                         </label>
                         <button type="submit" disabled className="text-center items-center text-l disabled:bg-orange-400 bg-blue-500 text-white px-6 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105 disabled:hover:scale-100">Save</button>
