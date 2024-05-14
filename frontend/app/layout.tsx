@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import { Providers } from "@/app/providers";
@@ -12,13 +12,16 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
-export const metadata: Metadata = {
-  title: "Smart Retrieval",
-  description: "A chatbot powered by LLM for information retrieval",
+export const viewport: Viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: 'white' },
     { media: '(prefers-color-scheme: dark)', color: 'black' }
   ],
+}
+
+export const metadata: Metadata = {
+  title: "Smart Retrieval",
+  description: "A chatbot powered by LLM for information retrieval",
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',

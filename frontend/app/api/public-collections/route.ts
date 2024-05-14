@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     // Extract collections object from each item in the array
     const formattedPublicCollections = publicCollections.map(item => item.collections);
 
-    console.log('formattedPublicCollections:', formattedPublicCollections);
+    // console.log('formattedPublicCollections:', formattedPublicCollections);
 
     return NextResponse.json({ publicCollections: formattedPublicCollections });
 }
