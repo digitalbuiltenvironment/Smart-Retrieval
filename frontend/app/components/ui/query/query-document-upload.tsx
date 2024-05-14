@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 export default function QueryDocumentUpload() {
     const [files, setFiles] = useState<File[]>([]);
@@ -12,7 +13,7 @@ export default function QueryDocumentUpload() {
     const [fileError, setFileError] = useState(false);
     const [fileErrorMsg, setFileErrorMsg] = useState('');
 
-    const MAX_FILES = 1; // Maximum number of files allowed
+    const MAX_FILES = 10; // Maximum number of files allowed
     const MAX_TOTAL_SIZE = 10 * 1024 * 1024; // Maximum total size allowed (10 MB in bytes)
     // The total size of all selected files should not exceed this value
 
@@ -93,17 +94,31 @@ export default function QueryDocumentUpload() {
             });
         }
         else {
-            // Submit logic
-            console.log("Form submitted successfully!");
-            // Show toast notification
-            toast.success("Document set uploaded successfully!", {
-                position: "top-right",
-                closeOnClick: true,
+            // Show confirmation dialog
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to upload and index your document set. Ensure that there are no sensitive/secret documents! Do you want to proceed?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#4caf50',
+                cancelButtonColor: '#b91c1c',
+                confirmButtonText: 'Yes, upload & index it!',
+                cancelButtonText: 'No, cancel!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Perform the upload and indexing logic here
+                    console.log("Uploading and indexing document set...");
+                    // Show toast notification
+                    toast.success("Document set uploaded and indexed successfully!", {
+                        position: "top-right",
+                        closeOnClick: true,
+                    });
+                    // Reset the form fields
+                    setDisplayName('');
+                    setDescription('');
+                    setFiles([]);
+                }
             });
-            // Reset the form fields
-            setDisplayName('');
-            setDescription('');
-            setFiles([]);
         }
     };
 
@@ -113,10 +128,11 @@ export default function QueryDocumentUpload() {
                 <form onSubmit={handleSubmit} className="flex flex-col w-full justify-center gap-4">
                     <h2 className="text-lg text-center font-semibold mb-4">Upload & Index Your Own Document Set:</h2>
                     <div className={`flex flex-col ${displayNameError ? 'has-error' : ''}`}>
-                        <label htmlFor="displayName" className='mb-2'>Display Name:</label>
+                        <label htmlFor="displayName" title='Display Name' className='mb-2'>Display Name:</label>
                         <input
                             type="text"
                             id="displayName"
+                            title='Display Name'
                             value={displayName}
                             onChange={handleDisplayNameChange}
                             className={`h-10 rounded-lg w-full border px-2 bg-gray-300 dark:bg-zinc-700/65 ${displayNameError ? 'border-red-500 ' : ''}`}
@@ -124,10 +140,11 @@ export default function QueryDocumentUpload() {
                         {displayNameError && <p className="text-red-500 text-sm pl-1 pt-1">Display Name is required!</p>}
                     </div>
                     <div className={`flex flex-col ${descriptionError ? 'has-error' : ''}`}>
-                        <label htmlFor="collectionName" className='mb-2'>Description:</label>
+                        <label htmlFor="collectionName" title='Description' className='mb-2'>Description:</label>
                         <input
                             type="text"
                             id="description"
+                            title='Description'
                             value={description}
                             onChange={handleDescriptionChange}
                             className={`h-10 rounded-lg w-full border px-2 bg-gray-300 dark:bg-zinc-700/65 ${descriptionError ? 'border-red-500' : ''}`}
@@ -135,10 +152,11 @@ export default function QueryDocumentUpload() {
                         {descriptionError && <p className="text-red-500 text-sm pl-1 pt-1">Description is required!</p>}
                     </div>
                     <div className='flex flex-col'>
-                        <label htmlFor="fileUpload" className='mb-2'>Select Files:</label>
+                        <label htmlFor="fileUpload" title='Select Files' className='mb-2'>Select Files:</label>
                         <input
                             type="file"
                             id="fileUpload"
+                            title='Select Files'
                             multiple
                             accept=".pdf,.doc,.docx,.txt"
                             onChange={handleFileChange}
@@ -146,7 +164,7 @@ export default function QueryDocumentUpload() {
                         />
                         {fileError && <p className="text-red-500 text-sm pl-1 pt-1">{fileErrorMsg}</p>}
                     </div>
-                    <button type="submit" className="text-center items-center text-l disabled:bg-orange-400 bg-blue-500 text-white px-6 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105 disabled:hover:scale-100">Submit</button>
+                    <button type="submit" title='Submit' className="text-center items-center text-l disabled:bg-orange-400 bg-blue-500 text-white px-6 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105 disabled:hover:scale-100">Submit</button>
                 </form>
             </div>
         </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { QueryCollectionManageHandler } from './query.interface';
 import { List, Table, Trash, Eye, EyeOff } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 export default function QueryCollectionManage(
     props: Pick<QueryCollectionManageHandler, "collSelected" | "handleCollSelect">,
@@ -15,16 +16,56 @@ export default function QueryCollectionManage(
         props.handleCollSelect(collectionId);
     };
 
-    // Retrieve the user's document collections from the database
+    // Retrieve the user's collections and public collections requests data from the database
     useEffect(() => {
-        // Fetch the user's collections from the API
-        fetch('/api/user-collections')
+        // Fetch the user's public collection requests from the API
+        fetch('/api/user-public-collections-requests'
+            , {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache', // Disable caching
+                },
+            }
+        )
             .then((response) => response.json())
             .then((data) => {
-                setUserCollections(data.userCollections);
+                const publicCollectionsRequests = data.userPubCollectionsReq;
+                // console.log('Public Collections Requests:', publicCollectionsRequests);
+                // Extract the collection data from the public collections requests
+                const updatedCollections = publicCollectionsRequests.map((collection: any) => {
+                    // Check if the collection has any public collection requests
+                    if (collection.public_collections_requests.length === 0) {
+                        // If not, return the collection data with the isPublic flag set to false
+                        return {
+                            collection_id: collection.collection_id,
+                            display_name: collection.display_name,
+                            description: collection.description,
+                            // Convert the date to a readable format in the user's locale and timezone e.g. "2022-01-01T12:00:00" => "1 Jan, 2022, 12:00:00 PM"
+                            created_at: new Date(collection.created_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }),
+                            isPublic: false,
+                        };
+                    }
+                    else {
+                        // If the collection has public collection requests, return the collection data with the request status and dates
+                        return {
+                            collection_id: collection.collection_id,
+                            display_name: collection.display_name,
+                            description: collection.description,
+                            created_at: new Date(collection.created_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }),
+                            isPublic: collection.public_collections_requests[0].is_approved && !collection.public_collections_requests[0].is_pending,
+                            requestType: collection.public_collections_requests[0].is_make_public ? 'Public' : 'Private',
+                            requestStatus: collection.public_collections_requests[0].is_pending ? '⏳Pending' : collection.public_collections_requests[0].is_approved ? '✅Approved' : '❌Rejected',
+                            requestDate: new Date(collection.public_collections_requests[0].created_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }),
+                            updatedRequestDate: new Date(collection.public_collections_requests[0].updated_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }),
+                        };
+                    }
+                });
+                // Update the userCollections state with the fetched data
+                setUserCollections(updatedCollections);
             })
             .catch((error) => {
-                console.error("Error fetching user collections:", error);
+                console.error("Error fetching user public collection requests:", error);
             });
     }, []);
 
@@ -49,7 +90,85 @@ export default function QueryCollectionManage(
     // Function to handle requesting to be public or private
     const handleRequest = (collectionId: string, isPublic: boolean) => {
         // Implement request logic here
-        console.log(`Requesting to ${isPublic ? 'be Private' : 'be Public'} for collection with ID: ${collectionId}`);
+        console.log(`Requesting to set ${isPublic ? 'be Public' : 'be Private'} for collection with ID: ${collectionId}`);
+        // Display a confirmation dialog
+        Swal.fire({
+            title: 'Request Confirmation',
+            text: `Are you sure you want to request to ${isPublic ? 'make this collection Public (available to other users in "Chat/Search")' : 'make this collection Private (remove from "Chat/Search")'}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            confirmButtonColor: '#4caf50',
+            cancelButtonColor: '#b91c1c',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user confirms the request, display a success message
+                Swal.fire({
+                    title: 'Request Sent',
+                    text: `Your request to ${isPublic ? 'make this collection Public' : 'make this collection Private'} has been sent successfully.`,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#4caf50',
+                });
+            }
+        });
+    };
+
+    // Function to handle cancelling a request
+    const handleCancelRequest = (collectionId: string, isPublic: boolean) => {
+        // Implement cancel request logic here
+        console.log(`Cancelling request for collection with ID: ${collectionId}`);
+        // Display a confirmation dialog
+        Swal.fire({
+            title: 'Cancel Request Confirmation',
+            text: `Are you sure you want to cancel the request to ${isPublic ? 'make this collection Private' : 'make this collection Public'}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            confirmButtonColor: '#4caf50',
+            cancelButtonColor: '#b91c1c',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user confirms the request, display a success message
+                Swal.fire({
+                    title: 'Request Cancelled',
+                    text: `Your request to ${isPublic ? 'make this collection Private' : 'make this collection Public'} has been cancelled successfully.`,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#4caf50',
+                });
+            }
+        });
+    };
+
+    // Function to handle deleting a collection
+    const handleDelete = (collectionId: string, isPublic: boolean) => {
+        // Implement delete logic here
+        console.log(`Deleting collection with ID: ${collectionId}`);
+        // Display a confirmation dialog
+        Swal.fire({
+            title: 'Delete Confirmation',
+            text: `Are you sure you want to delete this collection? This action cannot be undone!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Delete it!',
+            cancelButtonText: 'No, Cancel!',
+            confirmButtonColor: '#4caf50',
+            cancelButtonColor: '#b91c1c',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user confirms the delete, display a success message
+                Swal.fire({
+                    title: 'Collection Deleted',
+                    text: `The collection has been deleted successfully.`,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#4caf50',
+                });
+            }
+        });
     };
 
     return (
@@ -67,49 +186,70 @@ export default function QueryCollectionManage(
                 {tableView ? (
                     <ul>
                         {userCollections.map((collection, index) => (
-                            <li key={index} className={`p-2 mb-2 border border-zinc-500/30 dark:border-white rounded-lg transition duration-300 ease-in-out transform ${index <= currentCollectionIndex ? 'opacity-100 duration-500' : 'opacity-0'}`}>
+                            <li key={index} className={`p-2 mb-2 border border-zinc-500/30 dark:border-white rounded-lg overflow-y-auto transition duration-300 ease-in-out transform ${index <= currentCollectionIndex ? 'opacity-100 duration-500' : 'opacity-0'}`}>
                                 {/* Render list items */}
                                 <div className="flex items-center justify-between">
                                     <div className='justify-start'>
-                                        <div className='text-s lg:text-base text-blue-500'>{collection.display_name}</div>
+                                        <div className='text-xs lg:text-base text-blue-500'>{collection.display_name}</div>
                                         <div className="text-xs lg:text-sm text-gray-500">{collection.description}</div>
-                                        <span className='text-xs lg:text-sm'> Visibility: {collection.isPublic ? 'Public' : 'Private'}</span>
+                                        <div className="border-b border-zinc-500/30 dark:border-white my-2"></div> {/* Divider */}
+                                        <div className="text-xs lg:text-sm"><span className='font-bold'>Created: </span>{collection.created_at}</div>
+                                        <div className='flex items-center text-xs lg:text-sm'><span className='font-bold'>Visibility: </span>{collection.isPublic ? <span className='flex text-center items-center'><Eye className='w-4 h-4 mx-1' />Public</span> : <span className='flex text-center items-center'><EyeOff className='w-4 h-4 mx-1' />Private</span>}</div>
+
                                         {/* Render request status and dates */}
                                         {collection.requestStatus && (
-                                            <>
-                                                <div>Request Status: {collection.requestStatus}</div>
-                                                <div>Request Date: {collection.requestDate}</div>
-                                                <div>Updated Request Date: {collection.updatedRequestDate}</div>
-                                            </>
+                                            <div className='flex flex-col items-start text-xs lg:text-sm'>
+                                                <div><span className='font-bold'>Request Type: </span>{collection.requestType}</div>
+                                                <div>
+                                                    <span className='font-bold text-white'>Request Status: </span>
+                                                    <span className={
+                                                        `${collection.requestStatus === '⏳Pending' ? 'text-orange-400' :
+                                                            collection.requestStatus === '✅Approved' ? 'text-green-500' :
+                                                                collection.requestStatus === '❌Rejected' ? 'text-red-500' : ''}`
+                                                    }>
+                                                        {collection.requestStatus}
+                                                    </span>
+                                                </div>
+                                                <div><span className='font-bold'>Requested: </span>{collection.requestDate}</div>
+                                                <div><span className='font-bold'>Request Updated: </span>{collection.updatedRequestDate}</div>
+                                            </div>
                                         )}
                                     </div>
                                     {/* Manage section */}
-                                    <div className="flex flex-wrap justify-between gap-2">
-                                        {/* Request to be Public button */}
-                                        {collection.isPublic ? (
-                                            <button onClick={() => handleRequest(collection.collection_id, false)}
-                                                title='Make Private'
-                                                className="flex flex-grow text-center items-center text-xs lg:text-sm disabled:bg-gray-500 bg-blue-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
+                                    <div className="flex flex-col justify-between gap-2">
+                                        {/* Conditional rendering button based on request status */}
+                                        {collection.requestStatus === '⏳Pending' ? (
+                                            <button onClick={() => handleCancelRequest(collection.collection_id, collection.isPublic)}
+                                                title='Cancel Request'
+                                                className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm bg-orange-400 text-white px-1 py-1 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-orange-500/40"
                                             >
-                                                <EyeOff className='w-4 h-4 mr-1' />
-                                                <span>Make Private</span>
+                                                Cancel Request
                                             </button>
-                                        ) : (
-                                            <button onClick={() => handleRequest(collection.collection_id, true)}
-                                                title='Make Public'
-                                                className="flex flex-grow text-center items-center text-xs lg:text-sm disabled:bg-gray-500 bg-blue-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
-                                            >
-                                                <Eye className='w-4 h-4 mr-1' />
-                                                <span>Make Public</span>
-                                            </button>
-                                        )}
+                                        ) :
+                                            collection.isPublic ? (
+                                                <button onClick={() => handleRequest(collection.collection_id, false)}
+                                                    title='Set Private'
+                                                    className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm bg-blue-500 text-white px-1 py-1 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
+                                                >
+                                                    <EyeOff className='w-4 h-4 mr-1' />
+                                                    <span>Set Private</span>
+                                                </button>
+                                            ) : (
+                                                <button onClick={() => handleRequest(collection.collection_id, true)}
+                                                    title='Set Public'
+                                                    className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm bg-blue-500 text-white px-1 py-1 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
+                                                >
+                                                    <Eye className='w-4 h-4 mr-1' />
+                                                    <span>Set Public</span>
+                                                </button>
+                                            )}
                                         {/* Delete button */}
-                                        <button onClick={() => handleRequest(collection.collection_id, true)}
+                                        <button onClick={() => handleDelete(collection.collection_id, true)}
                                             title='Delete'
-                                            className="flex flex-grow text-center items-center text-xs lg:text-sm disabled:bg-gray-500 bg-red-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-red-500/40"
+                                            className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm disabled:bg-gray-500 bg-red-500 text-white px-2 py-2 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-red-500/40"
                                         >
                                             <Trash className='w-4 h-4 mr-1' />
-                                            Delete
+                                            <span>Delete</span>
                                         </button>
                                     </div>
                                 </div>
@@ -123,10 +263,11 @@ export default function QueryCollectionManage(
                                 <tr>
                                     <th scope="col" className="px-6 py-3">Display Name</th>
                                     <th scope="col" className="px-6 py-3">Description</th>
+                                    <th scope="col" className="px-6 py-3">Created</th>
                                     <th scope="col" className="px-6 py-3">Visibility</th>
                                     <th scope="col" className="px-6 py-3">Request Status</th>
-                                    <th scope="col" className="px-6 py-3">Requested at</th>
-                                    <th scope="col" className="px-6 py-3">Request Updated at</th>
+                                    <th scope="col" className="px-6 py-3">Requested</th>
+                                    <th scope="col" className="px-6 py-3">Request Updated</th>
                                     <th scope="col" className="px-6 py-3">Actions</th>
                                 </tr>
                             </thead>
@@ -136,28 +277,55 @@ export default function QueryCollectionManage(
                                         {/* Render table rows */}
                                         <td className="px-6 py-3">{collection.display_name}</td>
                                         <td className="px-6 py-3">{collection.description}</td>
-                                        <td className="px-6 py-3">{collection.isPublic ? 'Public' : 'Private'}</td>
-                                        <td className="px-6 py-3">{collection.requestStatus}</td>
+                                        <td className="px-6 py-3">{collection.created_at}</td>
+                                        <td className="px-6 py-3">{collection.isPublic ? <div className='flex items-center'><Eye className='w-4 h-4 mr-1' /> Public</div> : <div className='flex items-center'><EyeOff className='w-4 h-4 mr-1' /> Private</div>}</td>
+                                        <td className="px-6 py-3">
+                                            <div>
+                                                <span className={
+                                                    `${collection.requestStatus === '⏳Pending' ? 'text-orange-400' :
+                                                        collection.requestStatus === '✅Approved' ? 'text-green-500' :
+                                                            collection.requestStatus === '❌Rejected' ? 'text-red-500' : ''}`
+                                                }>
+                                                    {collection.requestStatus}
+                                                </span>
+                                            </div>
+                                        </td>
                                         <td className="px-6 py-3">{collection.requestDate}</td>
-                                        <td className="px-6 py-3 w-full">{collection.updatedRequestDate}</td>
-                                        <td className="px-6 py-3 space-y-2 w-full">
-                                            {/* Render request buttons and status */}
-                                            {collection.isPublic ? (
-                                                <button onClick={() => handleRequest(collection.collection_id, false)}
-                                                    className="text-center items-center text-sm disabled:bg-orange-400 bg-blue-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
+                                        <td className="px-6 py-3">{collection.updatedRequestDate}</td>
+                                        <td className="px-6 py-3 w-full flex flex-wrap justify-between gap-2">
+                                            {/* Conditional rendering button based on request status */}
+                                            {collection.requestStatus === '⏳Pending' ? (
+                                                <button onClick={() => handleCancelRequest(collection.collection_id, collection.isPublic)}
+                                                    title='Cancel Request'
+                                                    className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm bg-orange-400 text-white px-1 py-1 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-orange-500/40"
                                                 >
-                                                    Make Private
+                                                    Cancel Request
                                                 </button>
-                                            ) : (
-                                                <button onClick={() => handleRequest(collection.collection_id, true)}
-                                                    className="text-center items-center text-sm disabled:bg-orange-400 bg-blue-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
-                                                >
-                                                    Make Public
-                                                </button>
-                                            )}
-                                            <button onClick={() => handleRequest(collection.collection_id, true)}
-                                                className="text-center items-center text-sm disabled:bg-gray-500 bg-red-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-red-500/40"
+                                            ) :
+                                                collection.isPublic ? (
+                                                    <button onClick={() => handleRequest(collection.collection_id, false)}
+                                                        disabled={collection.requestStatus === '⏳Pending'}
+                                                        title='Set Private'
+                                                        className="flex flex-grow text-center items-center text-sm disabled:bg-gray-500 bg-blue-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
+                                                    >
+                                                        <EyeOff className='w-5 h-5' />
+                                                        Set Private
+                                                    </button>
+                                                ) : (
+                                                    <button onClick={() => handleRequest(collection.collection_id, true)}
+                                                        disabled={collection.requestStatus === '⏳Pending'}
+                                                        title='Set Public'
+                                                        className="flex flex-grow text-center items-center text-sm disabled:bg-gray-500 bg-blue-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
+                                                    >
+                                                        <Eye className='w-5 h-5' />
+                                                        Set Public
+                                                    </button>
+                                                )}
+                                            <button onClick={() => handleDelete(collection.collection_id, true)}
+                                                title='Delete'
+                                                className="flex flex-grow text-center items-center text-sm disabled:bg-gray-500 bg-red-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-red-500/40"
                                             >
+                                                <Trash className='w-4 h-4 mr-1' />
                                                 Delete
                                             </button>
                                         </td>

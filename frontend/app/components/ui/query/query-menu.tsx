@@ -30,6 +30,7 @@ export default function QueryMenu(
                 <button
                     className={`flex text-center items-center text-l ${props.showChat ? 'text-blue-500' : ''} bg-transparent px-4 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105`}
                     onClick={() => handleShowChatTab()}
+                    title='Chat'
                 >
                     <MessageCircle className="mr-1 h-5 w-5" />
                     Chat
@@ -37,6 +38,7 @@ export default function QueryMenu(
                 <button
                     className={`flex text-center items-center text-l ${props.showUpload ? 'text-blue-500' : ''} bg-transparent px-4 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105`}
                     onClick={() => handleShowUploadTab()}
+                    title='Upload'
                 >
                     <Upload className="mr-1 h-5 w-5" />
                     Upload
@@ -44,6 +46,7 @@ export default function QueryMenu(
                 <button
                     className={`flex text-center items-center text-l ${props.showManage ? 'text-blue-500' : ''} bg-transparent px-4 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105`}
                     onClick={() => handleShowManageTab()}
+                    title='Manage'
                 >
                     <FileCog className="mr-1 h-5 w-5" />
                     Manage
