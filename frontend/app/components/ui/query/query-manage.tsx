@@ -305,7 +305,7 @@ export default function QueryCollectionManage() {
         }).then((result) => {
             if (result.isConfirmed) {
                 // If the user confirms the delete, make a delete request to the API, display a success/error message
-                fetch('/api/user-public-collections-requests',
+                fetch('/api/user-collections',
                     {
                         method: 'DELETE',
                         headers: {

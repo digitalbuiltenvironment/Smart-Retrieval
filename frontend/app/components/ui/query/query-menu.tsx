@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from 'react';
 import { MessageCircle, Upload, FileCog } from 'lucide-react';
 import { QueryMenuHandler } from '@/app/components/ui/query/query.interface';
 
