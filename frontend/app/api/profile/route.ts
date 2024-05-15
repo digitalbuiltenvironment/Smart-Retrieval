@@ -6,14 +6,20 @@ export async function GET(request: NextRequest) {
     const session = request.cookies.get('next-auth.session-token') || request.cookies.get('__Secure-next-auth.session-token');
 
     // Create a new Supabase client
-    const supabase = createClient(
+    const supabaseAuth = createClient(
         process.env.SUPABASE_URL ?? '',
         process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
         { db: { schema: 'next_auth' } },
     );
 
+    const supabase = createClient(
+        process.env.SUPABASE_URL ?? '',
+        process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
+        { db: { schema: 'public' } },
+    );
+
     // Retrieve the user's ID from the session token
-    const { data: sessionData, error: sessionError } = await supabase
+    const { data: sessionData, error: sessionError } = await supabaseAuth
         .from('sessions')
         .select('userId')
         .eq('sessionToken', session?.value)
