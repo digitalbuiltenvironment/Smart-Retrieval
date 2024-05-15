@@ -10,7 +10,8 @@ import { useState } from "react";
 export default function ChatSection() {
   const { data: session } = useSession();
   const supabaseAccessToken = session?.supabaseAccessToken;
-  const [collSelected, setCollSelected] = useState<string>('');
+  const [collSelectedId, setCollSelectedId] = useState<string>('');
+  const [collSelectedName, setCollSelectedName] = useState<string>('');
   const {
     messages,
     input,
@@ -27,13 +28,13 @@ export default function ChatSection() {
     },
     body: {
       // Add the selected document to the request body
-      document: collSelected,
+      document: collSelectedName,
     },
   });
 
   return (
     <div className="space-y-4 max-w-5xl w-full relative">
-      {collSelected ?
+      {collSelectedId ?
         (
           <>
             <ChatMessages
@@ -43,11 +44,13 @@ export default function ChatSection() {
               stop={stop}
             />
             <AutofillQuestion
-              collSelected={collSelected}
+              collSelectedId={collSelectedId}
+              collSelectedName={collSelectedName}
               messages={messages}
               isLoading={isLoading}
               handleSubmit={handleSubmit}
               handleInputChange={handleInputChange}
+              handleCollIdSelect={setCollSelectedId}
               input={input}
             />
             <ChatInput
@@ -60,8 +63,10 @@ export default function ChatSection() {
         )
         :
         <ChatSelection
-          collSelected={collSelected}
-          handleCollSelect={setCollSelected}
+          collSelectedId={collSelectedId}
+          collSelectedName={collSelectedName}
+          handleCollIdSelect={setCollSelectedId}
+          handleCollNameSelect={setCollSelectedName}
         />
       }
     </div>

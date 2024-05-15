@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     // Retrieve the public collections id and data from the database
     const { data: publicCollections, error: pubCollErr } = await supabase
         .from('public_collections')
-        .select('collections (collection_id, display_name, description)');
+        .select('collections (collection_id, display_name, description, created_at)');
 
     if (pubCollErr) {
         console.error('Error fetching public collection data from database:', pubCollErr.message);

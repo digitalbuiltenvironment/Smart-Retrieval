@@ -5,7 +5,7 @@ import { SearchHandler } from "@/app/components/ui/search/search.interface";
 export default function AutofillSearchQuery(
   props: Pick<
     SearchHandler,
-    "collSelected" | "query" | "isLoading" | "onSearchSubmit" | "onInputChange" | "results" | "searchButtonPressed"
+    "collSelectedId" | "collSelectedName" | "query" | "isLoading" | "onSearchSubmit" | "onInputChange" | "results" | "searchButtonPressed"
   >,
 ) {
   // Keep track of whether to show the overlay
@@ -31,11 +31,15 @@ export default function AutofillSearchQuery(
   // Randomly select a subset of 3-4 questions
   useEffect(() => {
     // Select the questions bank based on the document set selected
-    if (props.collSelected === "EIR") {
+    if (props.collSelectedName === "EIR") {
       setQuestionsBank(eirQuestionsBank);
     }
-    else {
+    else if (props.collSelectedName === "PSSCOC") {
       setQuestionsBank(psscocQuestionsBank);
+    }
+    else {
+      // Do nothing and return
+      return;
     }
     // Shuffle the questionsBank array
     const shuffledQuestions = shuffleArray(questionsBank);
@@ -46,7 +50,7 @@ export default function AutofillSearchQuery(
     setTimeout(() => {
       setRandomQuestions(selectedQuestions);
     }, 300);
-  }, [questionsBank, props.collSelected]);
+  }, [questionsBank, props.collSelectedName]);
 
 
   // Hide overlay when there are query
@@ -58,20 +62,6 @@ export default function AutofillSearchQuery(
       setShowOverlay(true);
     }
   }, [props.results, props.query]);
-
-  // Automatically advance to the next question after a delay
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (currentQuestionIndex < randomQuestions.length - 1) {
-        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-      }
-      else {
-        clearInterval(timer); // Stop the timer when all questions have been displayed
-      }
-    }, 100); // Adjust the delay time as needed (e.g., 5000 milliseconds = 5 seconds)
-
-    return () => clearInterval(timer); // Cleanup the timer on component unmount
-  }, [currentQuestionIndex, randomQuestions]);
 
   // Handle autofill questions click
   const handleAutofillQuestionClick = (questionInput: string) => {
@@ -85,11 +75,10 @@ export default function AutofillSearchQuery(
       {showOverlay && (
         <div className="relative mx-auto">
           <div className="rounded-lg pt-5 pr-10 pl-10 flex flex-col overflow-y-auto pb-4 bg-white dark:bg-zinc-700/30 shadow-xl">
-            <h2 className="text-lg text-center font-semibold mb-4">How can I help with {props.collSelected} today?</h2>
-            {/* {dialogMessage && <p className="text-center text-sm text-gray-500 mb-4">{dialogMessage}</p>} */}
-            {randomQuestions.map((question, index) => (
-              <ul>
-                <li key={index} className={`p-2 mb-2 border border-zinc-500/30 dark:border-white rounded-lg hover:bg-zinc-500/30 transition duration-300 ease-in-out transform cursor-pointer ${index <= currentQuestionIndex ? 'opacity-100 duration-500' : 'opacity-0'}`}>
+            <h2 className="text-lg text-center font-semibold mb-4">How can I help with {props.collSelectedName} today?</h2>
+            <ul>
+              {randomQuestions.map((question, index) => (
+                <li key={index} className="p-2 mb-2 border border-zinc-500/30 dark:border-white rounded-lg hover:bg-zinc-500/30 transition duration-300 ease-in-out transform cursor-pointer">
                   <button
                     className="text-blue-500 w-full text-left"
                     onClick={() => handleAutofillQuestionClick(question.title)}
@@ -97,8 +86,8 @@ export default function AutofillSearchQuery(
                     {question.title}
                   </button>
                 </li>
-              </ul>
-            ))}
+              ))}
+            </ul>
           </div>
         </div>
       )}

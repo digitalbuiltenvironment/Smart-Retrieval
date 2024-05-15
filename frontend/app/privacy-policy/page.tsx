@@ -8,7 +8,7 @@ const PrivacyPolicyPage: React.FC = () => {
                     <h1 className="text-2xl md:text-4xl font-bold mb-4">Privacy Policy</h1>
                     <span>
                         <p className="mb-2 gap-2">
-                            Smart-Retrieval the website (hereinafter referred to as the "Service").
+                            Smart-Retrieval the website (hereinafter referred to as the &quot;Service&quot;).
                         </p>
                         <p className="mb-2">
                             This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
@@ -84,7 +84,7 @@ const PrivacyPolicyPage: React.FC = () => {
                         <h2 className="text-l md:text-xl font-bold mb-4 mt-4">Usage Data</h2>
                         <span>
                             <p className="mb-2">
-                                We may also collect information how the Service is accessed and used ("Usage Data"). This Usage Data may include information such as your computer's Internet Protocol address (e.g. IP address), browser type, browser version, the pages of our Service that you visit, the time and date of your visit, the time spent on those pages, unique device identifiers and other diagnostic data.
+                                We may also collect information how the Service is accessed and used (&quot;Usage Data&quot;). This Usage Data may include information such as your computer&apos;s Internet Protocol address (e.g. IP address), browser type, browser version, the pages of our Service that you visit, the time and date of your visit, the time spent on those pages, unique device identifiers and other diagnostic data.
                             </p>
                             <p className="mb-2">
                                 This Usage Data may be collected automatically when using the Service.

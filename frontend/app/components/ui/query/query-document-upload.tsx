@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
+import { AlertTriangle } from "lucide-react";
+import { IconSpinner } from '@/app/components/ui/icons';
 
 export default function QueryDocumentUpload() {
     const [files, setFiles] = useState<File[]>([]);
@@ -12,9 +14,10 @@ export default function QueryDocumentUpload() {
     const [descriptionError, setDescriptionError] = useState(false);
     const [fileError, setFileError] = useState(false);
     const [fileErrorMsg, setFileErrorMsg] = useState('');
+    const [isLoading, setisLoading] = useState(false);
 
     const MAX_FILES = 10; // Maximum number of files allowed
-    const MAX_TOTAL_SIZE = 10 * 1024 * 1024; // Maximum total size allowed (10 MB in bytes)
+    const MAX_TOTAL_SIZE = 15 * 1024 * 1024; // Maximum total size allowed (15 MB in bytes)
     // The total size of all selected files should not exceed this value
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,29 +97,79 @@ export default function QueryDocumentUpload() {
             });
         }
         else {
+            setisLoading(true);
             // Show confirmation dialog
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You are about to upload and index your document set. Ensure that there are no sensitive/secret documents! Do you want to proceed?",
+                text: "You are about to upload and index your documents. Ensure that there are no sensitive/secret documents! Do you want to proceed?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#4caf50',
                 cancelButtonColor: '#b91c1c',
-                confirmButtonText: 'Yes, upload & index it!',
-                cancelButtonText: 'No, cancel!',
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Perform the upload and indexing logic here
-                    console.log("Uploading and indexing document set...");
-                    // Show toast notification
-                    toast.success("Document set uploaded and indexed successfully!", {
-                        position: "top-right",
-                        closeOnClick: true,
-                    });
-                    // Reset the form fields
-                    setDisplayName('');
-                    setDescription('');
-                    setFiles([]);
+                    // Perform the upload and indexing logic
+                    console.log("Uploading and indexing documents...");
+                    // Make a POST request to the API with the form data to save to the database
+                    fetch('/api/user-collections', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            display_name: displayName,
+                            description: description,
+                        }),
+                    })
+                        .then(async response => {
+                            if (response.ok) {
+                                // Show success dialog
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Documents uploaded successfully! The documents will be indexed shortly.',
+                                    icon: 'success',
+                                    confirmButtonColor: '#4caf50',
+                                });
+                                // Reset the form fields
+                                setDisplayName('');
+                                setDescription('');
+                                setFiles([]);
+                                setisLoading(false);
+                                // Show toast notification
+                                toast.success("Documents indexed successfully!", {
+                                    position: "top-right",
+                                    closeOnClick: true,
+                                });
+                            } else {
+                                const data = await response.json();
+                                // Log to console
+                                console.error('Error uploading and indexing documents:', data.error);
+                                // Show error dialog
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'Failed to upload and index documents. Please try again later. (Check Console for more details)',
+                                    icon: 'error',
+                                    confirmButtonColor: '#4caf50',
+                                });
+                                setisLoading(false);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error uploading and indexing documents:', error);
+                            // Show error dialog
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Failed to upload and index documents. Please try again later. (Check Console for more details)',
+                                icon: 'error',
+                                confirmButtonColor: '#4caf50',
+                            });
+                            setisLoading(false);
+                        });
+                }
+                else {
+                    setisLoading(false);
                 }
             });
         }
@@ -127,6 +180,14 @@ export default function QueryDocumentUpload() {
             <div className="rounded-lg pt-5 pr-10 pl-10 flex h-[50vh] flex-col divide-y overflow-y-auto">
                 <form onSubmit={handleSubmit} className="flex flex-col w-full justify-center gap-4">
                     <h2 className="text-lg text-center font-semibold mb-4">Upload & Index Your Own Document Set:</h2>
+                    {/* Warning Banner */}
+                    <div className="flex flex-col bg-red-100 border border-orange-400 text-orange-600 px-4 py-3 rounded text-center items-center" role="alert">
+                        <AlertTriangle />
+                        <div className="flex text-center items-center font-bold">
+                            WARNING
+                        </div>
+                        <div className="flex">Smart Retrieval is still in the demo stage, avoid uploading sensitive/secret documents.</div>
+                    </div>
                     <div className={`flex flex-col ${displayNameError ? 'has-error' : ''}`}>
                         <label htmlFor="displayName" title='Display Name' className='mb-2'>Display Name:</label>
                         <input
@@ -164,7 +225,11 @@ export default function QueryDocumentUpload() {
                         />
                         {fileError && <p className="text-red-500 text-sm pl-1 pt-1">{fileErrorMsg}</p>}
                     </div>
-                    <button type="submit" title='Submit' className="text-center items-center text-l disabled:bg-orange-400 bg-blue-500 text-white px-6 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105 disabled:hover:scale-100">Submit</button>
+                    <div className="flex flex-col gap-4">
+                        <button type="submit" title='Submit' className="text-center items-center text-l disabled:bg-orange-400 bg-blue-500 text-white px-6 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105 disabled:hover:scale-100">
+                            {isLoading ? <IconSpinner className="animate-spin h-5 w-5 mx-auto" /> : "Submit"}
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

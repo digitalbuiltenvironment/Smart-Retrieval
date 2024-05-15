@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { QuestionsBankProp, psscocQuestionsBank, eirQuestionsBank } from "@/app/components/ui/autofill-prompt/autofill-prompt.interface";
 import { ChatHandler } from "@/app/components/ui/chat/chat.interface";
+import { Undo2 } from "lucide-react";
 
 export default function AutofillQuestion(
   props: Pick<
     ChatHandler,
-    "collSelected" | "messages" | "isLoading" | "handleSubmit" | "handleInputChange" | "input"
+    "collSelectedId" | "collSelectedName" | "messages" | "isLoading" | "handleSubmit" | "handleInputChange" | "input" | "handleCollIdSelect"
   >,
 ) {
   // Keep track of whether to show the overlay
@@ -31,11 +32,15 @@ export default function AutofillQuestion(
   // Randomly select a subset of 3-4 questions
   useEffect(() => {
     // Select the questions bank based on the document set selected
-    if (props.collSelected === "EIR") {
+    if (props.collSelectedName === "EIR") {
       setQuestionsBank(eirQuestionsBank);
     }
-    else {
+    else if (props.collSelectedName === "PSSCOC") {
       setQuestionsBank(psscocQuestionsBank);
+    }
+    else {
+      // Do nothing and return
+      return;
     }
     // Shuffle the questionsBank array
     const shuffledQuestions = shuffleArray(questionsBank);
@@ -46,7 +51,7 @@ export default function AutofillQuestion(
     setTimeout(() => {
       setRandomQuestions(selectedQuestions);
     }, 300);
-  }, [questionsBank, props.collSelected]);
+  }, [questionsBank, props.collSelectedName]);
 
 
   // Hide overlay when there are messages
@@ -59,23 +64,14 @@ export default function AutofillQuestion(
     }
   }, [props.messages, props.input]);
 
-  // Automatically advance to the next question after a delay
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (currentQuestionIndex < randomQuestions.length - 1) {
-        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-      }
-      else {
-        clearInterval(timer); // Stop the timer when all questions have been displayed
-      }
-    }, 100); // Adjust the delay time as needed (e.g., 5000 milliseconds = 5 seconds)
-
-    return () => clearInterval(timer); // Cleanup the timer on component unmount
-  }, [currentQuestionIndex, randomQuestions]);
-
   // Handle autofill questions click
   const handleAutofillQuestionClick = (questionInput: string) => {
     props.handleInputChange({ target: { name: "message", value: questionInput } } as React.ChangeEvent<HTMLInputElement>);
+  };
+
+  // Handle back button click
+  const handleBackButtonClick = () => {
+    props.handleCollIdSelect("");
   };
 
   return (
@@ -83,10 +79,19 @@ export default function AutofillQuestion(
       {showOverlay && (
         <div className="w-full rounded-xl bg-white dark:bg-zinc-700/30 dark:from-inherit p-4 shadow-xl pb-0">
           <div className="rounded-lg pt-5 pr-10 pl-10 flex h-[50vh] flex-col overflow-y-auto pb-4">
-            <h2 className="text-lg text-center font-semibold mb-4">How can I help you with {props.collSelected} today?</h2>
-            {randomQuestions.map((question, index) => (
-              <ul>
-                <li key={index} className={`p-2 mb-2 border border-zinc-500/30 dark:border-white rounded-lg hover:bg-zinc-500/30 transition duration-300 ease-in-out transform cursor-pointer ${index <= currentQuestionIndex ? 'opacity-100 duration-500' : 'opacity-0'}`}>
+            <div className="flex items-center justify-center mb-4 gap-2">
+              <h2 className="text-lg text-center font-semibold">How can I help you with {props.collSelectedName} today?</h2>
+              <button
+                title="Go Back"
+                onClick={handleBackButtonClick}
+                className="hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-full p-1 transition duration-300 ease-in-out transform hover:scale-110 hover:bg-blue-500/10 focus:bg-blue-500/10"
+              >
+                <Undo2 className="w-6 h-6" />
+              </button>
+            </div>
+            <ul>
+              {randomQuestions.map((question, index) => (
+                <li key={index} className="p-2 mb-2 border border-zinc-500/30 dark:border-white rounded-lg hover:bg-zinc-500/30 transition duration-300 ease-in-out transform cursor-pointer">
                   <button
                     className="text-blue-500 w-full text-left"
                     onClick={() => handleAutofillQuestionClick(question.title)}
@@ -94,8 +99,8 @@ export default function AutofillQuestion(
                     {question.title}
                   </button>
                 </li>
-              </ul>
-            ))}
+              ))}
+            </ul>
           </div>
         </div>
       )}

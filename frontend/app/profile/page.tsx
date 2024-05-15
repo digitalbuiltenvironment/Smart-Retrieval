@@ -33,50 +33,43 @@ const ProfilePage: React.FC = () => {
         // TODO: Handle form submission logic
     };
 
-    const fetchProfileData = async () => {
-        try {
-            const response = await fetch('/api/profile');
-            if (!response.ok) {
-                throw new Error('Failed to fetch profile data');
-            }
-            const data = await response.json();
-            console.log('Profile data:', data);
-            setName(data.userData.name);
-            setEmail(data.userData.email);
-            setImageURL(data.userData.image);
-        } catch (error) {
-            console.error('Error fetching profile data:', error);
-        } finally {
-            toggleIsLoaded();
-        }
-    };
-
     const updateProfileData = async () => {
-        try {
-            const response = await fetch('/api/profile', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    image: imageURL,
-                }),
-            });
-            if (!response.ok) {
-                throw new Error('Failed to update profile data');
-            }
-            console.log('Profile data updated successfully!');
-        } catch (error) {
-            console.error('Error updating profile data:', error);
+        const response = await fetch('/api/profile', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                image: imageURL,
+            }),
+        });
+        if (!response.ok) {
+            console.error('Failed to update profile data');
+            return;
         }
+        console.log('Profile data updated successfully!');
     };
 
     // TODO: Implement check for admin role
 
     // On component mount, fetch the user's profile data
     useEffect(() => {
+        const fetchProfileData = async () => {
+            const response = await fetch('/api/profile');
+            if (!response.ok) {
+                console.error('Failed to fetch profile data');
+                return;
+            }
+            const data = await response.json();
+            const userData = data.userData;
+            setName(userData.name);
+            setEmail(userData.email);
+            setImageURL(userData.image);
+            setIsLoaded(true);
+            console.log('Profile data fetched successfully! Data:', userData);
+        };
         // Fetch the user's profile data
         fetchProfileData();
     }, []);

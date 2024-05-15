@@ -5,9 +5,5 @@ export interface QueryMenuHandler {
   setShowChat: (showChat: boolean) => void,
   showManage: boolean,
   setShowManage: (showManage: boolean) => void,
-}
-
-export interface QueryCollectionManageHandler {
-  collSelected: string,
-  handleCollSelect: (collectionId: string) => void,
+  setCollSelectedId: (collSelectedId: string) => void,
 }

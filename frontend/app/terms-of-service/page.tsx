@@ -10,7 +10,7 @@ const TermsOfServicePage: React.FC = () => {
                     <h1 className="text-2xl md:text-4xl font-bold mb-4">Terms of Service</h1>
                     <span>
                         <p className="mb-2 gap-2">
-                            Smart-Retrieval the website (hereinafter referred to as the "Service").
+                            Smart-Retrieval the website (hereinafter referred to as the &quot;Service&quot;).
                         </p>
                         <p className="mb-2">
                             This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.

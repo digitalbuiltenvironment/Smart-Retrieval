@@ -43,10 +43,8 @@ export default function SearchResults(
 
     // Handle Reseting the expanded result when the search button is pressed
     useEffect(() => {
-        if (props.searchButtonPressed) {
-            setExpandedResult(null);
-        }
-    }, [props.searchButtonPressed]);
+        setExpandedResult(null);
+    }, []);
 
     // Handle when query is empty and search button is pressed
     if (props.query.trim() === "" && props.searchButtonPressed) {

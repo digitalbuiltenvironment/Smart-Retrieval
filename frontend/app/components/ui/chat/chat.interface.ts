@@ -5,8 +5,10 @@ export interface Message {
 }
 
 export interface ChatHandler {
-  collSelected: string;
-  handleCollSelect: (doc: string) => void;
+  collSelectedId: string;
+  collSelectedName: string;
+  handleCollIdSelect: (collection_id: string) => void;
+  handleCollNameSelect: (display_name: string) => void;
   messages: Message[];
   input: string;
   isLoading: boolean;

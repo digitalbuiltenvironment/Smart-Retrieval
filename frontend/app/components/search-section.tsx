@@ -9,7 +9,8 @@ const SearchSection: React.FC = () => {
   const [query, setQuery] = useState("");
   const { searchResults, isLoading, handleSearch } = useSearch();
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
-  const [collSelected, setcollSelected] = useState<string>('');
+  const [collSelectedId, setCollSelectedId] = useState<string>('');
+  const [collSelectedName, setCollSelectedName] = useState<string>('');
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -19,15 +20,16 @@ const SearchSection: React.FC = () => {
   const handleSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
     setSearchButtonPressed(true);
-    handleSearch(query, collSelected);
+    handleSearch(query, collSelectedId);
   };
 
   return (
     <div className="space-y-4 max-w-5xl w-full">
-      {collSelected ? (
+      {collSelectedId ? (
         <>
           <SearchInput
-            collSelected={collSelected}
+            collSelectedId={collSelectedId}
+            collSelectedName={collSelectedName}
             query={query}
             isLoading={isLoading}
             results={searchResults}
@@ -35,7 +37,8 @@ const SearchSection: React.FC = () => {
             onSearchSubmit={handleSearchSubmit}
           />
           <AutofillSearchQuery
-            collSelected={collSelected}
+            collSelectedId={collSelectedId}
+            collSelectedName={collSelectedName}
             query={query}
             isLoading={isLoading}
             results={searchResults}
@@ -51,8 +54,10 @@ const SearchSection: React.FC = () => {
         </>
       ) : (
         <SearchSelection
-          collSelected={collSelected}
-          handleCollSelect={setcollSelected}
+          collSelectedId={collSelectedId}
+          collSelectedName={collSelectedName}
+          handleCollIdSelect={setCollSelectedId}
+          handleCollNameSelect={setCollSelectedName}
         />
       )}
     </div>

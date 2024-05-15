@@ -5,23 +5,26 @@ import { MessageCircle, Upload, FileCog } from 'lucide-react';
 import { QueryMenuHandler } from '@/app/components/ui/query/query.interface';
 
 export default function QueryMenu(
-    props: Pick<QueryMenuHandler, "showUpload" | "setShowUpload" | "showChat" | "setShowChat" | "showManage" | "setShowManage">,
+    props: Pick<QueryMenuHandler, "showUpload" | "setShowUpload" | "showChat" | "setShowChat" | "showManage" | "setShowManage" | "setCollSelectedId">,
 ) {
     const handleShowChatTab = () => {
         props.setShowChat(true);
         props.setShowUpload(false);
         props.setShowManage(false);
+        props.setCollSelectedId('');
     }
     const handleShowUploadTab = () => {
         props.setShowUpload(true);
         props.setShowChat(false);
         props.setShowManage(false);
+        props.setCollSelectedId('');
     }
 
     const handleShowManageTab = () => {
         props.setShowManage(true);
         props.setShowUpload(false);
         props.setShowChat(false);
+        props.setCollSelectedId('');
     }
 
     return (
