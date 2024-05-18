@@ -13,12 +13,14 @@ export async function GET(request: NextRequest) {
 
     const { data: usersData, error: usersError } = await supabase
         .from('users')
-        .select('id, name, email');
+        .select('id, name, email, admins (id)');
 
     if (usersError) {
         console.error('Error fetching users data from database:', usersError.message);
         return NextResponse.json({ error: usersError.message }, { status: 500 });
     }
+
+    console.log('usersData:', usersData);
 
     return NextResponse.json({ users: usersData });
 }

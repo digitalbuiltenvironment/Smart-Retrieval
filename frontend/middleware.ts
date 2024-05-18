@@ -2,6 +2,8 @@ import { User } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js"
 
+type session = {} | User;
+
 export const middleware = async (request: NextRequest) => {
     const { pathname, origin } = request.nextUrl;
     const signinPage = new URL('/sign-in', origin);
@@ -57,8 +59,6 @@ export const middleware = async (request: NextRequest) => {
 export const config = {
     matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico|favicon-16x16.png|apple-touch-icon.png|about|sign-in|api/status|privacy-policy|terms-of-service|sitemap.xml|robots.txt).+)']
 }
-
-type session = {} | User;
 
 // Default middleware for NextAuth checking for JWT session not database session
 

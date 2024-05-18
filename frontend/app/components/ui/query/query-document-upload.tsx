@@ -125,6 +125,9 @@ export default function QueryDocumentUpload() {
                     })
                         .then(async response => {
                             if (response.ok) {
+                                // Get the response data
+                                const data = await response.json();
+                                console.log('Data:', data);
                                 // Show success dialog
                                 Swal.fire({
                                     title: 'Success!',
@@ -139,7 +142,7 @@ export default function QueryDocumentUpload() {
                                     resolveAfter5Sec,
                                     {
                                         pending: 'Indexing Documents...',
-                                        success: 'Finished Indexing Documents Successfully! 🎉',
+                                        success: 'Documents Indexed Successfully! 🎉',
                                         error: 'Failed Indexing Documents! 😢',
                                     }
 
@@ -238,7 +241,11 @@ export default function QueryDocumentUpload() {
                         {fileError && <p className="text-red-500 text-sm pl-1 pt-1">{fileErrorMsg}</p>}
                     </div>
                     <div className="flex flex-col gap-4">
-                        <button type="submit" title='Submit' className="text-center items-center text-l disabled:bg-orange-400 bg-blue-500 text-white px-6 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105 disabled:hover:scale-100">
+                        <button
+                            disabled={isLoading}
+                            type="submit"
+                            title='Submit'
+                            className="text-center items-center text-l disabled:bg-orange-400 bg-blue-500 text-white px-6 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105 disabled:hover:scale-100">
                             {isLoading ? <IconSpinner className="animate-spin h-5 w-5 mx-auto" /> : "Submit"}
                         </button>
                     </div>

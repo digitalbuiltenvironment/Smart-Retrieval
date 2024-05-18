@@ -414,7 +414,7 @@ export default function QueryCollectionManage() {
                                     <th scope="col" className="px-6 py-3">Display Name</th>
                                     <th scope="col" className="px-6 py-3">Description</th>
                                     <th scope="col" className="px-6 py-3">Created</th>
-                                    <th scope="col" className="px-6 py-3">Visibility</th>
+                                    <th scope="col" className="px-6 py-3">Current Visibility</th>
                                     <th scope="col" className="px-6 py-3">Request Status</th>
                                     <th scope="col" className="px-6 py-3">Requested</th>
                                     <th scope="col" className="px-6 py-3">Request Updated</th>
@@ -432,7 +432,7 @@ export default function QueryCollectionManage() {
                                         <td className="px-6 py-3">
                                             <div>
                                                 <span className={
-                                                    `${collection.requestStatus === '⏳Pending' ? 'text-orange-400' :
+                                                    `text-nowrap ${collection.requestStatus === '⏳Pending' ? 'text-orange-400 ' :
                                                         collection.requestStatus === '✅Approved' ? 'text-green-500' :
                                                             collection.requestStatus === '❌Rejected' ? 'text-red-500' : ''}`
                                                 }>
@@ -442,42 +442,47 @@ export default function QueryCollectionManage() {
                                         </td>
                                         <td className="px-6 py-3">{collection.requestDate}</td>
                                         <td className="px-6 py-3">{collection.updatedRequestDate}</td>
-                                        <td className="px-6 py-3 w-full flex flex-wrap justify-between gap-2">
-                                            {/* Conditional rendering button based on request status */}
-                                            {collection.requestStatus === '⏳Pending' ? (
-                                                <button onClick={() => handleCancelRequest(collection.collection_id, collection.isPublic)}
-                                                    title='Cancel Request'
-                                                    className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm bg-orange-400 text-white px-1 py-1 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-orange-500/40"
-                                                >
-                                                    Cancel Request
-                                                </button>
-                                            ) :
-                                                collection.isPublic ? (
-                                                    <button onClick={() => handleRequest(collection.collection_id, false)}
-                                                        disabled={collection.requestStatus === '⏳Pending'}
-                                                        title='Set Private'
-                                                        className="flex flex-grow text-center items-center text-sm disabled:bg-gray-500 bg-blue-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
+                                        <td className="px-6 py-3 w-full">
+                                            <div className='flex flex-col justify-between gap-2'>
+                                                {/* Conditional rendering button based on request status */}
+                                                {collection.requestStatus === '⏳Pending' ? (
+                                                    <button onClick={() => handleCancelRequest(collection.collection_id, collection.isPublic)}
+                                                        title='Cancel Request'
+                                                        className="flex flex-grow justify-center text-center items-center text-xs lg:text-sm bg-orange-400 text-white px-1 py-1 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-orange-500/40"
                                                     >
-                                                        <EyeOff className='w-5 h-5' />
-                                                        Set Private
+                                                        Cancel Request
                                                     </button>
-                                                ) : (
-                                                    <button onClick={() => handleRequest(collection.collection_id, true)}
-                                                        disabled={collection.requestStatus === '⏳Pending'}
-                                                        title='Set Public'
-                                                        className="flex flex-grow text-center items-center text-sm disabled:bg-gray-500 bg-blue-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
+                                                ) :
+                                                    collection.isPublic ? (
+                                                        <button onClick={() => handleRequest(collection.collection_id, false)}
+                                                            disabled={collection.requestStatus === '⏳Pending'}
+                                                            title='Set Private'
+                                                            className="flex flex-grow justify-center text-center items-center text-sm disabled:bg-gray-500 bg-blue-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
+                                                        >
+                                                            <EyeOff className='w-5 h-5 mr-1' />
+                                                            Set Private
+                                                        </button>
+                                                    ) : (
+                                                        <button onClick={() => handleRequest(collection.collection_id, true)}
+                                                            disabled={collection.requestStatus === '⏳Pending'}
+                                                            title='Set Public'
+                                                            className="flex flex-grow justify-center text-center items-center text-sm disabled:bg-gray-500 bg-blue-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
+                                                        >
+                                                            <Eye className='w-5 h-5 mr-1' />
+                                                            Set Public
+                                                        </button>
+                                                    )}
+                                                {/* Conditional rendering of delete button based on current visibility of collection, only private collection can be deleted */}
+                                                {!collection.isPublic && (
+                                                    <button onClick={() => handleDelete(collection.collection_id, true)}
+                                                        title='Delete'
+                                                        className="flex flex-grow justify-center text-center items-center text-sm disabled:bg-gray-500 bg-red-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-red-500/40"
                                                     >
-                                                        <Eye className='w-5 h-5' />
-                                                        Set Public
+                                                        <Trash className='w-4 h-4 mr-1' />
+                                                        Delete
                                                     </button>
                                                 )}
-                                            <button onClick={() => handleDelete(collection.collection_id, true)}
-                                                title='Delete'
-                                                className="flex flex-grow text-center items-center text-sm disabled:bg-gray-500 bg-red-500 text-white px-3 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-red-500/40"
-                                            >
-                                                <Trash className='w-4 h-4 mr-1' />
-                                                Delete
-                                            </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -495,7 +500,7 @@ export default function QueryCollectionManage() {
                                         <div className="text-xs lg:text-sm text-gray-500">{collection.description}</div>
                                         <div className="border-b border-zinc-500/30 dark:border-white my-2"></div> {/* Divider */}
                                         <div className="text-xs lg:text-sm"><span className='font-bold'>Created: </span>{collection.created_at}</div>
-                                        <div className='flex items-center text-xs lg:text-sm'><span className='font-bold'>Visibility: </span>{collection.isPublic ? <span className='flex text-center items-center'><Eye className='w-4 h-4 mx-1' />Public</span> : <span className='flex text-center items-center'><EyeOff className='w-4 h-4 mx-1' />Private</span>}</div>
+                                        <div className='flex items-center text-xs lg:text-sm'><span className='font-bold'>Current Visibility: </span>{collection.isPublic ? <span className='flex text-center items-center'><Eye className='w-4 h-4 mx-1' />Public</span> : <span className='flex text-center items-center'><EyeOff className='w-4 h-4 mx-1' />Private</span>}</div>
 
                                         {/* Render request status and dates */}
                                         {collection.requestStatus && (
@@ -544,14 +549,16 @@ export default function QueryCollectionManage() {
                                                     <span>Set Public</span>
                                                 </button>
                                             )}
-                                        {/* Delete button */}
-                                        <button onClick={() => handleDelete(collection.collection_id, true)}
-                                            title='Delete'
-                                            className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm disabled:bg-gray-500 bg-red-500 text-white px-2 py-2 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-red-500/40"
-                                        >
-                                            <Trash className='w-4 h-4 mr-1' />
-                                            <span>Delete</span>
-                                        </button>
+                                        {/* Conditional rendering of delete button based on current visibility of collection, only private collection can be deleted */}
+                                        {!collection.isPublic && (
+                                            <button onClick={() => handleDelete(collection.collection_id, true)}
+                                                title='Delete'
+                                                className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm bg-red-500 text-white px-2 py-2 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-red-500/40"
+                                            >
+                                                <Trash className='w-4 h-4 mr-1' />
+                                                <span>Delete</span>
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </li>

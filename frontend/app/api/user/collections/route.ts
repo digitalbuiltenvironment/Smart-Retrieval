@@ -142,6 +142,8 @@ export async function DELETE(request: NextRequest) {
         .eq('id', userId)
         .eq('collection_id', collection_id);
 
+    // TODO: Delete the vector collection from the vecs schema
+
     if (deleteError) {
         console.error('Error deleting user collection data from database:', deleteError.message);
         return NextResponse.json({ error: deleteError.message }, { status: 500 });

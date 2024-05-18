@@ -9,20 +9,18 @@ export async function GET(request: NextRequest) {
         { db: { schema: 'public' } },
     );
 
-    // Retrieve the public collections id and data from the database
+    // Retrieve the collections id and data from the database where is_public = true
     const { data: publicCollections, error: pubCollErr } = await supabase
-        .from('public_collections')
-        .select('collections (collection_id, display_name, description, created_at)');
+        .from('collections')
+        .select('collection_id, display_name, description, created_at')
+        .eq('is_public', true);
 
     if (pubCollErr) {
         console.error('Error fetching public collection data from database:', pubCollErr.message);
         return NextResponse.json({ error: pubCollErr.message }, { status: 500 });
     }
 
-    // Extract collections object from each item in the array
-    const formattedPublicCollections = publicCollections.map(item => item.collections);
+    // console.log('publicCollections:', publicCollections);
 
-    // console.log('formattedPublicCollections:', formattedPublicCollections);
-
-    return NextResponse.json({ publicCollections: formattedPublicCollections });
+    return NextResponse.json({ publicCollections: publicCollections });
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from 'next/image';
-import { Home, InfoIcon, MessageCircle, Search, FileQuestion, Menu, X, User2, LogOut, LogIn } from 'lucide-react';
+import { Home, InfoIcon, MessageCircle, Search, FileQuestion, Menu, X, User2, LogOut, LogIn, SlidersHorizontal } from 'lucide-react';
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useMedia } from 'react-use';
@@ -42,6 +42,14 @@ const MobileMenuItems = [
   },
 ];
 
+const AdminMenuItems = [
+  {
+    href: '/admin',
+    icon: <SlidersHorizontal className="mr-2 h-5 w-5" />,
+    label: 'Admin',
+  },
+];
+
 export default function Header() {
   const isLargeScreen = useMedia('(min-width: 1024px)', false);
   const [mounted, setMounted] = useState(false);
@@ -52,6 +60,8 @@ export default function Header() {
   const encodedPath = encodeURIComponent(currentPath);
   // Add callbackUrl params to the signinPage URL
   const signinPage = "/sign-in?callbackUrl=" + encodedPath;
+  // Check if the user is an admin
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Get user session for conditional rendering of user profile and logout buttons and for fetching the API status
   const { data: session, status } = useSession()
@@ -92,9 +102,22 @@ export default function Header() {
     }
   }
 
+  const checkAdminRole = async () => {
+    const response = await fetch('/api/admin/is-admin');
+    if (!response.ok) {
+      console.error('Failed to fetch admin data');
+      return;
+    }
+    const data = await response.json();
+    setIsAdmin(data.isAdmin);
+    console.log('Admin role fetched successfully! Data:', data);
+  };
+
+  const newMobileMenuItems = isAdmin ? [...MobileMenuItems, ...AdminMenuItems] : MobileMenuItems;
 
   useEffect(() => {
     setMounted(true);
+    checkAdminRole();
   }, [session]);
 
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -184,6 +207,14 @@ export default function Header() {
                 Search
               </div>
             </HeaderNavLink>
+            {isAdmin &&
+              <HeaderNavLink href="/admin" title='Admin'>
+                <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
+                  <SlidersHorizontal className="mr-1 h-4 w-4" />
+                  Admin
+                </div>
+              </HeaderNavLink>
+            }
           </div>
           <div className="flex items-center ml-auto">
             {/* Status Page Button/Indicator */}
@@ -265,7 +296,7 @@ export default function Header() {
 
         {/* Mobile menu component */}
         < MobileMenu isOpen={isMobileMenuOpen} onClose={() => setMobileMenuOpen(false)
-        } logoSrc={logo} items={MobileMenuItems} />
+        } logoSrc={logo} items={newMobileMenuItems} />
       </nav >
     </div >
   );
