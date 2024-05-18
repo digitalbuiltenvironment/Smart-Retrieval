@@ -28,7 +28,7 @@ export default function ChatSection() {
     },
     body: {
       // Add the selected document to the request body
-      document: collSelectedName,
+      collection_id: collSelectedId,
     },
   });
 

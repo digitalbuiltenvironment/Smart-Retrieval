@@ -33,7 +33,7 @@ export default function QuerySection() {
         },
         body: {
             // Add the selected document to the request body
-            document: collSelectedId,
+            collection_id: collSelectedId,
         },
     });
 
