@@ -55,7 +55,11 @@ export const middleware = async (request: NextRequest) => {
 
         // Check if the user is an admin for specific routes
         const adminPaths = ['/admin', '/admin/*', '/api/admin/*'];
-        const isAdminRoute = adminPaths.some(path => new RegExp(`^${path.replace('*', '.*')}$`).test(pathname));
+        // Dont match /api/admin/is-admin
+        const allowedAdminPaths = ['/api/admin/is-admin'];
+
+        // Match the pathname to the admin paths but not the allowed admin paths
+        const isAdminRoute = adminPaths.some((path) => new RegExp(path).test(pathname)) && !allowedAdminPaths.some((path) => new RegExp(path).test(pathname));
 
         if (isAdminRoute) {
             const { data: adminData, error: adminError } = await supabase
