@@ -61,6 +61,9 @@ async def search(
 
     logger.info(f"Filtered Search results similarity score: {filtered_results_scores}")
 
+    # Skip postprocessing for now
+    filtered_results = query_results
+
     response = []
     id = 1
     for node in filtered_results:
