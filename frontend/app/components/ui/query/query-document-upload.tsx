@@ -113,7 +113,7 @@ export default function QueryDocumentUpload() {
                     // Perform the upload and indexing logic
                     console.log("Uploading and indexing documents...");
                     // Make a POST request to the API with the form data to save to the database
-                    fetch('/api/user-collections', {
+                    fetch('/api/user/collections', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -128,20 +128,32 @@ export default function QueryDocumentUpload() {
                                 // Show success dialog
                                 Swal.fire({
                                     title: 'Success!',
-                                    text: 'Documents uploaded successfully! The documents will be indexed shortly.',
+                                    text: 'Documents uploaded successfully! The documents will be indexed shortly. Do not leave this page until the indexing is complete!',
                                     icon: 'success',
                                     confirmButtonColor: '#4caf50',
                                 });
+                                // Function to resolve after 5 seconds
+                                const resolveAfter5Sec = new Promise(resolve => setTimeout(resolve, 5000));
+                                // Show toast promise notification
+                                toast.promise(
+                                    resolveAfter5Sec,
+                                    {
+                                        pending: 'Indexing Documents...',
+                                        success: 'Finished Indexing Documents Successfully! 🎉',
+                                        error: 'Failed Indexing Documents! 😢',
+                                    }
+
+                                )
                                 // Reset the form fields
                                 setDisplayName('');
                                 setDescription('');
                                 setFiles([]);
                                 setisLoading(false);
-                                // Show toast notification
-                                toast.success("Documents indexed successfully!", {
-                                    position: "top-right",
-                                    closeOnClick: true,
-                                });
+                                // // Show toast notification
+                                // toast.success("Documents indexed successfully!", {
+                                //     position: "top-right",
+                                //     closeOnClick: true,
+                                // });
                             } else {
                                 const data = await response.json();
                                 // Log to console
