@@ -126,7 +126,7 @@ def create_index():
         collection_names = os.listdir(DATA_DIR)
         # to create each folder as a collection in local storage
         for collection_name in collection_names:
-            logger.info(f"Checking if [{collection_names}] index exists locally...")
+            logger.info(f"Checking if [{collection_name}] index exists locally...")
             # build the new data directory
             new_data_dir = os.path.join(DATA_DIR, collection_name)
             # build the new storage directory
@@ -137,7 +137,7 @@ def create_index():
                 or len(os.listdir(new_storage_dir))
                 < 4  # 4 files should be present if using simplevectorstore
             ):
-                logger.info(f"Creating [{collection_names}] index")
+                logger.info(f"Creating [{collection_name}] index")
                 # load the documents and create the index
                 try:
                     documents = SimpleDirectoryReader(
@@ -194,7 +194,7 @@ def create_index():
             logger.info(f"Finished creating [{collection_name}] vector store")
 
 
-def load_existing_index(collection_name="PSSCOC"):
+def load_existing_index(collection_name):
     # load the existing index
     if USE_LOCAL_VECTOR_STORE:
         # create the storage directory
@@ -235,6 +235,79 @@ def load_existing_index(collection_name="PSSCOC"):
         logger.info(f"Finished loading [{collection_name}] index from Supabase")
         logger.info(f"Index ID: {index.index_id}")
         return index
+
+
+# Index the files in the tempfile data directory and store the index in local storage or Supabase
+def index_uploaded_files(data_dir, collection_name):
+    # if use local vector store, create & store the index locally
+    if USE_LOCAL_VECTOR_STORE:
+        logger.info(f"Checking if [{collection_name}] index exists locally...")
+        # build the new storage directory
+        new_storage_dir = os.path.join(STORAGE_DIR, collection_name)
+        # check if storage folder and index files already exists
+        if (
+            not os.path.exists(new_storage_dir)
+            or len(os.listdir(new_storage_dir))
+            < 4  # 4 files should be present if using simplevectorstore
+        ):
+            logger.info(f"Creating [{collection_name}] index")
+            # load the documents and create the index
+            try:
+                documents = SimpleDirectoryReader(
+                    input_dir=data_dir, recursive=True
+                ).load_data()
+            except ValueError as e:
+                logger.error(f"{e}")
+                return False
+            index = VectorStoreIndex.from_documents(
+                documents=documents,
+                service_context=service_context,
+                show_progress=True,
+            )
+            # store it for later
+            index.storage_context.persist(STORAGE_DIR)
+            logger.info(f"Finished creating new index. Stored in {STORAGE_DIR}")
+            return True
+        else:
+            # do nothing
+            logger.info(f"Index already exist at {STORAGE_DIR}...")
+            return True
+    # else, create & store the index in Supabase pgvector
+    else:
+        # get the folders in the data directory
+        collection_names = os.listdir(DATA_DIR)
+        # to create each folder as a collection in Supabase
+        for collection_name in collection_names:
+            # check if remote storage already exists
+            logger.info(f"Checking if [{collection_name}] index exists in Supabase...")
+            # set the dimension based on the LLM model used
+            dimension = (
+                EMBED_MODEL_DIMENSIONS if USE_LOCAL_LLM else DEF_EMBED_MODEL_DIMENSIONS
+            )
+            # create the vector store, will create the collection if it does not exist
+            vector_store = SupabaseVectorStore(
+                postgres_connection_string=os.getenv("POSTGRES_CONNECTION_STRING"),
+                collection_name=collection_name,
+                dimension=dimension,
+            )
+            # create the storage context
+            storage_context = StorageContext.from_defaults(vector_store=vector_store)
+            logger.info(f"Creating [{collection_name}] index")
+            # load the documents and create the index
+            try:
+                documents = SimpleDirectoryReader(
+                    input_dir=data_dir, recursive=True
+                ).load_data()
+            except ValueError as e:
+                logger.error(f"{e}")
+                return False
+            index = VectorStoreIndex.from_documents(
+                documents=documents,
+                storage_context=storage_context,
+                show_progress=True,
+            )
+            logger.info(f"Finished creating [{collection_name}] vector store")
+            return True
 
 
 def get_index(collection_name):

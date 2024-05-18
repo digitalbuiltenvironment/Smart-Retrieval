@@ -1,7 +1,7 @@
 import logging
 import re
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from llama_index.postprocessor import SimilarityPostprocessor
 from llama_index.retrievers import VectorIndexRetriever
 
@@ -20,16 +20,15 @@ Instead it returns the relevant information from the index.
 
 @r.get("")
 async def search(
-    request: Request,
     query: str = None,
-    docSelected: str = None,
+    collection_id: str = None,
 ):
     # query = request.query_params.get("query")
     logger = logging.getLogger("uvicorn")
-    logger.info(f"Document Set: {docSelected} | Search: {query}")
+    logger.info(f"Document Set: {collection_id} | Search: {query}")
     # get the index for the selected document set
-    index = get_index(collection_name=docSelected)
-    if query is None or docSelected is None:
+    index = get_index(collection_name=collection_id)
+    if query is None or collection_id is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No search info/document set provided",
@@ -72,7 +71,9 @@ async def search(
         data = {}
         data["id"] = id
         data["file_name"] = node_metadata["file_name"]
-        data["page_no"] = node_metadata["page_label"]
+        data["page_no"] = (
+            node_metadata["page_label"] if "page_label" in node_metadata else "N/A"
+        )
         cleaned_text = re.sub(
             "^_+ | _+$", "", node_dict["text"]
         )  # remove leading and trailing underscores

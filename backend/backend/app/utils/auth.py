@@ -75,12 +75,12 @@ def get_user_from_JWT(token: str):
     if payload is not None:
         user_id = payload["sub"]
         # Try to get the user from the database using the user_id
-        response = supabase.table("users").select("*").eq("id", user_id).execute()
+        response = supabase.table("users").select("id").eq("id", user_id).execute()
         # print(response.data)
         if len(response.data) == 0:
             return False
         else:
-            return True
+            return response.data[0]["id"]
     else:
         return False
 
@@ -132,9 +132,10 @@ async def validate_user(
                 if verify_jwt(jwtoken=jwtoken):
                     return "Invalid token. Please provide a valid token."
                 # Check if the user exists in the database
-                if get_user_from_JWT(token=jwtoken):
+                user = get_user_from_JWT(token=jwtoken)
+                if user:
                     logger.info("Validated User's Auth Token successfully!")
-                    return None
+                    return user
                 else:
                     raise ValueError("User does not exist in the database!")
         else:
