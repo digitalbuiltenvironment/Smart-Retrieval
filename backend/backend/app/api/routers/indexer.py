@@ -3,7 +3,8 @@ import os
 import tempfile
 from typing import List
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, Form, File, HTTPException, UploadFile
+from fastapi.responses import JSONResponse
 
 from backend.app.utils import auth, index
 
@@ -22,7 +23,7 @@ The uploaded documents are indexed and stored in the vecs database.
 
 @r.post("")
 async def indexer(
-    collection_id: str,
+    collection_id: str = Form(...),
     files: List[UploadFile] = File(...),
     user=Depends(auth.validate_user),
 ):
@@ -46,19 +47,27 @@ async def indexer(
                 logger.info(f"Saved file: {file.filename} at {file_path}")
 
             # Call indexing function with the directory and collection_id
-            index.index_uploaded_files(temp_dir, collection_id)
-
-        return {
-            "status": "Files uploaded and indexed successfully",
-            "filenames": [file.filename for file in files],
-        }
+            if len(file_paths) == 0:
+                raise HTTPException(
+                    status_code=400, detail="No files uploaded for indexing"
+                )
+            if collection_id is None:
+                raise HTTPException(
+                    status_code=400, detail="No collection ID provided for indexing"
+                )
+            if index.index_uploaded_files(temp_dir, collection_id):
+                logger.info("Files uploaded and indexed successfully.")
+                return JSONResponse(
+                    status_code=200,
+                    content={
+                        "status": "Files uploaded and indexed successfully",
+                        "filenames": [file.filename for file in files],
+                    },
+                )
+            else:
+                raise HTTPException(
+                    status_code=500, detail="Failed to upload and index files"
+                )
     except Exception as e:
         logger.error(f"Failed to upload and index files: {str(e)}")
-        raise HTTPException(status_code=500, detail="Failed to upload and index files")
-
-
-def process_uploaded_file(collection_id: str, filename: str, contents: bytes):
-    # Implement the actual file processing logic here
-    logger.info(f"Processing {filename} for collection {collection_id}")
-    # This function should handle the file indexing or storage as needed
-    pass
+        raise HTTPException(status_code=500, detail="Failed to upload and index files.")

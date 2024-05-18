@@ -274,40 +274,36 @@ def index_uploaded_files(data_dir, collection_name):
             return True
     # else, create & store the index in Supabase pgvector
     else:
-        # get the folders in the data directory
-        collection_names = os.listdir(DATA_DIR)
-        # to create each folder as a collection in Supabase
-        for collection_name in collection_names:
-            # check if remote storage already exists
-            logger.info(f"Checking if [{collection_name}] index exists in Supabase...")
-            # set the dimension based on the LLM model used
-            dimension = (
-                EMBED_MODEL_DIMENSIONS if USE_LOCAL_LLM else DEF_EMBED_MODEL_DIMENSIONS
-            )
-            # create the vector store, will create the collection if it does not exist
-            vector_store = SupabaseVectorStore(
-                postgres_connection_string=os.getenv("POSTGRES_CONNECTION_STRING"),
-                collection_name=collection_name,
-                dimension=dimension,
-            )
-            # create the storage context
-            storage_context = StorageContext.from_defaults(vector_store=vector_store)
-            logger.info(f"Creating [{collection_name}] index")
-            # load the documents and create the index
-            try:
-                documents = SimpleDirectoryReader(
-                    input_dir=data_dir, recursive=True
-                ).load_data()
-            except ValueError as e:
-                logger.error(f"{e}")
-                return False
-            index = VectorStoreIndex.from_documents(
-                documents=documents,
-                storage_context=storage_context,
-                show_progress=True,
-            )
-            logger.info(f"Finished creating [{collection_name}] vector store")
-            return True
+        # check if remote storage already exists
+        logger.info(f"Checking if [{collection_name}] index exists in Supabase...")
+        # set the dimension based on the LLM model used
+        dimension = (
+            EMBED_MODEL_DIMENSIONS if USE_LOCAL_LLM else DEF_EMBED_MODEL_DIMENSIONS
+        )
+        # create the vector store, will create the collection if it does not exist
+        vector_store = SupabaseVectorStore(
+            postgres_connection_string=os.getenv("POSTGRES_CONNECTION_STRING"),
+            collection_name=collection_name,
+            dimension=dimension,
+        )
+        # create the storage context
+        storage_context = StorageContext.from_defaults(vector_store=vector_store)
+        logger.info(f"Creating [{collection_name}] index")
+        # load the documents and create the index
+        try:
+            documents = SimpleDirectoryReader(
+                input_dir=data_dir, recursive=True
+            ).load_data()
+        except ValueError as e:
+            logger.error(f"{e}")
+            return False
+        index = VectorStoreIndex.from_documents(
+            documents=documents,
+            storage_context=storage_context,
+            show_progress=True,
+        )
+        logger.info(f"Finished creating [{collection_name}] vector store")
+        return True
 
 
 def get_index(collection_name):
