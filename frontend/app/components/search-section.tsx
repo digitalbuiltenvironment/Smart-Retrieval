@@ -44,6 +44,7 @@ const SearchSection: React.FC = () => {
             results={searchResults}
             onInputChange={handleInputChange}
             onSearchSubmit={handleSearchSubmit}
+            handleCollIdSelect={setCollSelectedId}
           />
           <SearchResults
             query={query}

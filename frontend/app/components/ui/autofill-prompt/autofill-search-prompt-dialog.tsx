@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { QuestionsBankProp, psscocQuestionsBank, eirQuestionsBank } from "@/app/components/ui/autofill-prompt/autofill-prompt.interface";
 import { SearchHandler } from "@/app/components/ui/search/search.interface";
+import { Undo2 } from "lucide-react";
 
 export default function AutofillSearchQuery(
   props: Pick<
     SearchHandler,
-    "collSelectedId" | "collSelectedName" | "query" | "isLoading" | "onSearchSubmit" | "onInputChange" | "results" | "searchButtonPressed"
+    "collSelectedId" | "collSelectedName" | "query" | "isLoading" | "onSearchSubmit" | "onInputChange" | "results" | "searchButtonPressed" | "handleCollIdSelect"
   >,
 ) {
   // Keep track of whether to show the overlay
@@ -70,12 +71,26 @@ export default function AutofillSearchQuery(
     }
   };
 
+    // Handle back button click
+    const handleBackButtonClick = () => {
+      props.handleCollIdSelect("");
+    };
+
   return (
     <>
       {showOverlay && (
         <div className="relative mx-auto">
           <div className="rounded-lg pt-5 pr-10 pl-10 flex flex-col overflow-y-auto pb-4 bg-white dark:bg-zinc-700/30 shadow-xl">
-            <h2 className="text-lg text-center font-semibold mb-4">How can I help with {props.collSelectedName} today?</h2>
+          <div className="flex items-center justify-center mb-4 gap-2">
+              <h2 className="text-lg text-center font-semibold">How can I help you with {props.collSelectedName} today?</h2>
+              <button
+                title="Go Back"
+                onClick={handleBackButtonClick}
+                className="hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-full p-1 transition duration-300 ease-in-out transform hover:scale-110 hover:bg-blue-500/10 focus:bg-blue-500/10"
+              >
+                <Undo2 className="w-6 h-6" />
+              </button>
+            </div>
             <ul>
               {randomQuestions.map((question, index) => (
                 <li key={index} className="p-2 mb-2 border border-zinc-500/30 dark:border-white rounded-lg hover:bg-zinc-500/30 transition duration-300 ease-in-out transform cursor-pointer">
