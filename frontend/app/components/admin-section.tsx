@@ -3,6 +3,8 @@
 
 import { useState } from "react";
 import { AdminMenu, AdminNewCollectionsRequests, AdminManageUsers } from "@/app/components/ui/admin";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AdminSection: React.FC = () => {
   const [showNewRequest, setShowNewRequest] = useState<boolean>(true);
@@ -10,6 +12,9 @@ const AdminSection: React.FC = () => {
 
   return (
     <div className="max-w-5xl w-full rounded-xl bg-white dark:bg-zinc-700/30 dark:from-inherit shadow-xl space-y-4 px-4 pb-4 pt-4">
+      {/* Toast Container */}
+      <ToastContainer />
+
       {/* Menu Section */}
       <AdminMenu
         showUsers={showUsers}

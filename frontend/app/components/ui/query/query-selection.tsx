@@ -18,7 +18,7 @@ export default function QuerySelection(
     const getUserCollections = async () => {
         setisLoading(true); // Set loading state to true
         // Fetch the public collection sets from the API
-        const response = await fetch('/api/user-collections', {
+        const response = await fetch('/api/user/collections', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

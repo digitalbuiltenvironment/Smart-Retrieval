@@ -19,7 +19,7 @@ export default function SearchSelection(
     const getPublicCollections = async () => {
         setIsLoading(true); // Set loading state to true
         // Fetch the public collection sets from the API
-        const response = await fetch('/api/public-collections', {
+        const response = await fetch('/api/public/collections', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

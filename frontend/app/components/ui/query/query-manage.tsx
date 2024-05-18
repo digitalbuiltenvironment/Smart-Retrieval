@@ -16,7 +16,7 @@ export default function QueryCollectionManage() {
     const getUserCollectionsandRequests = async () => {
         setIsLoading(true);
         // Fetch the user's public collection requests from the API
-        fetch('/api/user-public-collections-requests'
+        fetch('/api/user/public-collections-requests'
             , {
                 method: 'GET',
                 headers: {
@@ -102,6 +102,7 @@ export default function QueryCollectionManage() {
                 // Check if there is an existing request for the collection
                 const existingRequest = userCollections.find((collection) => collection.collection_id === collectionId)?.requestStatus;
                 const existingRequestType = userCollections.find((collection) => collection.collection_id === collectionId)?.requestType;
+                // If an existing request is found, Make a POST request to the API & display a confirmation dialog
                 if (existingRequest) {
                     // Display a confirmation dialog if there is an existing request
                     Swal.fire({
@@ -116,7 +117,7 @@ export default function QueryCollectionManage() {
                     }).then((result) => {
                         if (result.isConfirmed) {
                             // If confirm, make a put request to the API & display a success/error message
-                            fetch('/api/user-public-collections-requests',
+                            fetch('/api/user/public-collections-requests',
                                 {
                                     method: 'PUT',
                                     headers: {
@@ -166,9 +167,9 @@ export default function QueryCollectionManage() {
                         }
                     });
                 }
-                // If there is no existing request, make a post request to the API & display a success/error message
+                // If there is no existing request, make a POST request to the API & display a success/error message
                 else {
-                    fetch('/api/user-public-collections-requests',
+                    fetch('/api/user/public-collections-requests',
                         {
                             method: 'POST',
                             headers: {
@@ -237,7 +238,7 @@ export default function QueryCollectionManage() {
         }).then((result) => {
             if (result.isConfirmed) {
                 // Make a delete request to the API & display a success/error message
-                fetch('/api/user-public-collections-requests',
+                fetch('/api/user/public-collections-requests',
                     {
                         method: 'DELETE',
                         headers: {
@@ -305,7 +306,7 @@ export default function QueryCollectionManage() {
         }).then((result) => {
             if (result.isConfirmed) {
                 // If the user confirms the delete, make a delete request to the API, display a success/error message
-                fetch('/api/user-collections',
+                fetch('/api/user/collections',
                     {
                         method: 'DELETE',
                         headers: {
