@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: pubCollErr.message }, { status: 500 });
     }
 
-    console.log('Public Collections Request:', pubCollectionsReq);
+    console.log('Collections Request:', pubCollectionsReq);
 
     return NextResponse.json({ pubCollectionsReq: pubCollectionsReq });
 }

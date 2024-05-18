@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { AlertTriangle } from "lucide-react";
 import { IconSpinner } from '@/app/components/ui/icons';
+import { useSession } from "next-auth/react";
 
 export default function QueryDocumentUpload() {
     const [files, setFiles] = useState<File[]>([]);
@@ -15,6 +16,9 @@ export default function QueryDocumentUpload() {
     const [fileError, setFileError] = useState(false);
     const [fileErrorMsg, setFileErrorMsg] = useState('');
     const [isLoading, setisLoading] = useState(false);
+    const indexerApi = process.env.NEXT_PUBLIC_INDEXER_API;
+    const { data: session } = useSession();
+    const supabaseAccessToken = session?.supabaseAccessToken;
 
     const MAX_FILES = 10; // Maximum number of files allowed
     const MAX_TOTAL_SIZE = 15 * 1024 * 1024; // Maximum total size allowed (15 MB in bytes)
@@ -51,6 +55,19 @@ export default function QueryDocumentUpload() {
                 });
                 setFileError(true);
                 setFileErrorMsg(`Total size of selected files exceeds the maximum allowed (${MAX_TOTAL_SIZE} bytes).`);
+                return;
+            }
+
+            // Check if the file types are allowed
+            const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/plain'];
+            const invalidFiles = fileList.filter(file => !allowedTypes.includes(file.type));
+            if (invalidFiles.length) {
+                // Show toast notification
+                toast.error(`Invalid file type(s) selected!`, {
+                    position: "top-right",
+                });
+                setFileError(true);
+                setFileErrorMsg(`Invalid file type(s) selected!`);
                 return;
             }
 
@@ -127,36 +144,81 @@ export default function QueryDocumentUpload() {
                             if (response.ok) {
                                 // Get the response data
                                 const data = await response.json();
-                                console.log('Data:', data);
+                                console.log('Insert New Collection Results:', data);
                                 // Show success dialog
                                 Swal.fire({
                                     title: 'Success!',
-                                    text: 'Documents uploaded successfully! The documents will be indexed shortly. Do not leave this page until the indexing is complete!',
+                                    text: 'Documents uploaded successfully! The documents will be indexed shortly. Do not leave this page until the indexing is completed!',
                                     icon: 'success',
                                     confirmButtonColor: '#4caf50',
                                 });
-                                // Function to resolve after 5 seconds
-                                const resolveAfter5Sec = new Promise(resolve => setTimeout(resolve, 5000));
-                                // Show toast promise notification
-                                toast.promise(
-                                    resolveAfter5Sec,
-                                    {
-                                        pending: 'Indexing Documents...',
-                                        success: 'Documents Indexed Successfully! 🎉',
-                                        error: 'Failed Indexing Documents! 😢',
-                                    }
-
-                                )
-                                // Reset the form fields
-                                setDisplayName('');
-                                setDescription('');
-                                setFiles([]);
-                                setisLoading(false);
-                                // // Show toast notification
-                                // toast.success("Documents indexed successfully!", {
-                                //     position: "top-right",
-                                //     closeOnClick: true,
-                                // });
+                                // Show toast loading notification
+                                const toastId = toast.loading('Uploading and Indexing Documents...');
+                                // Create a new FormData object
+                                const formData = new FormData();
+                                // Append the collection_id to the FormData object
+                                formData.append('collection_id', data.collectionId);
+                                // Append each file to the FormData object
+                                files.forEach((file, index) => {
+                                    formData.append('files', file);
+                                });
+                                // Make a POST request to the Backend Indexer API with the files data to upload and index
+                                fetch(`${indexerApi}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        // Add the access token to the request headers
+                                        'Authorization': `Bearer ${supabaseAccessToken}`,
+                                    },
+                                    body: formData,
+                                })
+                                    .then(async response => {
+                                        if (response.ok) {
+                                            // Get the response data
+                                            const data = await response.json();
+                                            console.log('Indexer Results:', data);
+                                            setisLoading(false);
+                                            // Update toast notification
+                                            toast.update(toastId, {
+                                                render: 'Documents uploaded and indexed successfully! 🎉',
+                                                type: 'success',
+                                                className: 'rotateY animated',
+                                                autoClose: 5000,
+                                                closeButton: true,
+                                                isLoading: false
+                                            });
+                                            // Reset the form fields
+                                            setDisplayName('');
+                                            setDescription('');
+                                            setFiles([]);
+                                        } else {
+                                            const data = await response.json();
+                                            // Log to console
+                                            console.error('Error uploading and indexing documents:', data.error);
+                                            setisLoading(false);
+                                            // Update toast notification
+                                            toast.update(toastId, {
+                                                render: 'Failed to upload and index documents! 😢 (Check Console for details)',
+                                                type: 'error',
+                                                className: 'rotateY animated',
+                                                autoClose: 5000,
+                                                closeButton: true,
+                                                isLoading: false
+                                            });
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error uploading and indexing documents:', error);
+                                        setisLoading(false);
+                                        // Update toast notification
+                                        toast.update(toastId, {
+                                            render: 'Failed to upload and index documents! 😢 (Check Console for details)',
+                                            type: 'error',
+                                            className: 'rotateY animated',
+                                            autoClose: 5000,
+                                            closeButton: true,
+                                            isLoading: false
+                                        });
+                                    });
                             } else {
                                 const data = await response.json();
                                 // Log to console
@@ -234,7 +296,7 @@ export default function QueryDocumentUpload() {
                             id="fileUpload"
                             title='Select Files'
                             multiple
-                            accept=".pdf,.doc,.docx,.txt"
+                            accept=".pdf,.doc,.docx,.xls,xlsx,.txt"
                             onChange={handleFileChange}
                             className={`h-12 rounded-lg w-full bg-gray-300 dark:bg-zinc-700/65 border px-2 py-2 ${fileError ? 'border-red-500' : ''}`}
                         />

@@ -16,7 +16,7 @@ export default function QueryCollectionManage() {
     const getUserCollectionsandRequests = async () => {
         setIsLoading(true);
         // Fetch the user's public collection requests from the API
-        fetch('/api/user/public-collections-requests'
+        fetch('/api/user/collections-requests'
             , {
                 method: 'GET',
                 headers: {
@@ -117,7 +117,7 @@ export default function QueryCollectionManage() {
                     }).then((result) => {
                         if (result.isConfirmed) {
                             // If confirm, make a put request to the API & display a success/error message
-                            fetch('/api/user/public-collections-requests',
+                            fetch('/api/user/collections-requests',
                                 {
                                     method: 'PUT',
                                     headers: {
@@ -169,7 +169,7 @@ export default function QueryCollectionManage() {
                 }
                 // If there is no existing request, make a POST request to the API & display a success/error message
                 else {
-                    fetch('/api/user/public-collections-requests',
+                    fetch('/api/user/collections-requests',
                         {
                             method: 'POST',
                             headers: {
@@ -238,7 +238,7 @@ export default function QueryCollectionManage() {
         }).then((result) => {
             if (result.isConfirmed) {
                 // Make a delete request to the API & display a success/error message
-                fetch('/api/user/public-collections-requests',
+                fetch('/api/user/collections-requests',
                     {
                         method: 'DELETE',
                         headers: {

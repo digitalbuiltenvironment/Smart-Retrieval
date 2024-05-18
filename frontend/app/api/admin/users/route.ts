@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: usersError.message }, { status: 500 });
     }
 
-    console.log('usersData:', usersData);
+    // console.log('usersData:', usersData);
 
     return NextResponse.json({ users: usersData });
 }

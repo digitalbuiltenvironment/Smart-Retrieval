@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: collErr.message }, { status: 500 });
     }
 
-    console.log('Collections:', collections);
+    // console.log('Collections:', collections);
 
     return NextResponse.json({ collections: collections });
 }

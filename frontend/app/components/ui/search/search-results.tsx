@@ -27,7 +27,7 @@ export default function SearchResults(
                 setSortedResults(sorted);
             }
         }
-    }, [props.query, props.results]);
+    }, [props.query, props.results, props.searchButtonPressed]);
 
     // Log sortedResults outside of useEffect to ensure you're getting the updated state
     // console.log("Sorted results:", sortedResults);
