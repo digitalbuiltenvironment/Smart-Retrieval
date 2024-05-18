@@ -109,7 +109,7 @@ async def validate_user(
                     )
                 else:
                     logger.info("Validated API key successfully!")
-                    return None
+                    return "Authenticated via API Key"
             else:
                 auth_token = (
                     auth_token.strip()
@@ -125,12 +125,12 @@ async def validate_user(
                         "Supabase JWT Secret is not set in Backend Service!"
                     )
                 if not isBearer:
-                    return (
+                    raise ValueError(
                         "Invalid token scheme. Please use the format 'Bearer [token]'"
                     )
                 # Verify the JWT token is valid
-                if verify_jwt(jwtoken=jwtoken):
-                    return "Invalid token. Please provide a valid token."
+                if verify_jwt(jwtoken=jwtoken) is False:
+                    raise ValueError("Invalid token. Please provide a valid token.")
                 # Check if the user exists in the database
                 user = get_user_from_JWT(token=jwtoken)
                 if user:
