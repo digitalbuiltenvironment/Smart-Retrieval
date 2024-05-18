@@ -26,14 +26,14 @@ export default function QuerySection() {
         reload,
         stop,
     } = useChat({
-        api: process.env.NEXT_PUBLIC_QUERY_API,
+        api: process.env.NEXT_PUBLIC_CHAT_API,
         headers: {
             // Add the access token to the request headers
             'Authorization': `Bearer ${supabaseAccessToken}`,
         },
         body: {
             // Add the selected document to the request body
-            document: collSelectedId,
+            collection_id: collSelectedId,
         },
     });
 
