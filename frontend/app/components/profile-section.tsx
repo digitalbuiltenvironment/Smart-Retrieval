@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { User2, SlidersHorizontal, Info, Trash, RefreshCcw } from 'lucide-react';
 import { HeaderNavLink } from '@/app/components/ui/navlink';
 import Swal from 'sweetalert2';
+import { useSession } from 'next-auth/react';
 
 const ProfileSection: React.FC = () => {
   const [userId, setUserId] = useState('');
@@ -15,6 +16,8 @@ const ProfileSection: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [initialProfileData, setInitialProfileData] = useState({ name: '', email: '', imageURL: '' });
+  const { data: session, status } = useSession();
+  const supabaseAccessToken = session?.supabaseAccessToken;
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -170,6 +173,7 @@ const ProfileSection: React.FC = () => {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${supabaseAccessToken}`, // Add the Supabase access token in the Authorization header
       },
       body: JSON.stringify({
         userId: userId,

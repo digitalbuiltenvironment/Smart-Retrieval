@@ -1,12 +1,19 @@
 import logging
 import os
 import uuid
+from typing import List
 
 import asyncpg
 from asyncpg.exceptions import PostgresError
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
+from pydantic import BaseModel
 
 from backend.app.utils import auth
+
+
+class _CollectionIds(BaseModel):
+    collection_ids: List[str]
+
 
 collections_router = r = APIRouter(dependencies=[Depends(auth.validate_user)])
 
@@ -40,6 +47,9 @@ async def drop_table(conn, collection_id):
 
 @r.post("/delete/single")
 async def delete_single(collection_id: str):
+    # Log the received collection_id
+    logger.info(f"Delete Collection: {collection_id}")
+
     # Validate the collection_id to ensure it's a valid UUIDv4
     if not is_valid_uuidv4(collection_id):
         logger.error(f"Invalid collection_id: {collection_id}")
@@ -65,9 +75,12 @@ async def delete_single(collection_id: str):
 
 
 @r.post("/delete/multiple")
-async def delete_multiple(collection_ids: list):
+async def delete_multiple(collection_ids: _CollectionIds = Body(...)):
+    # Log the received collection_ids
+    logger.info(f"Delete Collections: {collection_ids.collection_ids}")
+
     # Validate the collection_ids to ensure they are valid UUIDv4s
-    for collection_id in collection_ids:
+    for collection_id in collection_ids.collection_ids:
         if not is_valid_uuidv4(collection_id):
             logger.error(f"Invalid collection_id: {collection_id}")
             raise HTTPException(status_code=400, detail="Invalid collection_id format")
@@ -81,8 +94,8 @@ async def delete_multiple(collection_ids: list):
     results = {}
     try:
         conn = await asyncpg.connect(dsn=db_url)
-        async with conn:
-            for collection_id in collection_ids:
+        for collection_id in collection_ids.collection_ids:
+            async with conn.transaction():
                 results[collection_id] = await drop_table(conn, collection_id)
     except Exception as e:
         logger.error(f"Failed to connect to the database: {e}")

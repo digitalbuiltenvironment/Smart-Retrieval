@@ -118,6 +118,19 @@ export async function DELETE(request: NextRequest) {
     // Retrieve the session token from the request cookies
     const session = request.cookies.get('next-auth.session-token') || request.cookies.get('__Secure-next-auth.session-token');
 
+    // Retrieve the authorization token from the request headers
+    let authorization = request.headers.get('Authorization');
+
+    // Public API key
+    let api_key = null;
+
+    // If no session, use the public API key
+    if (authorization === null || authorization === undefined || authorization.includes('undefined')) {
+        console.log('No authorization token found, using public API key');
+        api_key = process.env.BACKEND_API_KEY as string;
+        authorization = null; // Clear the authorization token
+    }
+
     // Retrieve the collection_id from the request body
     const { collection_id } = await request?.json();
 
@@ -135,6 +148,23 @@ export async function DELETE(request: NextRequest) {
         return NextResponse.json({ error: sessionError.message }, { status: 500 });
     }
 
+    // Delete the vector collection from the vecs schema via POST request to Backend API
+    const deleteVecsResponse = await fetch(`${process.env.DELETE_SINGLE_COLLECTION_API}?collection_id=${collection_id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': authorization,
+            'X-API-Key': api_key,
+        } as any,
+        body: JSON.stringify({ collection_id: collection_id }),
+    });
+
+    if (!deleteVecsResponse.ok) {
+        console.error('Error deleting', collection_id, 'from vecs schema:', deleteVecsResponse.statusText);
+        return NextResponse.json({ error: deleteVecsResponse.statusText }, { status: deleteVecsResponse.status });
+    }
+
+    
     // Delete the collection data from the database
     const { data: deleteData, error: deleteError } = await supabase
         .from('collections')
@@ -142,14 +172,12 @@ export async function DELETE(request: NextRequest) {
         .eq('id', userId)
         .eq('collection_id', collection_id);
 
-    // TODO: Delete the vector collection from the vecs schema
-
     if (deleteError) {
-        console.error('Error deleting user collection data from database:', deleteError.message);
+        console.error('Error deleting', collection_id, ' from database:', deleteError.message);
         return NextResponse.json({ error: deleteError.message }, { status: 500 });
     }
 
-    console.log('Delete Collection ID:', collection_id, ':', deleteData);
+    console.log('Delete', collection_id, ':', deleteData, 'deleteVecsResponse:', deleteVecsResponse);
 
     return NextResponse.json({ message: 'Collection data deleted successfully.' });
 }

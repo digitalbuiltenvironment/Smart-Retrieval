@@ -5,12 +5,15 @@ import { List, Table, Trash, Eye, EyeOff, RefreshCw } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { IconSpinner } from '@/app/components/ui/icons';
+import { useSession } from 'next-auth/react';
 
 export default function QueryCollectionManage() {
     const [userCollections, setUserCollections] = useState<any[]>([]);
     const [tableView, setTableView] = useState<boolean>(false); // Track whether to show the table view
     const [isRefreshed, setIsRefreshed] = useState<boolean>(true); // Track whether the data has been refreshed
     const [isLoading, setIsLoading] = useState<boolean>(true); // Track whether the data is loading
+    const { data: session, status } = useSession();
+    const supabaseAccessToken = session?.supabaseAccessToken;
 
     // Retrieve the user's collections and public collections requests data from the database
     const getUserCollectionsandRequests = async () => {
@@ -312,6 +315,7 @@ export default function QueryCollectionManage() {
                         headers: {
                             'Content-Type': 'application/json',
                             'Cache-Control': 'no-cache', // Disable caching
+                            'Authorization': `Bearer ${supabaseAccessToken}`, // Add the access token to the request headers
                         },
                         body: JSON.stringify({ collection_id: collectionId }),
                     }
