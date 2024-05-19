@@ -2,11 +2,14 @@ import { User } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js"
 
+type session = {} | User;
+
 export const middleware = async (request: NextRequest) => {
     const { pathname, origin } = request.nextUrl;
     const signinPage = new URL('/sign-in', origin);
     // Add callbackUrl params to the signinPage URL
     signinPage.searchParams.set('callbackUrl', pathname);
+    const unauthorizedPage = new URL('/unauthorized', origin);
     // Retrieve the session token from the request cookies
     const session = request.cookies.get('next-auth.session-token') || request.cookies.get('__Secure-next-auth.session-token');
 
@@ -14,13 +17,19 @@ export const middleware = async (request: NextRequest) => {
         // console.log('session:', session);
 
         // Check the database for the session token
-        const supabase = createClient(
+        const supabaseAuth = createClient(
             process.env.SUPABASE_URL ?? '',
             process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
             { db: { schema: 'next_auth' } },
         );
 
-        const { data, error } = await supabase
+        const supabase = createClient(
+            process.env.SUPABASE_URL ?? '',
+            process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
+            { db: { schema: 'public' } },
+        );
+
+        const { data, error } = await supabaseAuth
             .from('sessions')
             .select('userId, expires')
             .eq('sessionToken', session?.value)
@@ -43,6 +52,28 @@ export const middleware = async (request: NextRequest) => {
             console.error('Error fetching session from database:', error.message);
             return NextResponse.redirect(signinPage.href, { status: 302 });
         }
+
+        // Check if the user is an admin for specific routes
+        const adminPaths = ['/admin', '/admin/*', '/api/admin/*'];
+        // Dont match /api/admin/is-admin
+        const allowedAdminPaths = ['/api/admin/is-admin'];
+
+        // Match the pathname to the admin paths but not the allowed admin paths
+        const isAdminRoute = adminPaths.some((path) => new RegExp(path).test(pathname)) && !allowedAdminPaths.some((path) => new RegExp(path).test(pathname));
+
+        if (isAdminRoute) {
+            const { data: adminData, error: adminError } = await supabase
+                .from('admins')
+                .select('id')
+                .eq('id', data?.userId)
+                .single();
+
+            // Redirect to the unauthorized page if the user is not an admin
+            if (adminError || !adminData) {
+                console.error('User is not an admin or error fetching admin data:', adminError?.message);
+                return NextResponse.redirect(unauthorizedPage.href, { status: 302 });
+            }
+        }
     }
     else {
         // Redirect to the sign-in page if there is no session token
@@ -58,14 +89,12 @@ export const config = {
     matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico|favicon-16x16.png|apple-touch-icon.png|about|sign-in|api/status|privacy-policy|terms-of-service|sitemap.xml|robots.txt).+)']
 }
 
-type session = {} | User;
-
 // Default middleware for NextAuth checking for JWT session not database session
 
 // export { default } from "next-auth/middleware"
 
 // export const config = {
-//     matcher: ["/chat", "/search", "/query"] 
+//     matcher: ["/chat", "/search", "/query"]
 // }
 
 // // Ensure auth is required for all except the following paths

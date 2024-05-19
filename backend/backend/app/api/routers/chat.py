@@ -34,7 +34,7 @@ class _Message(BaseModel):
 
 class _ChatData(BaseModel):
     messages: List[_Message]
-    document: str
+    collection_id: str
 
 
 # custom prompt template to be used by chat engine
@@ -72,11 +72,11 @@ async def chat(
     data: _ChatData = Depends(json_to_model(_ChatData)),
 ):
     logger = logging.getLogger("uvicorn")
-    # get the document set selected from the request body
-    document_set = data.document
-    logger.info(f"Document Set: {document_set}")
+    # get the collection_id from the request body
+    collection_id = data.collection_id
+    logger.info(f"Chat -> Collection ID: {collection_id}")
     # get the index for the selected document set
-    index = get_index(collection_name=document_set)
+    index = get_index(collection_name=collection_id)
     # check preconditions and get last message
     if len(data.messages) == 0:
         raise HTTPException(

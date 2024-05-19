@@ -23,7 +23,8 @@ export function useCopyToClipboard({
 
     const showToastMessage = () => {
       toast.success("Message copied to clipboard!", {
-        position: "top-center",
+        position: "top-right",
+        closeOnClick: true,
       });
     };
 

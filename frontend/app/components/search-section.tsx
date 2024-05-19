@@ -9,7 +9,8 @@ const SearchSection: React.FC = () => {
   const [query, setQuery] = useState("");
   const { searchResults, isLoading, handleSearch } = useSearch();
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
-  const [docSelected, setDocSelected] = useState<string>('');
+  const [collSelectedId, setCollSelectedId] = useState<string>('');
+  const [collSelectedName, setCollSelectedName] = useState<string>('');
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -19,16 +20,16 @@ const SearchSection: React.FC = () => {
   const handleSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
     setSearchButtonPressed(true);
-    handleSearch(query, docSelected);
+    handleSearch(query, collSelectedId);
   };
 
   return (
     <div className="space-y-4 max-w-5xl w-full">
-      {docSelected ? (
+      {collSelectedId ? (
         <>
-          <h2 className="text-lg text-center font-semibold mb-4">Searching in {docSelected}</h2>
           <SearchInput
-            docSelected={docSelected}
+            collSelectedId={collSelectedId}
+            collSelectedName={collSelectedName}
             query={query}
             isLoading={isLoading}
             results={searchResults}
@@ -36,12 +37,14 @@ const SearchSection: React.FC = () => {
             onSearchSubmit={handleSearchSubmit}
           />
           <AutofillSearchQuery
-            docSelected={docSelected}
+            collSelectedId={collSelectedId}
+            collSelectedName={collSelectedName}
             query={query}
             isLoading={isLoading}
             results={searchResults}
             onInputChange={handleInputChange}
             onSearchSubmit={handleSearchSubmit}
+            handleCollIdSelect={setCollSelectedId}
           />
           <SearchResults
             query={query}
@@ -52,8 +55,10 @@ const SearchSection: React.FC = () => {
         </>
       ) : (
         <SearchSelection
-          docSelected={docSelected}
-          handleDocSelect={setDocSelected}
+          collSelectedId={collSelectedId}
+          collSelectedName={collSelectedName}
+          handleCollIdSelect={setCollSelectedId}
+          handleCollNameSelect={setCollSelectedName}
         />
       )}
     </div>

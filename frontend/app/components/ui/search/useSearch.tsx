@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 interface UseSearchResult {
     searchResults: SearchResult[];
     isLoading: boolean;
-    handleSearch: (query: string, docSelected: string) => Promise<void>;
+    handleSearch: (query: string, collection_id: string) => Promise<void>;
 }
 
 const search_api = process.env.NEXT_PUBLIC_SEARCH_API;
@@ -20,7 +20,7 @@ const useSearch = (): UseSearchResult => {
     // console.log('session:', session, 'status:', status);
     const supabaseAccessToken = session?.supabaseAccessToken;
 
-    const handleSearch = async (query: string, docSelected: string): Promise<void> => {
+    const handleSearch = async (query: string, collection_id: string): Promise<void> => {
         setIsSearchButtonPressed(isSearchButtonPressed);
         setIsLoading(true);
 
@@ -40,7 +40,7 @@ const useSearch = (): UseSearchResult => {
                 setIsLoading(false);
                 return;
             }
-            const response = await fetch(`${search_api}?query=${query}&docSelected=${docSelected}`, {
+            const response = await fetch(`${search_api}?query=${query}&collection_id=${collection_id}`, {
                 signal: AbortSignal.timeout(120000), // Abort the request if it takes longer than 120 seconds
                 // Add the access token to the request headers
                 headers: {

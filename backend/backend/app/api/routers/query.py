@@ -17,6 +17,7 @@ query_router = r = APIRouter(dependencies=[Depends(auth.validate_user)])
 This router is for query functionality which consist of query engine.
 The query engine is used to query the index.
 There is no chat memory used here, every query is independent of each other.
+// Currently Depreciated - Not used in the current version of the application
 """
 
 
@@ -27,7 +28,7 @@ class _Message(BaseModel):
 
 class _ChatData(BaseModel):
     messages: List[_Message]
-    document: str
+    collection_id: str
 
 
 @r.post("")
@@ -38,11 +39,11 @@ async def query(
     data: _ChatData = Depends(json_to_model(_ChatData)),
 ):
     logger = logging.getLogger("uvicorn")
-    # get the document set selected from the request body
-    document_set = data.document
-    logger.info(f"Document Set: {document_set}")
+    # get the collection_id selected from the request body
+    collection_id = data.collection_id
+    logger.info(f"Collection ID: {collection_id}")
     # get the index for the selected document set
-    index = get_index(collection_name=document_set)
+    index = get_index(collection_name=collection_id)
     # check preconditions and get last message which is query
     if len(data.messages) == 0:
         raise HTTPException(

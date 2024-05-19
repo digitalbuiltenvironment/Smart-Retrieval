@@ -2,15 +2,16 @@
 
 import { useChat } from "ai/react";
 import { ChatInput, ChatMessages } from "@/app/components/ui/chat";
-import ChatSelection from "./ui/chat/chat-selection";
-import AutofillQuestion from "@/app/components/ui/autofill-prompt/autofill-prompt-dialog";
+import { ChatSelection } from "@/app/components/ui/chat";
+import { AutofillQuestion } from "@/app/components/ui/autofill-prompt";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 export default function ChatSection() {
   const { data: session } = useSession();
   const supabaseAccessToken = session?.supabaseAccessToken;
-  const [docSelected, setDocSelected] = useState<string>('');
+  const [collSelectedId, setCollSelectedId] = useState<string>('');
+  const [collSelectedName, setCollSelectedName] = useState<string>('');
   const {
     messages,
     input,
@@ -27,13 +28,13 @@ export default function ChatSection() {
     },
     body: {
       // Add the selected document to the request body
-      document: docSelected,
+      collection_id: collSelectedId,
     },
   });
 
   return (
     <div className="space-y-4 max-w-5xl w-full relative">
-      {docSelected ?
+      {collSelectedId ?
         (
           <>
             <ChatMessages
@@ -43,11 +44,13 @@ export default function ChatSection() {
               stop={stop}
             />
             <AutofillQuestion
-              docSelected={docSelected}
+              collSelectedId={collSelectedId}
+              collSelectedName={collSelectedName}
               messages={messages}
               isLoading={isLoading}
               handleSubmit={handleSubmit}
               handleInputChange={handleInputChange}
+              handleCollIdSelect={setCollSelectedId}
               input={input}
             />
             <ChatInput
@@ -60,8 +63,10 @@ export default function ChatSection() {
         )
         :
         <ChatSelection
-          docSelected={docSelected}
-          handleDocSelect={setDocSelected}
+          collSelectedId={collSelectedId}
+          collSelectedName={collSelectedName}
+          handleCollIdSelect={setCollSelectedId}
+          handleCollNameSelect={setCollSelectedName}
         />
       }
     </div>

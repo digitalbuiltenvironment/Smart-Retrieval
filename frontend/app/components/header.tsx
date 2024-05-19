@@ -1,7 +1,7 @@
 "use client";
 
 import Image from 'next/image';
-import { Home, InfoIcon, MessageCircle, Search, FileQuestion, Menu, X, User2, LogOut, LogIn } from 'lucide-react';
+import { Home, InfoIcon, MessageCircle, Search, FileQuestion, Menu, X, User2, LogOut, LogIn, SlidersHorizontal } from 'lucide-react';
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useMedia } from 'react-use';
@@ -12,6 +12,7 @@ import { MobileMenu } from '@/app/components/ui/mobilemenu';
 import { IconSpinner } from '@/app/components/ui/icons';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
+import { Skeleton } from "@nextui-org/react";
 
 const MobileMenuItems = [
   {
@@ -41,6 +42,14 @@ const MobileMenuItems = [
   },
 ];
 
+const AdminMenuItems = [
+  {
+    href: '/admin',
+    icon: <SlidersHorizontal className="mr-2 h-5 w-5" />,
+    label: 'Admin',
+  },
+];
+
 export default function Header() {
   const isLargeScreen = useMedia('(min-width: 1024px)', false);
   const [mounted, setMounted] = useState(false);
@@ -51,6 +60,8 @@ export default function Header() {
   const encodedPath = encodeURIComponent(currentPath);
   // Add callbackUrl params to the signinPage URL
   const signinPage = "/sign-in?callbackUrl=" + encodedPath;
+  // Check if the user is an admin
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Get user session for conditional rendering of user profile and logout buttons and for fetching the API status
   const { data: session, status } = useSession()
@@ -91,9 +102,22 @@ export default function Header() {
     }
   }
 
+  const checkAdminRole = async () => {
+    const response = await fetch('/api/admin/is-admin');
+    if (!response.ok) {
+      console.error('Failed to fetch admin data');
+      return;
+    }
+    const data = await response.json();
+    setIsAdmin(data.isAdmin);
+    console.log('Admin role fetched successfully! Data:', data);
+  };
+
+  const newMobileMenuItems = isAdmin ? [...MobileMenuItems, ...AdminMenuItems] : MobileMenuItems;
 
   useEffect(() => {
     setMounted(true);
+    checkAdminRole();
   }, [session]);
 
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -183,6 +207,14 @@ export default function Header() {
                 Search
               </div>
             </HeaderNavLink>
+            {isAdmin &&
+              <HeaderNavLink href="/admin" title='Admin'>
+                <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-125">
+                  <SlidersHorizontal className="mr-1 h-4 w-4" />
+                  Admin
+                </div>
+              </HeaderNavLink>
+            }
           </div>
           <div className="flex items-center ml-auto">
             {/* Status Page Button/Indicator */}
@@ -220,48 +252,51 @@ export default function Header() {
               )}
             </button>
 
-            <span className="lg:text-lg font-nunito ml-2 mr-2"> </span>
+            <span className="lg:text-lg font-nunito ml-6"></span>
 
             {/* Conditionally render the user profile and logout buttons based on the user's authentication status */}
-            {status === 'loading' ? (
-              <div className="flex items-center ml-2 mr-2 text-xl transition duration-300 ease-in-out transform hover:scale-125">
-                <IconSpinner className="mr-2 animate-spin" />
-              </div>
-            ) : session ? (
+            {session ? (
               <>
-                {/* User Profile Button */}
-                <HeaderNavLink href="/profile" title='Profile'>
-                  <div className="flex items-center ml-2 mr-2 text-xl transition duration-300 ease-in-out transform hover:scale-125">
-                    <User2 className="mr-1 h-5 w-5" />
+                <Skeleton isLoaded={status === 'authenticated'} className="rounded-md p-1">
+                  <div className="flex items-center">
+                    {/* User Profile Button */}
+                    <HeaderNavLink href="/profile" title='Profile'>
+                      <div className="flex items-center mr-6 text-xl transition duration-300 ease-in-out transform hover:scale-125">
+                        <User2 className="mr-1 h-5 w-5" />
+                      </div>
+                    </HeaderNavLink>
+                    {/* Sign Out Button */}
+                    <button title='Sign Out'
+                      onClick={
+                        async () => {
+                          await signOut();
+                        }
+                      }>
+                      <div className="flex items-center text-xl transition duration-300 ease-in-out transform hover:scale-125">
+                        <LogOut className="mr-1 h-5 w-5" />
+                      </div>
+                    </button>
                   </div>
-                </HeaderNavLink>
-
-                {/* Sign Out Button */}
-                <button title='Sign Out'
-                  onClick={
-                    async () => {
-                      await signOut();
-                    }
-                  }>
-                  <div className="flex items-center ml-2 text-xl transition duration-300 ease-in-out transform hover:scale-125">
-                    <LogOut className="mr-1 h-5 w-5" />
-                  </div>
-                </button>
+                </Skeleton>
               </>
             ) : (
-              <HeaderNavLink href={signinPage} title='Sign In'>
-                <div className="flex items-center ml-2 transition duration-300 ease-in-out transform hover:scale-125">
-                  <LogIn className="mr-1 h-5 w-5" />
-                  Sign In
+              <Skeleton isLoaded={status !== 'loading'} className="rounded-md p-2">
+                <div className="flex items-center">
+                  <HeaderNavLink href={signinPage} title='Sign In'>
+                    <div className="flex items-center transition duration-300 ease-in-out transform hover:scale-110">
+                      <LogIn className="mr-1 h-5 w-5" />
+                      Sign In
+                    </div>
+                  </HeaderNavLink>
                 </div>
-              </HeaderNavLink>
+              </Skeleton>
             )}
           </div>
         </div >
 
         {/* Mobile menu component */}
         < MobileMenu isOpen={isMobileMenuOpen} onClose={() => setMobileMenuOpen(false)
-        } logoSrc={logo} items={MobileMenuItems} />
+        } logoSrc={logo} items={newMobileMenuItems} />
       </nav >
     </div >
   );

@@ -9,8 +9,10 @@ from torch.cuda import is_available as is_cuda_available
 
 from backend.app.api.routers.chat import chat_router
 from backend.app.api.routers.healthcheck import healthcheck_router
+from backend.app.api.routers.indexer import indexer_router
 from backend.app.api.routers.query import query_router
 from backend.app.api.routers.search import search_router
+from backend.app.api.routers.collections import collections_router
 
 load_dotenv()
 
@@ -60,6 +62,8 @@ app.include_router(chat_router, prefix="/api/chat")
 app.include_router(query_router, prefix="/api/query")
 app.include_router(search_router, prefix="/api/search")
 app.include_router(healthcheck_router, prefix="/api/healthcheck")
+app.include_router(indexer_router, prefix="/api/indexer")
+app.include_router(collections_router, prefix="/api/collections")
 
 
 # Redirect to the /docs endpoint
