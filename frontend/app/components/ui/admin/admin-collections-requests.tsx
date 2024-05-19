@@ -34,8 +34,8 @@ export default function AdminCollectionsRequests() {
                 return false;
             }
             const data = await response.json();
-            setUserRequests(data.pubCollectionsReq);
-            console.log('Collection Requests:', data.pubCollectionsReq);
+            setUserRequests(data.collectionsReq);
+            console.log('Collection Requests:', data.collectionsReq);
         } catch (error) {
             console.error('Error fetching userRequest requests:', error);
             toast.error('Error fetching userRequest requests:', {

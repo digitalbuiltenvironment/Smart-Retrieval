@@ -10,18 +10,18 @@ export async function GET(request: NextRequest) {
         { db: { schema: 'public' } },
     );
 
-    // Retrieve the public collections requests data from the database
-    const { data: pubCollectionsReq, error: pubCollErr } = await supabase
+    // Retrieve the collections requests data from the database
+    const { data: collectionsReq, error: collErr } = await supabase
         .from('collections_requests')
         .select('collection_id, is_make_public, is_pending, is_approved, created_at, updated_at, collections (collection_id, id, display_name, description, is_public, users (id, name, email))')
         .eq('is_pending', true);
 
-    if (pubCollErr) {
-        console.error('Error fetching collection request data from database:', pubCollErr.message);
-        return NextResponse.json({ error: pubCollErr.message }, { status: 500 });
+    if (collErr) {
+        console.error('Error fetching collection request data from database:', collErr.message);
+        return NextResponse.json({ error: collErr.message }, { status: 500 });
     }
 
-    // console.log('Collections Request:', pubCollectionsReq);
+    // console.log('Collections Request:', collectionsReq);
 
-    return NextResponse.json({ pubCollectionsReq: pubCollectionsReq });
+    return NextResponse.json({ collectionsReq: collectionsReq });
 }
