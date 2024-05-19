@@ -21,4 +21,4 @@ jobs:
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push https://khronoz:$HF_TOKEN@huggingface.co/spaces/khronoz/Smart-Retrieval-API main
+        run: git push https://JTCSmartRetrieval:$HF_TOKEN@huggingface.co/spaces/SmartRetrieval/Smart-Retrieval-Demo-API main
