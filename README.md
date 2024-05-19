@@ -1,5 +1,5 @@
 ---
-title: Smart Retrieval API
+title: Smart Retrieval Demo API
 emoji: 📝
 colorFrom: blue
 colorTo: indigo
