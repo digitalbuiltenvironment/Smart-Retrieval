@@ -1,11 +1,11 @@
 import AdminMenu from './admin-menu';
 import AdminManageUsers from './admin-manage-users';
-import AdminCollectionsRequests from './admin-collections-requests';
+import AdminManageRequests from './admin-manage-requests';
 import AdminManageCollections from './admin-manage-collections';
 
 export {
     AdminMenu,
-    AdminCollectionsRequests,
+    AdminManageRequests,
     AdminManageCollections,
     AdminManageUsers
 };

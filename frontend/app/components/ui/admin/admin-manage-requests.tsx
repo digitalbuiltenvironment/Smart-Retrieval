@@ -6,7 +6,7 @@ import { IconSpinner } from '@/app/components/ui/icons';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
-export default function AdminCollectionsRequests() {
+export default function AdminManageRequests() {
     const [userRequests, setUserRequests] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [isRefreshed, setIsRefreshed] = useState<boolean>(true); // Track whether the data has been refreshed
