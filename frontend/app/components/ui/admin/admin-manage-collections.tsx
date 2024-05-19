@@ -162,8 +162,8 @@ export default function AdminManageCollections() {
                         icon: 'success',
                         confirmButtonColor: '#4caf50',
                     });
-                    // Remove approved request from the list
-                    setCollectionsData(collectionsData.filter((collection) => collection.collection_id !== collectionId));
+                    // Refresh the collections data
+                    fetchCollections();
                 }).catch((error) => {
                     console.error('Error setting collection Public:', error);
                     // Show error dialog
