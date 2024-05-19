@@ -127,10 +127,10 @@ export async function DELETE(request: NextRequest) {
     // Convert collectionIds to an array of strings with only the collection_id values
     const collectionIdsArray = collectionIds.map((collection: any) => collection.collection_id);
 
-    console.log('collectionIdsArray:', collectionIdsArray);
+    // console.log('collectionIdsArray:', collectionIdsArray);
 
     // Log the request body before sending the POST request
-    console.log('Request Body:', JSON.stringify({ collection_ids: collectionIdsArray }));
+    // console.log('Request Body:', JSON.stringify({ collection_ids: collectionIdsArray }));
 
     // Delete the user's collection data from vecs schema via POST request to Backend API
     const deleteVecsResponse = await fetch(`${process.env.DELETE_MULTI_COLLECTION_API}`, {
@@ -148,7 +148,7 @@ export async function DELETE(request: NextRequest) {
         return NextResponse.json({ error: deleteVecsResponse.statusText }, { status: deleteVecsResponse.status });
     }
 
-    // Delete the user's profile data from users table in next_auth schema (and all related data via cascaded delete for tables in both publicand next_auth schema)
+    // Delete the user's profile data from users table in next_auth schema (and all related data via cascaded delete for tables in both public and next_auth schema)
     const { data: deletedUserData, error: deleteError } = await supabaseAuth
         .from('users')
         .delete()
@@ -161,7 +161,7 @@ export async function DELETE(request: NextRequest) {
         return NextResponse.json({ error: deleteError.message }, { status: 500 });
     }
 
-    console.log('deletedUserData:', deletedUserData, 'collectionIds:', collectionIdsArray, 'deleteVecsResponse:', deleteVecsResponse);
+    // console.log('deletedUserData:', deletedUserData, 'collectionIds:', collectionIdsArray, 'deleteVecsResponse:', deleteVecsResponse);
 
     return NextResponse.json({ deletedUserData });
 }

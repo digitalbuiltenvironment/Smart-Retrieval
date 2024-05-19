@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from "next/server";
 
-// POST request to reject the user's public collections request status in the database (Used by admin)
+// POST request to reject the user's collections request status in the database (Used by admin)
 export async function POST(request: NextRequest) {
     // Create a new Supabase client
     const supabase = createClient(
@@ -13,18 +13,18 @@ export async function POST(request: NextRequest) {
     // Retrieve the collection_id from the request body
     const { collection_id } = await request?.json();
 
-    // Update the user's public collections request data in the database, set is_pending = false
-    const { data: updatedUserPubCollectionsReq, error: updatedUserPubCollErr } = await supabase
-        .from('public_collections_requests')
+    // Update the user's collections request data in the database, set is_pending = false
+    const { data: updatedUserCollectionsReq, error: updatedUserCollErr } = await supabase
+        .from('collections_requests')
         .update({ is_pending: false, is_approved: false})
         .eq('collection_id', collection_id);
 
-    if (updatedUserPubCollErr) {
-        console.error('Error updating user public collections request data in database:', updatedUserPubCollErr.message);
-        return NextResponse.json({ error: updatedUserPubCollErr.message }, { status: 500 });
+    if (updatedUserCollErr) {
+        console.error('Error updating user collections request data in database:', updatedUserCollErr.message);
+        return NextResponse.json({ error: updatedUserCollErr.message }, { status: 500 });
     }
 
-    // console.log('User Public Collections Requests:', userPubCollectionsReq);
+    // console.log('Admin: Reject User Collections Requests:', updatedUserCollectionsReq);
 
-    return NextResponse.json({ updatedUserPubCollectionsReq });
+    return NextResponse.json({ updatedUserCollectionsReq });
 }

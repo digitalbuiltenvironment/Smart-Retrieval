@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from "next/server";
 
-// POST request to approve the user's public collections request status in the database (Used by admin)
+// POST request to approve the user's collections request status in the database (Used by admin)
 export async function POST(request: NextRequest) {
     // Create a new Supabase client
     const supabase = createClient(
@@ -13,31 +13,31 @@ export async function POST(request: NextRequest) {
     // Retrieve the collection_id from the request body
     const { collection_id, is_make_public } = await request?.json();
 
-    // Update the user's public collections request data in the database, set is_pending = false
-    const { data: updatedUserPubCollectionsReq, error: updatedUserPubCollReqErr } = await supabase
-        .from('public_collections_requests')
+    // Update the user's collections request data in the database, set is_pending = false
+    const { data: updatedUserCollectionsReq, error: updatedUserCollReqErr } = await supabase
+        .from('collections_requests')
         .update({ is_pending: false, is_approved: true })
         .eq('collection_id', collection_id);
 
-    if (updatedUserPubCollReqErr) {
-        console.error('Error updating user public collections request data in database:', updatedUserPubCollReqErr.message);
-        return NextResponse.json({ error: updatedUserPubCollReqErr.message }, { status: 500 });
+    if (updatedUserCollReqErr) {
+        console.error('Error updating user collections request data in database:', updatedUserCollReqErr.message);
+        return NextResponse.json({ error: updatedUserCollReqErr.message }, { status: 500 });
     }
 
     // Update the user's collections data in the database, set is_public = true
     console.log('is_public:', is_make_public);
-    const { data: updatedUserPubCollections, error: updatedUserPubCollErr } = await supabase
+    const { data: updatedUserCollections, error: updatedUserCollErr } = await supabase
         .from('collections')
         .update({ is_public: is_make_public})
         .eq('collection_id', collection_id);
 
-    if (updatedUserPubCollErr) {
-        console.error('Error updating user public collections data in database:', updatedUserPubCollErr.message);
-        return NextResponse.json({ error: updatedUserPubCollErr.message }, { status: 500 });
+    if (updatedUserCollErr) {
+        console.error('Error updating user public collections data in database:', updatedUserCollErr.message);
+        return NextResponse.json({ error: updatedUserCollErr.message }, { status: 500 });
     }
 
-    // console.log('Admin: User Public Collections Requests:', userPubCollectionsReq);
-    // console.log('Admin: User Public Collections:', userPubCollections);
+    // console.log('Admin: Approved User Collections Request:', userPubCollectionsReq);
+    // console.log('Admin: Updated User Collections:', userPubCollections);
 
-    return NextResponse.json({ updatedUserPubCollectionsReq, updatedUserPubCollections });
+    return NextResponse.json({ updatedUserCollectionsReq, updatedUserCollections });
 }
