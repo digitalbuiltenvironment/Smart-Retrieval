@@ -15,7 +15,7 @@ export default function QueryCollectionManage() {
     const { data: session, status } = useSession();
     const supabaseAccessToken = session?.supabaseAccessToken;
 
-    // Retrieve the user's collections and public collections requests data from the database
+    // Retrieve the user's collections and collections requests data from the database
     const getUserCollectionsandRequests = async () => {
         setIsLoading(true);
         // Fetch the user's public collection requests from the API
@@ -30,14 +30,14 @@ export default function QueryCollectionManage() {
         )
             .then((response) => response.json())
             .then((data) => {
-                const publicCollectionsRequests = data.userPubCollectionsReq;
-                // console.log('Public Collections Requests:', publicCollectionsRequests);
+                const userCollectionsRequests = data.userCollectionsReq;
+                console.log('User Collections Requests:', userCollectionsRequests);
                 // Sort the collections by created date in descending order (oldest first)
-                publicCollectionsRequests.sort((a: any, b: any) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-                // Extract the collection data from the public collections requests
-                const updatedCollections = publicCollectionsRequests.map((collection: any) => {
-                    // Check if the collection has any public collection requests
-                    if (collection.public_collections_requests.length === 0) {
+                userCollectionsRequests.sort((a: any, b: any) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+                // Extract the collection data from the collections requests
+                const updatedCollections = userCollectionsRequests.map((collection: any) => {
+                    // Check if the collection has any collection requests
+                    if (collection.collections_requests.length === 0) {
                         // If not, return the collection data with no other details
                         return {
                             collection_id: collection.collection_id,
@@ -49,17 +49,17 @@ export default function QueryCollectionManage() {
                         };
                     }
                     else {
-                        // If the collection has public collection requests, return the collection data with the request status and dates
+                        // If the collection has collection requests, return the collection data with the request status and dates
                         return {
                             collection_id: collection.collection_id,
                             display_name: collection.display_name,
                             description: collection.description,
                             created_at: new Date(collection.created_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }),
                             isPublic: collection.is_public,
-                            requestType: collection.public_collections_requests[0].is_make_public ? 'Public' : 'Private',
-                            requestStatus: collection.public_collections_requests[0].is_pending ? '⏳Pending' : collection.public_collections_requests[0].is_approved ? '✅Approved' : '❌Rejected',
-                            requestDate: new Date(collection.public_collections_requests[0].created_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }),
-                            updatedRequestDate: new Date(collection.public_collections_requests[0].updated_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }),
+                            requestType: collection.collections_requests[0].is_make_public ? 'Public' : 'Private',
+                            requestStatus: collection.collections_requests[0].is_pending ? '⏳Pending' : collection.collections_requests[0].is_approved ? '✅Approved' : '❌Rejected',
+                            requestDate: new Date(collection.collections_requests[0].created_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }),
+                            updatedRequestDate: new Date(collection.collections_requests[0].updated_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }),
                         };
                     }
                 });
@@ -68,7 +68,7 @@ export default function QueryCollectionManage() {
                 setIsLoading(false);
             })
             .catch((error) => {
-                console.error("Error fetching user public collection requests:", error);
+                console.error("Error fetching user collection requests:", error);
                 setIsLoading(false);
                 return false;
             });
@@ -76,7 +76,7 @@ export default function QueryCollectionManage() {
     }
 
 
-    // Fetch the user's collections and public collections requests data from the database on component mount
+    // Fetch the user's collections and collections requests data from the database on component mount
     useEffect(() => {
         getUserCollectionsandRequests();
     }, []);
@@ -531,7 +531,7 @@ export default function QueryCollectionManage() {
                                         {collection.requestStatus === '⏳Pending' ? (
                                             <button onClick={() => handleCancelRequest(collection.collection_id, collection.isPublic)}
                                                 title='Cancel Request'
-                                                className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm bg-orange-400 text-white px-1 py-1 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-orange-500/40"
+                                                className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm bg-orange-400 text-white px-2 py-2 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-orange-500/40"
                                             >
                                                 Cancel Request
                                             </button>
@@ -539,7 +539,7 @@ export default function QueryCollectionManage() {
                                             collection.isPublic ? (
                                                 <button onClick={() => handleRequest(collection.collection_id, false)}
                                                     title='Set Private'
-                                                    className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm bg-blue-500 text-white px-1 py-1 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
+                                                    className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm bg-blue-500 text-white px-2 py-2 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
                                                 >
                                                     <EyeOff className='w-4 h-4 mr-1' />
                                                     <span>Set Private</span>
@@ -547,7 +547,7 @@ export default function QueryCollectionManage() {
                                             ) : (
                                                 <button onClick={() => handleRequest(collection.collection_id, true)}
                                                     title='Set Public'
-                                                    className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm bg-blue-500 text-white px-1 py-1 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
+                                                    className="flex flex-grow text-center items-center justify-center text-xs lg:text-sm bg-blue-500 text-white px-2 py-2 lg:px-3 lg:py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:bg-blue-500/40"
                                                 >
                                                     <Eye className='w-4 h-4 mr-1' />
                                                     <span>Set Public</span>

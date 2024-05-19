@@ -60,7 +60,7 @@ export default function AdminManageCollections() {
     const handleMakePrivate = async (collectionId: string) => {
         // Show confirmation dialog
         Swal.fire({
-            title: 'Private Request Confirmation',
+            title: 'Request Confirmation',
             text: "Are you sure you want to make this collection Private?",
             icon: 'question',
             showCancelButton: true,
@@ -71,13 +71,14 @@ export default function AdminManageCollections() {
         }).then((result) => {
             if (result.isConfirmed) {
                 // if user confirms, send request to server
-                fetch(`/api/admin/collections-requests/reject`, {
-                    method: 'POST',
+                fetch(`/api/admin/collections`, {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                         collection_id: collectionId,
+                        is_public: false, // Set collection to Private
                     }),
                 }).then(async (response) => {
                     if (!response.ok) {
@@ -120,7 +121,7 @@ export default function AdminManageCollections() {
     const handleMakePublic = async (collectionId: string) => {
         // Show confirmation dialog
         Swal.fire({
-            title: 'Public Request Confirmation',
+            title: 'Request Confirmation',
             text: "Are you sure you want to make this collection Public?",
             icon: 'question',
             showCancelButton: true,
@@ -131,13 +132,14 @@ export default function AdminManageCollections() {
         }).then((result) => {
             if (result.isConfirmed) {
                 // if user confirms, send request to server
-                fetch(`/api/admin/collections-requests/approve`, {
-                    method: 'POST',
+                fetch(`/api/admin/collections`, {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                         collection_id: collectionId,
+                        is_public: true, // Set collection to Public
                     }),
                 }).then(async (response) => {
                     if (!response.ok) {

@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: insertError.message }, { status: 500 });
     }
 
-    console.log('Collection data inserted:', insertData);
+    // console.log('Collection data inserted:', insertData);
 
     return NextResponse.json({ message: 'Collection data inserted successfully.', collectionId: insertData[0].collection_id });
 }
@@ -177,7 +177,7 @@ export async function DELETE(request: NextRequest) {
         return NextResponse.json({ error: deleteError.message }, { status: 500 });
     }
 
-    console.log('Delete', collection_id, ':', deleteData, 'deleteVecsResponse:', deleteVecsResponse);
+    // console.log('Delete', collection_id, ':', deleteData, 'deleteVecsResponse:', deleteVecsResponse);
 
     return NextResponse.json({ message: 'Collection data deleted successfully.' });
 }
