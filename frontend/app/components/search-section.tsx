@@ -4,6 +4,8 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { AutofillSearchQuery } from "@/app/components/ui/autofill-prompt";
 import { SearchSelection, useSearch, SearchResults, SearchInput } from "./ui/search";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SearchSection: React.FC = () => {
   const [query, setQuery] = useState("");
@@ -25,6 +27,7 @@ const SearchSection: React.FC = () => {
 
   return (
     <div className="space-y-4 max-w-5xl w-full">
+                  <ToastContainer />
       {collSelectedId ? (
         <>
           <SearchInput

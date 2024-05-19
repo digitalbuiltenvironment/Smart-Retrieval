@@ -131,8 +131,15 @@ export async function DELETE(request: NextRequest) {
         authorization = null; // Clear the authorization token
     }
 
+    // Create default delete_vecs variable
+    let is_delete_vecs = true;
     // Retrieve the collection_id from the request body
-    const { collection_id } = await request?.json();
+    const { collection_id, delete_vecs } = await request?.json();
+
+    // if delete_vecs is not undefined, take its value
+    if (delete_vecs !== undefined) {
+        is_delete_vecs = delete_vecs;
+    }
 
     // Retrieve the user's ID from the session token
     const { data: sessionData, error: sessionError } = await supabaseAuth
@@ -148,23 +155,24 @@ export async function DELETE(request: NextRequest) {
         return NextResponse.json({ error: sessionError.message }, { status: 500 });
     }
 
-    // Delete the vector collection from the vecs schema via POST request to Backend API
-    const deleteVecsResponse = await fetch(`${process.env.DELETE_SINGLE_COLLECTION_API}?collection_id=${collection_id}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': authorization,
-            'X-API-Key': api_key,
-        } as any,
-        body: JSON.stringify({ collection_id: collection_id }),
-    });
+    if (is_delete_vecs === true) {
+        // Delete the vector collection from the vecs schema via POST request to Backend API
+        const deleteVecsResponse = await fetch(`${process.env.DELETE_SINGLE_COLLECTION_API}?collection_id=${collection_id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': authorization,
+                'X-API-Key': api_key,
+            } as any,
+            body: JSON.stringify({ collection_id: collection_id }),
+        });
 
-    if (!deleteVecsResponse.ok) {
-        console.error('Error deleting', collection_id, 'from vecs schema:', deleteVecsResponse.statusText);
-        return NextResponse.json({ error: deleteVecsResponse.statusText }, { status: deleteVecsResponse.status });
+        if (!deleteVecsResponse.ok) {
+            console.error('Error deleting', collection_id, 'from vecs schema:', deleteVecsResponse.statusText);
+            return NextResponse.json({ error: deleteVecsResponse.statusText }, { status: deleteVecsResponse.status });
+        }
     }
 
-    
     // Delete the collection data from the database
     const { data: deleteData, error: deleteError } = await supabase
         .from('collections')

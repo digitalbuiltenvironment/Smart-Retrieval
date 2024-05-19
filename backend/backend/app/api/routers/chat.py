@@ -11,6 +11,7 @@ from llama_index.prompts import PromptTemplate
 from pydantic import BaseModel
 
 from backend.app.utils import auth
+from backend.app.utils.contants import MEMORY_TOKEN_LIMIT
 from backend.app.utils.index import get_index
 from backend.app.utils.json import json_to_model
 
@@ -110,7 +111,7 @@ async def chat(
 
     memory = ChatMemoryBuffer.from_defaults(
         chat_history=messages,
-        token_limit=4096,
+        token_limit=MEMORY_TOKEN_LIMIT,
     )
 
     logger.info(f"Memory: {memory.get()}")
@@ -121,14 +122,15 @@ async def chat(
         memory=memory,
         context_prompt=(
             "You are a helpful chatbot, able to have normal interactions, as well as answer questions"
-            " regarding information relating to the Public Sector Standard Conditions Of Contract (PSSCOC) Documents and JTC's Employer Information Requirements (EIR) Documents.\n"
-            "All the documents are in the context of the construction industry in Singapore.\n"
+            " regarding information relating but not limited to the Public Sector Standard Conditions Of Contract (PSSCOC) Documents and JTC's Employer Information Requirements (EIR) Documents.\n"
+            "PSSCOC and EIR documents are in the context of the construction industry in Singapore.\n"
             "Here are the relevant documents for the context:\n"
             "{context_str}"
             "\nInstruction: Based on the above documents, provide a detailed answer for the user question below.\n"
             "If you cannot answer the question or are unsure of how to answer, inform the user that you do not know.\n"
             "If you need to clarify the question, ask the user for clarification.\n"
-            "You are to provide the relevant sources of which you got the information from in the context in brackets."
+            "You are to provide the relevant sources including but not limited to the file name, and page of which you got the information from in the context in brackets.\n"
+            "Should there be a full file path, remove the file path and only include the file name in the context."
         ),
     )
     response = chat_engine.stream_chat(

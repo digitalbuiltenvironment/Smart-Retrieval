@@ -6,6 +6,8 @@ import { ChatSelection } from "@/app/components/ui/chat";
 import { AutofillQuestion } from "@/app/components/ui/autofill-prompt";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ChatSection() {
   const { data: session } = useSession();
@@ -34,6 +36,7 @@ export default function ChatSection() {
 
   return (
     <div className="space-y-4 max-w-5xl w-full relative">
+      <ToastContainer />
       {collSelectedId ?
         (
           <>

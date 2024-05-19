@@ -5,14 +5,11 @@ import ChatAvatar from "@/app/components/ui/chat/chat-avatar";
 import { Message } from "@/app/components/ui/chat/chat.interface";
 import Markdown from "@/app/components/ui/chat/markdown";
 import { useCopyToClipboard } from "@/app/components/ui/chat/use-copy-to-clipboard";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export default function ChatMessage(chatMessage: Message) {
   const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 });
   return (
     <div className="flex items-start gap-4 pr-5 pt-5">
-      <ToastContainer />
       <ChatAvatar role={chatMessage.role} />
       <div className="group flex flex-1 justify-between gap-2">
         <div className="flex-1">

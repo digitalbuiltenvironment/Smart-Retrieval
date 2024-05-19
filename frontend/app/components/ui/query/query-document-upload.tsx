@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { AlertTriangle } from "lucide-react";
@@ -19,12 +19,20 @@ export default function QueryDocumentUpload() {
     const indexerApi = process.env.NEXT_PUBLIC_INDEXER_API;
     const { data: session } = useSession();
     const supabaseAccessToken = session?.supabaseAccessToken;
+    const [createdCollectionId, setCreatedCollectionId] = useState<string>('');
+    // NOTE: allowedTypes is an array of allowed MIME types for file uploads
+    // The allowedTypesString is a string of allowed file extensions for the file input
+    // Both must be kept in sync to ensure that the file input only accepts the allowed file types
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/plain', 'application/json'];
+    const allowedTypesString = ".pdf,.doc,.docx,.xls,xlsx,.txt,.json";
 
-    const MAX_FILES = 10; // Maximum number of files allowed
-    const MAX_TOTAL_SIZE = 15 * 1024 * 1024; // Maximum total size allowed (15 MB in bytes)
+    const MAX_FILES = 15; // Maximum number of files allowed
+    const MAX_TOTAL_SIZE_MB = 60; // Maximum total size allowed in MB (15 MB)
+    const MAX_TOTAL_SIZE = MAX_TOTAL_SIZE_MB * 1024 * 1024; // Maximum total size allowed in bytes (15 MB in bytes)
     // The total size of all selected files should not exceed this value
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFileError(false);
         const selectedFiles = event.target.files;
         if (selectedFiles) {
             const fileList = Array.from(selectedFiles);
@@ -50,16 +58,15 @@ export default function QueryDocumentUpload() {
             // Check if the total size exceeds the maximum allowed
             if (totalSize > MAX_TOTAL_SIZE) {
                 // Show toast notification
-                toast.error(`Total size of selected files exceeds the maximum allowed (${MAX_TOTAL_SIZE} bytes).`, {
+                toast.error(`Total size of selected files exceeds the maximum allowed (${MAX_TOTAL_SIZE_MB} MB).`, {
                     position: "top-right",
                 });
                 setFileError(true);
-                setFileErrorMsg(`Total size of selected files exceeds the maximum allowed (${MAX_TOTAL_SIZE} bytes).`);
+                setFileErrorMsg(`Total size of selected files exceeds the maximum allowed (${MAX_TOTAL_SIZE_MB} MB).`);
                 return;
             }
 
             // Check if the file types are allowed
-            const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/plain'];
             const invalidFiles = fileList.filter(file => !allowedTypes.includes(file.type));
             if (invalidFiles.length) {
                 // Show toast notification
@@ -67,7 +74,7 @@ export default function QueryDocumentUpload() {
                     position: "top-right",
                 });
                 setFileError(true);
-                setFileErrorMsg(`Invalid file type(s) selected!`);
+                setFileErrorMsg(`Only ${allowedTypesString} file type(s) allowed!`);
                 return;
             }
 
@@ -145,6 +152,7 @@ export default function QueryDocumentUpload() {
                                 // Get the response data
                                 const data = await response.json();
                                 console.log('Insert New Collection Results:', data);
+                                setCreatedCollectionId(data.collectionId);
                                 // Show success dialog
                                 Swal.fire({
                                     title: 'Success!',
@@ -157,7 +165,7 @@ export default function QueryDocumentUpload() {
                                 // Create a new FormData object
                                 const formData = new FormData();
                                 // Append the collection_id to the FormData object
-                                formData.append('collection_id', data.collectionId);
+                                formData.append('collection_id', createdCollectionId);
                                 // Append each file to the FormData object
                                 files.forEach((file, index) => {
                                     formData.append('files', file);
@@ -204,6 +212,28 @@ export default function QueryDocumentUpload() {
                                                 closeButton: true,
                                                 isLoading: false
                                             });
+                                            // Delete the previously inserted collection from the database
+                                            fetch('/api/user/collections', {
+                                                method: 'DELETE',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify({
+                                                    collection_id: createdCollectionId,
+                                                    delete_vecs: false,
+                                                }),
+                                            })
+                                                .then(async response => {
+                                                    if (response.ok) {
+                                                        // Get the response data
+                                                        const data = await response.json();
+                                                        console.log('Delete Collection Results:', data);
+                                                    } else {
+                                                        const data = await response.json();
+                                                        // Log to console
+                                                        console.error('Error deleting collection:', data.error);
+                                                    }
+                                                });
                                         }
                                     })
                                     .catch(error => {
@@ -218,6 +248,28 @@ export default function QueryDocumentUpload() {
                                             closeButton: true,
                                             isLoading: false
                                         });
+                                        // Delete the previously inserted collection from the database
+                                        fetch('/api/user/collections', {
+                                            method: 'DELETE',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                collection_id: createdCollectionId,
+                                                delete_vecs: false,
+                                            }),
+                                        })
+                                            .then(async response => {
+                                                if (response.ok) {
+                                                    // Get the response data
+                                                    const data = await response.json();
+                                                    console.log('Delete Collection Results:', data);
+                                                } else {
+                                                    const data = await response.json();
+                                                    // Log to console
+                                                    console.error('Error deleting collection:', data.error);
+                                                }
+                                            });
                                     });
                             } else {
                                 const data = await response.json();
@@ -244,6 +296,8 @@ export default function QueryDocumentUpload() {
                             });
                             setisLoading(false);
                         });
+                    // Reset createCollectionId state
+                    setCreatedCollectionId('');
                 }
                 else {
                     setisLoading(false);
@@ -296,7 +350,7 @@ export default function QueryDocumentUpload() {
                             id="fileUpload"
                             title='Select Files'
                             multiple
-                            accept=".pdf,.doc,.docx,.xls,xlsx,.txt"
+                            accept={allowedTypesString}
                             onChange={handleFileChange}
                             className={`h-12 rounded-lg w-full bg-gray-300 dark:bg-zinc-700/65 border px-2 py-2 ${fileError ? 'border-red-500' : ''}`}
                         />

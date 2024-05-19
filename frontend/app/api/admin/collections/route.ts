@@ -38,23 +38,23 @@ export async function PUT(request: NextRequest) {
     const { collection_id, is_public } = await request.json();
 
     // Update the collection data in the database
-    const { data, error } = await supabase
+    const { data: updateData, error: updateError } = await supabase
         .from('collections')
         .update({ is_public: is_public })
-        .match({ collection_id });
+        .eq('collection_id', collection_id);
 
-    if (error) {
-        console.error('Error updating collection data in database:', error.message);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    if (updateError) {
+        console.error('Error updating collection data in database:', updateError.message);
+        return NextResponse.json({ error: updateError.message }, { status: 500 });
     }
 
     // console.log('Updated collection:', data);
 
     // Delete the collection requests data in the database (Since it is manually updated by Admin)
     const { data: delData, error: delError } = await supabase
-        .from('collection_requests')
+        .from('collections_requests')
         .delete()
-        .match({ collection_id });
+        .eq('collection_id', collection_id);
     
     if (delError) {
         console.error('Error deleting collection requests data in database:', delError.message);

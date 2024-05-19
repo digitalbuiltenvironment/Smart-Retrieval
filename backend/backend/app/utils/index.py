@@ -41,6 +41,8 @@ from backend.app.utils.contants import (
     MODEL_KWARGS,
     NUM_OUTPUT,
     STORAGE_DIR,
+    USE_LOCAL_LLM,
+    USE_LOCAL_VECTOR_STORE,
 )
 
 # from llama_index.vector_stores.supabase import SupabaseVectorStore
@@ -48,10 +50,6 @@ from backend.app.utils.contants import (
 
 load_dotenv()
 logger = logging.getLogger("uvicorn")
-
-# ENV variables
-USE_LOCAL_LLM = bool(os.getenv("USE_LOCAL_LLM").lower() == "true")
-USE_LOCAL_VECTOR_STORE = bool(os.getenv("USE_LOCAL_VECTOR_STORE").lower() == "true")
 
 
 # use local LLM if USE_LOCAL_LLM is set to True, else use openai's API
