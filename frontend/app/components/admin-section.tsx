@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { AdminMenu, AdminCollectionsRequests, AdminManageCollections, AdminManageUsers } from "@/app/components/ui/admin";
+import { AdminMenu, AdminManageRequests, AdminManageCollections, AdminManageUsers } from "@/app/components/ui/admin";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -26,17 +26,17 @@ const AdminSection: React.FC = () => {
         setShowCollections={setShowCollections}
       />
 
-      {/* New Requests Section */}
+      {/* Manage Requests Section */}
       {showNewRequest ? (
-        <AdminCollectionsRequests />
+        <AdminManageRequests />
       ) : null}
 
-      {/* Public Collections Section */}
+      {/* Manage Collections Section */}
       {showCollections ? (
         <AdminManageCollections />
       ) : null}
 
-      {/* Users Section */}
+      {/* Manage Users Section */}
       {showUsers ? (
         <AdminManageUsers />
       ) : null}
