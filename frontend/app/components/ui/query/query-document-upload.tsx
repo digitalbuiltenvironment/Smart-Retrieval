@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Info } from "lucide-react";
 import { IconSpinner } from '@/app/components/ui/icons';
 import { useSession } from "next-auth/react";
 
@@ -26,8 +26,8 @@ export default function QueryDocumentUpload() {
     const allowedTypesString = ".pdf,.doc,.docx,.xls,xlsx,.txt,.json";
 
     const MAX_FILES = 15; // Maximum number of files allowed
-    const MAX_TOTAL_SIZE_MB = 60; // Maximum total size allowed in MB (15 MB)
-    const MAX_TOTAL_SIZE = MAX_TOTAL_SIZE_MB * 1024 * 1024; // Maximum total size allowed in bytes (15 MB in bytes)
+    const MAX_TOTAL_SIZE_MB = 60; // Maximum total size allowed in MB (60 MB)
+    const MAX_TOTAL_SIZE = MAX_TOTAL_SIZE_MB * 1024 * 1024; // Maximum total size allowed in bytes (60 MB in bytes)
     // The total size of all selected files should not exceed this value
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -343,7 +343,10 @@ export default function QueryDocumentUpload() {
                         {descriptionError && <p className="text-red-500 text-sm pl-1 pt-1">Description is required!</p>}
                     </div>
                     <div className='flex flex-col'>
-                        <label htmlFor="fileUpload" title='Select Files' className='mb-2'>Select Files:</label>
+                        <label htmlFor="fileUpload" title='Select Files' className='mb-2'>
+                            Select Files:
+                            <span className="text-sm text-gray-500 ml-1">{`(Up to ${MAX_FILES} files, total ${MAX_TOTAL_SIZE_MB} MB)`}</span>
+                        </label>
                         <input
                             type="file"
                             id="fileUpload"
