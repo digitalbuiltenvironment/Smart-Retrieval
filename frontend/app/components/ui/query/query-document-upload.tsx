@@ -19,7 +19,6 @@ export default function QueryDocumentUpload() {
     const indexerApi = process.env.NEXT_PUBLIC_INDEXER_API;
     const { data: session } = useSession();
     const supabaseAccessToken = session?.supabaseAccessToken;
-    const [createdCollectionId, setCreatedCollectionId] = useState<string>('');
     // NOTE: allowedTypes is an array of allowed MIME types for file uploads
     // The allowedTypesString is a string of allowed file extensions for the file input
     // Both must be kept in sync to ensure that the file input only accepts the allowed file types
@@ -94,6 +93,7 @@ export default function QueryDocumentUpload() {
     };
 
     const handleSubmit = (event: React.FormEvent) => {
+        let createdCollectionId = '';
         event.preventDefault();
         // Perform validation and submit logic here
         console.log("Display Name:", displayName);
@@ -152,7 +152,8 @@ export default function QueryDocumentUpload() {
                                 // Get the response data
                                 const data = await response.json();
                                 console.log('Insert New Collection Results:', data);
-                                setCreatedCollectionId(data.collectionId);
+                                createdCollectionId = await data.collectionId; // ensure that the collection_id is returned
+                                console.log('Created Collection ID:', createdCollectionId);
                                 // Show success dialog
                                 Swal.fire({
                                     title: 'Success!',
@@ -296,8 +297,6 @@ export default function QueryDocumentUpload() {
                             });
                             setisLoading(false);
                         });
-                    // Reset createCollectionId state
-                    setCreatedCollectionId('');
                 }
                 else {
                     setisLoading(false);
