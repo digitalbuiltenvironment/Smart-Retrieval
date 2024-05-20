@@ -15,7 +15,14 @@ export async function GET(request: NextRequest) {
 
     const { data: usersData, error: usersError } = await supabase
         .from('users')
-        .select('id, name, email, admins (id)');
+        .select(`
+            id,
+            name,
+            email,
+            admins (
+                id
+            )
+        `);
 
     if (usersError) {
         console.error('Error fetching users data from database:', usersError.message);

@@ -36,7 +36,12 @@ export async function GET(request: NextRequest) {
     // Ensure user is an admin
     const { data: userData, error: userError } = await supabase
         .from('users')
-        .select('id, admins (id)')
+        .select(`
+            id,
+            admins (
+                id
+            )
+        `)
         .eq('id', userId)
         .single();
 

@@ -15,7 +15,25 @@ export async function GET(request: NextRequest) {
     // Retrieve the collections requests data from the database
     const { data: collectionsReq, error: collErr } = await supabase
         .from('collections_requests')
-        .select('collection_id, is_make_public, is_pending, is_approved, created_at, updated_at, collections (collection_id, id, display_name, description, is_public, users (id, name, email))')
+        .select(`
+            collection_id,
+            is_make_public,
+            is_pending,
+            is_approved,
+            created_at,
+            updated_at,
+            collections (
+                id,
+                display_name,
+                description,
+                is_public,
+                users (
+                    id,
+                    name,
+                    email
+                )
+            )
+        `)
         .eq('is_pending', true);
 
     if (collErr) {

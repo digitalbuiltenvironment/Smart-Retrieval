@@ -38,7 +38,21 @@ export async function GET(request: NextRequest) {
     // Retrieve the user's collections and collections requests data via inner join from the database
     const { data: userCollectionsReq, error: userCollErr } = await supabase
         .from('collections')
-        .select('collection_id, display_name, description, is_public, created_at, collections_requests (collection_id, is_make_public, is_pending, is_approved, created_at, updated_at)')
+        .select(`
+            collection_id,
+            display_name,
+            description,
+            is_public,
+            created_at,
+            collections_requests (
+                collection_id,
+                is_make_public,
+                is_pending,
+                is_approved,
+                created_at,
+                updated_at
+            )
+        `)
         .eq('id', userId);
 
     if (userCollErr) {
