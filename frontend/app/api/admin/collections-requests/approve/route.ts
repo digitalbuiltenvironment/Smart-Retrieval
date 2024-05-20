@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: updatedUserCollReqErr.message }, { status: 500 });
     }
 
-    // Update the user's collections data in the database, set is_public = true
+    // Update the user's collections data in the database, set is_public to is_make_public
     console.log('is_public:', is_make_public);
     const { data: updatedUserCollections, error: updatedUserCollErr } = await supabase
         .from('collections')

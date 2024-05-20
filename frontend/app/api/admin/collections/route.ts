@@ -15,7 +15,19 @@ export async function GET(request: NextRequest) {
     // Retrieve the collections requests data from the database
     const { data: collections, error: collErr } = await supabase
         .from('collections')
-        .select('collection_id, id, display_name, description, is_public, created_at, users (id, name, email)');
+        .select(`
+            collection_id,
+            id,
+            display_name,
+            description,
+            is_public,
+            created_at,
+            users (
+                id,
+                name,
+                email
+            )
+        `);
 
     if (collErr) {
         console.error('Error fetching collections data from database:', collErr.message);
@@ -57,7 +69,7 @@ export async function PUT(request: NextRequest) {
         .from('collections_requests')
         .delete()
         .eq('collection_id', collection_id);
-    
+
     if (delError) {
         console.error('Error deleting collection requests data in database:', delError.message);
         return NextResponse.json({ error: delError.message }, { status: 500 });
