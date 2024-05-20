@@ -1,5 +1,6 @@
 "use client";
 
+import { unstable_noStore as noStore } from 'next/cache';
 import { useEffect, useState } from 'react';
 import { Eye, EyeOff, X, Check, RefreshCw } from 'lucide-react';
 import { IconSpinner } from '@/app/components/ui/icons';
@@ -7,6 +8,7 @@ import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
 export default function AdminManageRequests() {
+    noStore();
     const [userRequests, setUserRequests] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [isRefreshed, setIsRefreshed] = useState<boolean>(true); // Track whether the data has been refreshed
@@ -20,7 +22,6 @@ export default function AdminManageRequests() {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Cache-Control': 'no-cache', // Disable cache to get the latest data
                     },
                 }
             );

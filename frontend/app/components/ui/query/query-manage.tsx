@@ -24,7 +24,6 @@ export default function QueryCollectionManage() {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache', // Disable caching
                 },
             }
         )
@@ -125,7 +124,6 @@ export default function QueryCollectionManage() {
                                     method: 'PUT',
                                     headers: {
                                         'Content-Type': 'application/json',
-                                        'Cache-Control': 'no-cache', // Disable caching
                                     },
                                     body: JSON.stringify({ collection_id: collectionId, is_make_public: isPublic }),
                                 }
@@ -177,7 +175,6 @@ export default function QueryCollectionManage() {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'Cache-Control': 'no-cache', // Disable caching
                             },
                             body: JSON.stringify({ collection_id: collectionId, is_make_public: isPublic }),
                         }
@@ -246,7 +243,6 @@ export default function QueryCollectionManage() {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Cache-Control': 'no-cache', // Disable caching
                         },
                         body: JSON.stringify({ collection_id: collectionId }),
                     }
@@ -314,7 +310,6 @@ export default function QueryCollectionManage() {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Cache-Control': 'no-cache', // Disable caching
                             'Authorization': `Bearer ${supabaseAccessToken}`, // Add the access token to the request headers
                         },
                         body: JSON.stringify({ collection_id: collectionId }),

@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+export const revalidate = 10;
 
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from "next/server";
@@ -34,14 +34,15 @@ export async function GET(request: NextRequest) {
                 )
             )
         `)
-        .eq('is_pending', true);
+        .eq('is_pending', true)
+        .limit(1000);
 
     if (collErr) {
         console.error('Error fetching collection request data from database:', collErr.message);
         return NextResponse.json({ error: collErr.message }, { status: 500 });
     }
 
-    // console.log('Collections Request:', collectionsReq);
+    // console.log('New Collections Request:', collectionsReq);
 
     return NextResponse.json({ collectionsReq: collectionsReq });
 }

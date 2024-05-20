@@ -22,7 +22,6 @@ export default function QuerySelection(
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache', // Disable caching
             },
         });
 

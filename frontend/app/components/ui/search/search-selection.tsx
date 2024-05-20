@@ -23,7 +23,6 @@ export default function SearchSelection(
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache', // Disable caching
             },
         });
 

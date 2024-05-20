@@ -20,7 +20,6 @@ export default function AdminManageCollections() {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Cache-Control': 'no-cache', // Disable cache to get the latest data
                     },
                 }
             );
