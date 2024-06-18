@@ -14,7 +14,7 @@ export const psscocQuestionsBank: QuestionsBankProp[] = [
 ];
 
 export const eirQuestionsBank: QuestionsBankProp[] = [
-    { title: "I have confidential projects that cannot go on the Internet. Can you list me all the clauses which specify the use of Internet platforms or tools, as I will need to remove them." },
+    { title: "I have confidential projects that cannot go on the Internet. What do I need to take note of?" },
     { title: "My BIM files have speciality equipment such as ovens, microwaves and refrigerators. What should I categorise them as according to the model content requirements. What parameters are required?" },
     { title: "I use my own platforms such as BIM360 and Novade for safety observations. Do I need to use JTC’s OPTIMUS for such issues or can I use my own platforms?" },
     { title: "How many days do I have to submit the BIM Execution Plan and who should I submit it to?" },

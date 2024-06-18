@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Skeleton } from "@nextui-org/react";
 import Image from 'next/image';
-import { User2, SlidersHorizontal, Info, Trash, RefreshCcw } from 'lucide-react';
+import { User2, SlidersHorizontal, Info, Trash, RefreshCcw, Save } from 'lucide-react';
 import { HeaderNavLink } from '@/app/components/ui/navlink';
 import Swal from 'sweetalert2';
 import { useSession } from 'next-auth/react';
@@ -263,7 +263,10 @@ const ProfileSection: React.FC = () => {
                 <RefreshCcw className="mr-1 h-5 w-5" />
                 Reset
               </button>
-              <button type="submit" disabled={!isProfileChanged()} className="flex flex-grow justify-center items-center text-l disabled:bg-transparent disabled:border disabled:border-gray-500 disabled:text-gray-500 bg-blue-500 text-white px-6 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105 disabled:hover:scale-100">Save</button>
+              <button type="submit" disabled={!isProfileChanged()} className="flex flex-grow justify-center items-center text-l disabled:bg-transparent disabled:border disabled:border-gray-500 disabled:text-gray-500 bg-blue-500 text-white px-6 py-3 rounded-md font-bold transition duration-300 ease-in-out transform hover:scale-105 disabled:hover:scale-100">
+                <Save className="mr-1 h-5 w-5" />
+                Save
+              </button>
             </div>
           </form>
         </div>
