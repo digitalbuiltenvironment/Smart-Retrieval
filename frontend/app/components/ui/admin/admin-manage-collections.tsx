@@ -70,8 +70,8 @@ export default function AdminManageCollections() {
         }).then((result) => {
             if (result.isConfirmed) {
                 // if user confirms, send request to server
-                fetch(`/api/admin/collections`, {
-                    method: 'PUT',
+                fetch(`/api/admin/collections/update`, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -131,8 +131,8 @@ export default function AdminManageCollections() {
         }).then((result) => {
             if (result.isConfirmed) {
                 // if user confirms, send request to server
-                fetch(`/api/admin/collections`, {
-                    method: 'PUT',
+                fetch(`/api/admin/collections/update`, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
