@@ -29,7 +29,7 @@ LLM_TEMPERATURE = 0.1
 MODEL_KWARGS = {"n_gpu_layers": 100} if DEVICE_TYPE == "cuda" else {}
 
 # Service Context Constants
-CHUNK_SIZE = 1000
+CHUNK_SIZE = 1024
 CHUNK_OVERLAP = 100
 
 # Embedding Model Constants
@@ -37,12 +37,12 @@ EMBED_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 EMBED_POOLING = "mean"
 EMBED_MODEL_DIMENSIONS = 384  # MiniLM-L6-v2 uses 384 dimensions
 DEF_EMBED_MODEL_DIMENSIONS = (
-    1536  # Default embedding model dimensions used by OpenAI text-embedding-ada-002
+    1536  # Default embedding model dimensions used by OpenAI text-embedding-3-small
 )
 EMBED_BATCH_SIZE = 64  # batch size for openai embeddings
 
 # Chat Memory Buffer Constants
-MEMORY_TOKEN_LIMIT = 1500 if USE_LOCAL_LLM else 6144
+MEMORY_TOKEN_LIMIT = 3072 if USE_LOCAL_LLM else 6144
 
 # Prompt Helper Constants
 # set maximum input size

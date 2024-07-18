@@ -2,8 +2,8 @@ import logging
 import re
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from llama_index.postprocessor import SimilarityPostprocessor
-from llama_index.retrievers import VectorIndexRetriever
+from llama_index.core.postprocessor import SimilarityPostprocessor
+from llama_index.core.retrievers import VectorIndexRetriever
 
 from backend.app.utils import auth
 from backend.app.utils.index import get_index

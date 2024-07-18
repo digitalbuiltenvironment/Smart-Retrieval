@@ -10,8 +10,7 @@ packages = [{ include = "backend" }]
 python = "^3.11,<3.12"
 fastapi = "^0.109.1"
 uvicorn = { extras = ["standard"], version = "^0.23.2" }
-llama-index = "^0.9.48"
-pypdf = "^3.17.4"
+pypdf = "^4.3.0"
 python-dotenv = "^1.0.0"
 llama-cpp-python = "^0.2.52"
 transformers = "^4.38.1"
@@ -22,6 +21,9 @@ pyjwt = "^2.8.0"
 vecs = "^0.4.3"
 python-multipart = "^0.0.9"
 asyncpg = "^0.29.0"
+llama-index = "^0.10.55"
+llama-index-vector-stores-supabase = "^0.1.5"
+llama-index-llms-llama-cpp = "^0.1.4"
 
 [tool.poetry.group.dev]
 optional = true

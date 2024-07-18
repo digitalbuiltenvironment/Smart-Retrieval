@@ -4,7 +4,7 @@ Modify the prompt template based on the model you select.
 This seems to have significant impact on the output of the LLM.
 """
 
-from llama_index.prompts import PromptTemplate
+from llama_index.core import PromptTemplate
 
 # this is specific to Llama-2.
 

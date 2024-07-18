@@ -2,23 +2,23 @@ import logging
 import os
 
 from dotenv import load_dotenv
-from llama_index import (
+from llama_index.core import (
     PromptHelper,
     ServiceContext,
-    # Document,
     SimpleDirectoryReader,
     StorageContext,
     VectorStoreIndex,
     load_index_from_storage,
     set_global_service_context,
 )
-from llama_index.embeddings import HuggingFaceEmbedding
-from llama_index.embeddings.openai import OpenAIEmbedding
-from llama_index.llms import LlamaCPP, OpenAI
-from llama_index.llms.llama_utils import (
+from llama_index.embeddings.openai import OpenAIEmbedding, OpenAIEmbeddingModelType
+from llama_index.legacy.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.legacy.llms.llama_utils import (
     completion_to_prompt,
     messages_to_prompt,
 )
+from llama_index.llms.llama_cpp import LlamaCPP
+from llama_index.llms.openai import OpenAI
 from llama_index.vector_stores.supabase import SupabaseVectorStore
 from vecs import IndexMeasure
 
@@ -45,7 +45,6 @@ from backend.app.utils.contants import (
     USE_LOCAL_VECTOR_STORE,
 )
 
-# from llama_index.vector_stores.supabase import SupabaseVectorStore
 # import textwrap
 
 load_dotenv()
@@ -98,7 +97,11 @@ else:
         api_key=os.getenv("OPENAI_API_KEY"),
     )
     # By default, LlamaIndex uses text-embedding-ada-002 from OpenAI
-    embed_model = OpenAIEmbedding(embed_batch_size=EMBED_BATCH_SIZE)
+    # Set the model to text-embed-3-small for better performance and cheaper cost
+    embed_model = OpenAIEmbedding(
+        model=OpenAIEmbeddingModelType.TEXT_EMBED_3_SMALL,
+        embed_batch_size=EMBED_BATCH_SIZE,
+    )
 
     prompt_helper = PromptHelper(
         chunk_size_limit=CHUNK_SIZE_LIMIT,
@@ -149,11 +152,11 @@ def create_index():
                     show_progress=True,
                 )
                 # store it for later
-                index.storage_context.persist(STORAGE_DIR)
-                logger.info(f"Finished creating new index. Stored in {STORAGE_DIR}")
+                index.storage_context.persist(new_storage_dir)
+                logger.info(f"Finished creating new index. Stored in {new_storage_dir}")
             else:
                 # do nothing
-                logger.info(f"Index already exist at {STORAGE_DIR}...")
+                logger.info(f"Index already exist at {new_storage_dir}...")
     # else, create & store the index in Supabase pgvector
     else:
         # get the folders in the data directory

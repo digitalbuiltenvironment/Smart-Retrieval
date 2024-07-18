@@ -4,7 +4,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
 from fastapi.websockets import WebSocketDisconnect
-from llama_index.llms.types import MessageRole
+from llama_index.core.llms import MessageRole
 from pydantic import BaseModel
 
 from backend.app.utils import auth
