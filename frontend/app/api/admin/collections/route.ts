@@ -64,18 +64,33 @@ export async function PUT(request: NextRequest) {
 
     // console.log('Updated collection:', data);
 
-    // Delete the collection requests data in the database (Since it is manually updated by Admin)
-    const { data: delData, error: delError } = await supabase
+    // Check if there is an existing collection request for the collection
+    const { data: collReq, error: collReqError } = await supabase
         .from('collections_requests')
-        .delete()
+        .select('collection_id')
         .eq('collection_id', collection_id);
 
-    if (delError) {
-        console.error('Error deleting collection requests data in database:', delError.message);
-        return NextResponse.json({ error: delError.message }, { status: 500 });
+    if (collReqError) {
+        console.error('Error fetching collection requests data from database:', collReqError.message);
+        return NextResponse.json({ error: collReqError.message }, { status: 500 });
     }
 
-    // console.log('Deleted collection requests:', delData);
+    // console.log('Collection requests:', collReq);
+
+    // If there is an existing collection request, delete it
+    if (collReq.length === 1) {
+        const { data: delData, error: delError } = await supabase
+            .from('collections_requests')
+            .delete()
+            .eq('collection_id', collection_id);
+
+        if (delError) {
+            console.error('Error deleting collection requests data in database:', delError.message);
+            return NextResponse.json({ error: delError.message }, { status: 500 });
+        }
+
+        // console.log('Deleted collection requests:', delData);
+    }
 
     return NextResponse.json({ message: 'Collection updated successfully' });
 }
